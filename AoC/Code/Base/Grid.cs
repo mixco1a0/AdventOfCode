@@ -33,6 +33,18 @@ namespace AoC.Base
             }
         }
 
+        public Grid2Char(string[] rawGrid)
+        {
+            m_array = new char[rawGrid.Length, rawGrid.First().Length];
+            for (int _c = 0; _c < MaxCol; ++_c)
+            {
+                for (int _r = 0; _r < MaxRow; ++_r)
+                {
+                    m_array[_r, _c] = rawGrid[_r][_c];
+                }
+            }
+        }
+
         public Grid2Char(int maxCol, int maxRow, char defaultValue)
         {
             m_array = new char[maxRow, maxCol];
