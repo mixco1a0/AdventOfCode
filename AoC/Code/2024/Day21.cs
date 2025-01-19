@@ -27,6 +27,41 @@ namespace AoC._2024
                 new Core.TestDatum
                 {
                     TestPart = Core.Part.One,
+                    Output = "1972",
+                    RawInput =
+@"029A"
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "58800",
+                    RawInput =
+@"980A"
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "12172",
+                    RawInput =
+@"179A"
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "29184",
+                    RawInput =
+@"456A"
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "24256",
+                    RawInput =
+@"379A"
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
                     Output = "126384",
                     RawInput =
 @"029A
@@ -52,21 +87,57 @@ namespace AoC._2024
             Directional
         }
 
-        private readonly char A = 'A';
+        private readonly char AButton = 'A';
 
         private readonly string[] NumberKeypad = ["789", "456", "123", " 0A"];
         private readonly string[] DirectionalKeypad = [" ^A", "<v>"];
-
+        private Dictionary<KeypadType, Base.Grid2Char> Keypads;
+        private Dictionary<KeypadType, Base.Vec2> KeypadsAButton;
         private record FromTo(KeypadType Type, char From, char To);
         private Dictionary<FromTo, string> InstructionCache;
 
-        private string GetInstruction(FromTo fromTo, Base.Grid2Char grid)
+        private void ParseKeypads()
         {
+            Keypads = [];
+            KeypadsAButton = [];
+            InstructionCache = [];
+
+            Keypads[KeypadType.Number] = new(NumberKeypad);
+            foreach (Base.Vec2 vec2 in Keypads[KeypadType.Number])
+            {
+                if (Keypads[KeypadType.Number][vec2] == AButton)
+                {
+                    KeypadsAButton[KeypadType.Number] = vec2;
+                    break;
+                }
+            }
+
+            Keypads[KeypadType.Directional] = new(DirectionalKeypad);
+            foreach (Base.Vec2 vec2 in Keypads[KeypadType.Directional])
+            {
+                if (Keypads[KeypadType.Directional][vec2] == AButton)
+                {
+                    KeypadsAButton[KeypadType.Directional] = vec2;
+                    break;
+                }
+            }
+        }
+
+        private string GetInputRequired(FromTo fromTo)
+        {
+            StringBuilder sb = new();
+            if (fromTo.From == fromTo.To)
+            {
+                sb.Append(AButton);
+                return sb.ToString();
+            }
+
             if (InstructionCache.TryGetValue(fromTo, out string value))
             {
                 return value;
             }
 
+            Base.Grid2Char grid = Keypads[fromTo.Type];
             Base.Vec2 start = new(), end = new();
             foreach (Base.Vec2 vec2 in grid)
             {
@@ -90,8 +161,8 @@ namespace AoC._2024
                 Base.Vec2 cur = queue.Dequeue();
                 if (cur.Equals(end))
                 {
-                    StringBuilder sb = new(history[end]);
-                    sb.Append(A);
+                    sb = new(history[end]);
+                    sb.Append(AButton);
                     return sb.ToString();
                 }
 
@@ -103,7 +174,7 @@ namespace AoC._2024
                         continue;
                     }
 
-                    StringBuilder sb = new(history[cur]);
+                    sb = new(history[cur]);
                     sb.Append(Util.Grid2.Map.SimpleArrow[dir]);
                     history[next] = sb.ToString();
                     queue.Enqueue(next);
@@ -115,66 +186,31 @@ namespace AoC._2024
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool _)
         {
-            Base.Grid2Char numberGrid = new(NumberKeypad);
-            Base.Vec2 numberAVec2 = new();
-            foreach (Base.Vec2 vec2 in numberGrid)
+            ParseKeypads();
+
+            KeypadType[] process = [KeypadType.Number, KeypadType.Directional, KeypadType.Directional];
+
+            StringBuilder sb;
+            List<string> instructions = [.. inputs];
+            foreach (KeypadType keypadType in process)
             {
-                if (numberGrid[vec2] == 'A')
-                {
-                    numberAVec2 = vec2;
-                    break;
-                }
-            }
-
-            Base.Grid2Char directionalGrid = new(DirectionalKeypad);
-            Base.Vec2 directionalAVec2 = new();
-            foreach (Base.Vec2 vec2 in directionalGrid)
-            {
-                if (directionalGrid[vec2] == 'A')
-                {
-                    directionalAVec2 = vec2;
-                    break;
-                }
-            }
-
-            InstructionCache = [];
-
-            // get instructions required to push buttons
-            List<string> instructions = [];
-            foreach (string input in inputs)
-            {
-                StringBuilder sb = new();
-                char curInstruction = A;
-                for (int i = 0; i < input.Length; ++i)
-                {
-                    FromTo ft = new(KeypadType.Number, curInstruction, input[i]);
-                    string instruction = GetInstruction(ft, numberGrid);
-                    sb.Append(instruction);
-                    curInstruction = input[i];
-                }
-                instructions.Add(sb.ToString());
-
-                // Log($"{input} => {sb.ToString()}");
-            }
-
-            // convert instructions into directional 3 times
-            for (int j = 0; j < 2; ++j)
-            {
-                List<string> tempInstructions = [.. instructions];
+                Log($"Processing: {keypadType}");
+                List<string> curInstructions = [.. instructions];
                 instructions.Clear();
-                foreach (string input in tempInstructions)
+                foreach (string curInstruction in curInstructions)
                 {
-                    StringBuilder sb = new();
-                    char curInstruction = A;
-                    for (int i = 0; i < input.Length; ++i)
+                    sb = new();
+                    char curButton = AButton;
+                    foreach (char nextButton in curInstruction)
                     {
-                        FromTo ft = new(KeypadType.Directional, curInstruction, input[i]);
-                        string instruction = GetInstruction(ft, directionalGrid);
-                        sb.Append(instruction);
-                        curInstruction = input[i];
+                        FromTo ft = new(keypadType, curButton, nextButton);
+                        string inputRequired = GetInputRequired(ft);
+                        // Log($"{ft.From} -> {ft.To} | {inputRequired}");
+                        sb.Append(inputRequired);
+                        curButton = nextButton;
                     }
+                    Log($"{curInstruction} -> {sb}");
                     instructions.Add(sb.ToString());
-                    // Log($"{input} => {sb.ToString()}");
                 }
             }
 
@@ -183,6 +219,7 @@ namespace AoC._2024
             {
                 int code = int.Parse(inputs[i][0..^1]);
                 sum += code * instructions[i].Length;
+                Log($"{instructions[i]} = {instructions[i].Length} * {code}");
             }
 
             return sum.ToString();
