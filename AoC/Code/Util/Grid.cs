@@ -201,11 +201,6 @@ namespace AoC.Util
     }
     #endregion
 
-    public class Grid2<T>
-    {
-
-    }
-
     public static class Grid
     {
         #region Print 2D

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AoC.Util;
 
 namespace AoC._2024
 {
@@ -93,8 +92,14 @@ namespace AoC._2024
         private readonly string[] DirectionalKeypad = [" ^A", "<v>"];
         private Dictionary<KeypadType, Base.Grid2Char> Keypads;
         private Dictionary<KeypadType, Base.Vec2> KeypadsAButton;
-        private record FromTo(KeypadType Type, char From, char To);
-        private Dictionary<FromTo, string> InstructionCache;
+        private record FromTo(KeypadType Type, char From, char To)
+        {
+            public FromTo Flip()
+            {
+                return new FromTo(Type, To, From);
+            }
+        }
+        private Dictionary<FromTo, List<string>> InstructionCache;
 
         private void ParseKeypads()
         {
@@ -121,67 +126,193 @@ namespace AoC._2024
                     break;
                 }
             }
+
+            char n = Util.Grid2.Map.SimpleArrow[Util.Grid2.Dir.North];
+            char e = Util.Grid2.Map.SimpleArrow[Util.Grid2.Dir.East];
+            char s = Util.Grid2.Map.SimpleArrow[Util.Grid2.Dir.South];
+            char w = Util.Grid2.Map.SimpleArrow[Util.Grid2.Dir.West];
+            void addInstructions(KeypadType keypadType, char from, char to, List<List<Util.Grid2.Dir>> dirs)
+            {
+                List<string> instructions = [];
+                foreach (List<Util.Grid2.Dir> dir in dirs)
+                {
+                    StringBuilder sb = new();
+                    foreach (Util.Grid2.Dir d in dir)
+                    {
+                        sb.Append(Util.Grid2.Map.SimpleArrow[d]);
+                    }
+                    instructions.Add(sb.ToString());
+                }
+
+                // to add the other one, use reverse dirs and use SimpleArrowFlipped
+                FromTo ft = new(keypadType, from, to);
+                InstructionCache[ft] = [.. instructions];
+
+                instructions.Clear();
+                foreach (List<Util.Grid2.Dir> dir in dirs)
+                {
+                    StringBuilder sb = new();
+                    for (int i = dir.Count - 1; i >= 0; --i)
+                    {
+                        sb.Append(Util.Grid2.Map.SimpleArrow[Util.Grid2.Map.Opposite[dir[i]]]);
+                    }
+                    instructions.Add(sb.ToString());
+                }
+
+                ft = ft.Flip();
+                InstructionCache[ft] = instructions;
+            }
+            // TODO: Make this dynamic
+            // A
+            addInstructions(KeypadType.Number, 'A', '0', [[Util.Grid2.Dir.West]]);
+            addInstructions(KeypadType.Number, 'A', '1', [[Util.Grid2.Dir.North, Util.Grid2.Dir.West, Util.Grid2.Dir.West]]);
+            addInstructions(KeypadType.Number, 'A', '2', [[Util.Grid2.Dir.North, Util.Grid2.Dir.West],
+                                                          [Util.Grid2.Dir.West, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, 'A', '3', [[Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, 'A', '4', [[Util.Grid2.Dir.North, Util.Grid2.Dir.North, Util.Grid2.Dir.West, Util.Grid2.Dir.West]]);
+            addInstructions(KeypadType.Number, 'A', '5', [[Util.Grid2.Dir.North, Util.Grid2.Dir.North, Util.Grid2.Dir.West],
+                                                          [Util.Grid2.Dir.West, Util.Grid2.Dir.North, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, 'A', '6', [[Util.Grid2.Dir.North, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, 'A', '7', [[Util.Grid2.Dir.North, Util.Grid2.Dir.North, Util.Grid2.Dir.North, Util.Grid2.Dir.West, Util.Grid2.Dir.West]]);
+            addInstructions(KeypadType.Number, 'A', '8', [[Util.Grid2.Dir.North, Util.Grid2.Dir.North, Util.Grid2.Dir.North, Util.Grid2.Dir.West],
+                                                          [Util.Grid2.Dir.West, Util.Grid2.Dir.North, Util.Grid2.Dir.North, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, 'A', '9', [[Util.Grid2.Dir.North, Util.Grid2.Dir.North, Util.Grid2.Dir.North]]);
+            // 0
+            addInstructions(KeypadType.Number, '0', '1', [[Util.Grid2.Dir.North, Util.Grid2.Dir.West]]);
+            addInstructions(KeypadType.Number, '0', '2', [[Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '0', '3', [[Util.Grid2.Dir.North, Util.Grid2.Dir.East],
+                                                          [Util.Grid2.Dir.East, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '0', '4', [[Util.Grid2.Dir.North, Util.Grid2.Dir.North, Util.Grid2.Dir.West]]);
+            addInstructions(KeypadType.Number, '0', '5', [[Util.Grid2.Dir.North, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '0', '6', [[Util.Grid2.Dir.North, Util.Grid2.Dir.North, Util.Grid2.Dir.East],
+                                                          [Util.Grid2.Dir.East, Util.Grid2.Dir.North, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '0', '7', [[Util.Grid2.Dir.North, Util.Grid2.Dir.North, Util.Grid2.Dir.North, Util.Grid2.Dir.West]]);
+            addInstructions(KeypadType.Number, '0', '8', [[Util.Grid2.Dir.North, Util.Grid2.Dir.North, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '0', '9', [[Util.Grid2.Dir.North, Util.Grid2.Dir.North, Util.Grid2.Dir.North, Util.Grid2.Dir.East],
+                                                          [Util.Grid2.Dir.East, Util.Grid2.Dir.North, Util.Grid2.Dir.North, Util.Grid2.Dir.North]]);
+            // 1
+            addInstructions(KeypadType.Number, '1', '2', [[Util.Grid2.Dir.East]]);
+            addInstructions(KeypadType.Number, '1', '3', [[Util.Grid2.Dir.East, Util.Grid2.Dir.East]]);
+            addInstructions(KeypadType.Number, '1', '4', [[Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '1', '5', [[Util.Grid2.Dir.North, Util.Grid2.Dir.East],
+                                                          [Util.Grid2.Dir.East, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '1', '6', [[Util.Grid2.Dir.North, Util.Grid2.Dir.East, Util.Grid2.Dir.East],
+                                                          [Util.Grid2.Dir.East, Util.Grid2.Dir.East, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '1', '7', [[Util.Grid2.Dir.North, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '1', '8', [[Util.Grid2.Dir.North, Util.Grid2.Dir.North, Util.Grid2.Dir.East],
+                                                          [Util.Grid2.Dir.East, Util.Grid2.Dir.North, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '1', '9', [[Util.Grid2.Dir.North, Util.Grid2.Dir.North, Util.Grid2.Dir.East, Util.Grid2.Dir.East],
+                                                          [Util.Grid2.Dir.East, Util.Grid2.Dir.East, Util.Grid2.Dir.North, Util.Grid2.Dir.North]]);
+            // 2
+            addInstructions(KeypadType.Number, '2', '3', [[Util.Grid2.Dir.East]]);
+            addInstructions(KeypadType.Number, '2', '4', [[Util.Grid2.Dir.North, Util.Grid2.Dir.East],
+                                                          [Util.Grid2.Dir.East, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '2', '5', [[Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '2', '6', [[Util.Grid2.Dir.North, Util.Grid2.Dir.East],
+                                                          [Util.Grid2.Dir.East, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '2', '7', [[Util.Grid2.Dir.North, Util.Grid2.Dir.North, Util.Grid2.Dir.West],
+                                                          [Util.Grid2.Dir.West, Util.Grid2.Dir.North, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '2', '8', [[Util.Grid2.Dir.North, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '2', '9', [[Util.Grid2.Dir.North, Util.Grid2.Dir.North, Util.Grid2.Dir.East],
+                                                          [Util.Grid2.Dir.East, Util.Grid2.Dir.North, Util.Grid2.Dir.North]]);
+            // 3
+            addInstructions(KeypadType.Number, '3', '4', [[Util.Grid2.Dir.North, Util.Grid2.Dir.West, Util.Grid2.Dir.West],
+                                                          [Util.Grid2.Dir.West, Util.Grid2.Dir.West, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '3', '5', [[Util.Grid2.Dir.North, Util.Grid2.Dir.West],
+                                                          [Util.Grid2.Dir.West, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '3', '6', [[Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '3', '7', [[Util.Grid2.Dir.North, Util.Grid2.Dir.North, Util.Grid2.Dir.West, Util.Grid2.Dir.West],
+                                                          [Util.Grid2.Dir.West, Util.Grid2.Dir.West, Util.Grid2.Dir.North, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '3', '8', [[Util.Grid2.Dir.North, Util.Grid2.Dir.North, Util.Grid2.Dir.West],
+                                                          [Util.Grid2.Dir.West, Util.Grid2.Dir.North, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '3', '9', [[Util.Grid2.Dir.North, Util.Grid2.Dir.North]]);
+            // 4
+            addInstructions(KeypadType.Number, '4', '5', [[Util.Grid2.Dir.East]]);
+            addInstructions(KeypadType.Number, '4', '6', [[Util.Grid2.Dir.East, Util.Grid2.Dir.East]]);
+            addInstructions(KeypadType.Number, '4', '7', [[Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '4', '8', [[Util.Grid2.Dir.North, Util.Grid2.Dir.East],
+                                                          [Util.Grid2.Dir.East, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '4', '9', [[Util.Grid2.Dir.North, Util.Grid2.Dir.East, Util.Grid2.Dir.East],
+                                                          [Util.Grid2.Dir.East, Util.Grid2.Dir.East, Util.Grid2.Dir.North]]);
+            // 5
+            addInstructions(KeypadType.Number, '5', '6', [[Util.Grid2.Dir.East]]);
+            addInstructions(KeypadType.Number, '5', '7', [[Util.Grid2.Dir.North, Util.Grid2.Dir.West],
+                                                          [Util.Grid2.Dir.West, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '5', '8', [[Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '5', '9', [[Util.Grid2.Dir.North, Util.Grid2.Dir.East],
+                                                          [Util.Grid2.Dir.East, Util.Grid2.Dir.North]]);
+            // 6
+            addInstructions(KeypadType.Number, '6', '7', [[Util.Grid2.Dir.North, Util.Grid2.Dir.West, Util.Grid2.Dir.West],
+                                                          [Util.Grid2.Dir.West, Util.Grid2.Dir.West, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '6', '8', [[Util.Grid2.Dir.North, Util.Grid2.Dir.West],
+                                                          [Util.Grid2.Dir.West, Util.Grid2.Dir.North]]);
+            addInstructions(KeypadType.Number, '6', '9', [[Util.Grid2.Dir.North]]);
+            // 7
+            addInstructions(KeypadType.Number, '7', '8', [[Util.Grid2.Dir.East]]);
+            addInstructions(KeypadType.Number, '7', '9', [[Util.Grid2.Dir.East, Util.Grid2.Dir.East]]);
+            // 8
+            addInstructions(KeypadType.Number, '8', '9', [[Util.Grid2.Dir.East]]);
+            // 9
+
+            // TODO: Add KeyPadType.Direction instructions
         }
 
-        private string GetInputRequired(FromTo fromTo)
+        private List<string> GetInputRequired(FromTo fromTo)
         {
             StringBuilder sb = new();
             if (fromTo.From == fromTo.To)
             {
                 sb.Append(AButton);
-                return sb.ToString();
+                return new([sb.ToString()]);
             }
 
-            if (InstructionCache.TryGetValue(fromTo, out string value))
+            if (InstructionCache.TryGetValue(fromTo, out List<string> value))
             {
                 return value;
             }
 
-            Base.Grid2Char grid = Keypads[fromTo.Type];
-            Base.Vec2 start = new(), end = new();
-            foreach (Base.Vec2 vec2 in grid)
+            return [];
+        }
+
+        private string GetNextOptimizedInput(string inputButtons)
+        {
+            StringBuilder sb = new(string.Join("", inputButtons.Reverse().Skip(1)));
+            sb.Append(AButton);
+            string reverse = sb.ToString();
+            if (inputButtons.Equals(reverse))
             {
-                if (grid[vec2] == fromTo.From)
-                {
-                    start = vec2;
-                }
-                else if (grid[vec2] == fromTo.To)
-                {
-                    end = vec2;
-                }
+                return inputButtons;
             }
 
-            Dictionary<Base.Vec2, string> history = [];
-            history[start] = "";
-
-            Queue<Base.Vec2> queue = new();
-            queue.Enqueue(start);
-            while (queue.Count > 0)
+            string getDirectionalInput(char curButton, char nextButton)
             {
-                Base.Vec2 cur = queue.Dequeue();
-                if (cur.Equals(end))
-                {
-                    sb = new(history[end]);
-                    sb.Append(AButton);
-                    return sb.ToString();
-                }
-
-                foreach (Util.Grid2.Dir dir in Util.Grid2.Iter.Cardinal)
-                {
-                    Base.Vec2 next = cur + Util.Grid2.Map.Neighbor[dir];
-                    if (!grid.Contains(next) || history.ContainsKey(next) || grid[next] == ' ')
-                    {
-                        continue;
-                    }
-
-                    sb = new(history[cur]);
-                    sb.Append(Util.Grid2.Map.SimpleArrow[dir]);
-                    history[next] = sb.ToString();
-                    queue.Enqueue(next);
-                }
+                FromTo ft = new(KeypadType.Directional, curButton, nextButton);
+                return "TODO";//GetInputRequired(ft);
             }
 
-            return string.Empty;
+            sb.Clear();
+            char curButton = AButton;
+            foreach (char nextButton in inputButtons)
+            {
+                sb.Append(getDirectionalInput(curButton, nextButton));
+                curButton = nextButton;
+            }
+
+            int len = sb.ToString().Length;
+            sb.Clear();
+
+            curButton = AButton;
+            foreach (char nextButton in reverse)
+            {
+                sb.Append(getDirectionalInput(curButton, nextButton));
+                curButton = nextButton;
+            }
+
+            if (len <= sb.ToString().Length)
+            {
+                return inputButtons;
+            }
+            return reverse;
         }
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool _)
@@ -204,9 +335,15 @@ namespace AoC._2024
                     foreach (char nextButton in curInstruction)
                     {
                         FromTo ft = new(keypadType, curButton, nextButton);
-                        string inputRequired = GetInputRequired(ft);
+                        List<string> possibleInput = GetInputRequired(ft);
                         // Log($"{ft.From} -> {ft.To} | {inputRequired}");
-                        sb.Append(inputRequired);
+                        // check here to see if the next level is faster this way or reversed
+                        List<string> optimizedInputs = [];
+                        foreach (string inputRequired in possibleInput)
+                        {
+                            optimizedInputs.Add(GetNextOptimizedInput(inputRequired));
+                        }
+                        sb.Append(optimizedInputs.OrderBy(s => s.Length).First());
                         curButton = nextButton;
                     }
                     Log($"{curInstruction} -> {sb}");
