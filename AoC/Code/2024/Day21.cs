@@ -141,6 +141,7 @@ namespace AoC._2024
                     {
                         sb.Append(Util.Grid2.Map.SimpleArrow[d]);
                     }
+                    sb.Append(AButton);
                     instructions.Add(sb.ToString());
                 }
 
@@ -156,6 +157,7 @@ namespace AoC._2024
                     {
                         sb.Append(Util.Grid2.Map.SimpleArrow[Util.Grid2.Map.Opposite[dir[i]]]);
                     }
+                    sb.Append(AButton);
                     instructions.Add(sb.ToString());
                 }
 
