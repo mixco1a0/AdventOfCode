@@ -293,47 +293,6 @@ namespace AoC._2024
             return [];
         }
 
-        private string GetNextOptimizedInput(string inputButtons)
-        {
-            StringBuilder sb = new(string.Join("", inputButtons.Reverse().Skip(1)));
-            sb.Append(AButton);
-            string reverse = sb.ToString();
-            if (inputButtons.Equals(reverse))
-            {
-                return inputButtons;
-            }
-
-            string getDirectionalInput(char curButton, char nextButton)
-            {
-                FromTo ft = new(KeypadType.Directional, curButton, nextButton);
-                return "TODO";//GetInputRequired(ft);
-            }
-
-            sb.Clear();
-            char curButton = AButton;
-            foreach (char nextButton in inputButtons)
-            {
-                sb.Append(getDirectionalInput(curButton, nextButton));
-                curButton = nextButton;
-            }
-
-            int len = sb.ToString().Length;
-            sb.Clear();
-
-            curButton = AButton;
-            foreach (char nextButton in reverse)
-            {
-                sb.Append(getDirectionalInput(curButton, nextButton));
-                curButton = nextButton;
-            }
-
-            if (len <= sb.ToString().Length)
-            {
-                return inputButtons;
-            }
-            return reverse;
-        }
-
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool _)
         {
             ParseKeypads();
@@ -357,12 +316,7 @@ namespace AoC._2024
                         List<string> possibleInput = GetInputRequired(ft);
                         // Log($"{ft.From} -> {ft.To} | {inputRequired}");
                         // check here to see if the next level is faster this way or reversed
-                        List<string> optimizedInputs = [];
-                        foreach (string inputRequired in possibleInput)
-                        {
-                            optimizedInputs.Add(GetNextOptimizedInput(inputRequired));
-                        }
-                        sb.Append(optimizedInputs.OrderBy(s => s.Length).First());
+                        sb.Append(possibleInput.Last());
                         curButton = nextButton;
                     }
                     Log($"{curInstruction} -> {sb}");
