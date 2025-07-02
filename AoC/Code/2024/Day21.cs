@@ -23,34 +23,34 @@ namespace AoC._2024
         {
             List<Core.TestDatum> testData =
             [
-                new Core.TestDatum
-                {
-                    TestPart = Core.Part.One,
-                    Output = "1972",
-                    RawInput =
-@"029A"
-                },
-                new Core.TestDatum
-                {
-                    TestPart = Core.Part.One,
-                    Output = "58800",
-                    RawInput =
-@"980A"
-                },
-                new Core.TestDatum
-                {
-                    TestPart = Core.Part.One,
-                    Output = "12172",
-                    RawInput =
-@"179A"
-                },
-                new Core.TestDatum
-                {
-                    TestPart = Core.Part.One,
-                    Output = "29184",
-                    RawInput =
-@"456A"
-                },
+//                 new Core.TestDatum
+//                 {
+//                     TestPart = Core.Part.One,
+//                     Output = "1972",
+//                     RawInput =
+// @"029A"
+//                 },
+//                 new Core.TestDatum
+//                 {
+//                     TestPart = Core.Part.One,
+//                     Output = "58800",
+//                     RawInput =
+// @"980A"
+//                 },
+//                 new Core.TestDatum
+//                 {
+//                     TestPart = Core.Part.One,
+//                     Output = "12172",
+//                     RawInput =
+// @"179A"
+//                 },
+//                 new Core.TestDatum
+//                 {
+//                     TestPart = Core.Part.One,
+//                     Output = "29184",
+//                     RawInput =
+// @"456A"
+//                 },
                 new Core.TestDatum
                 {
                     TestPart = Core.Part.One,
@@ -257,6 +257,23 @@ namespace AoC._2024
             // 9
 
             // TODO: Add KeyPadType.Direction instructions
+            // A
+            addInstructions(KeypadType.Directional, 'A', '^', [[Util.Grid2.Dir.West]]);
+            addInstructions(KeypadType.Directional, 'A', '<', [[Util.Grid2.Dir.South, Util.Grid2.Dir.West, Util.Grid2.Dir.West]]);
+            addInstructions(KeypadType.Directional, 'A', 'v', [[Util.Grid2.Dir.South, Util.Grid2.Dir.West],
+                                                          [Util.Grid2.Dir.West, Util.Grid2.Dir.South]]);
+            addInstructions(KeypadType.Directional, 'A', '>', [[Util.Grid2.Dir.South]]);
+            // ^
+            addInstructions(KeypadType.Directional, '^', '<', [[Util.Grid2.Dir.South, Util.Grid2.Dir.West]]);
+            addInstructions(KeypadType.Directional, '^', 'v', [[Util.Grid2.Dir.South]]);
+            addInstructions(KeypadType.Directional, '^', '>', [[Util.Grid2.Dir.South, Util.Grid2.Dir.East],
+                                                          [Util.Grid2.Dir.East, Util.Grid2.Dir.South]]);
+            // <
+            addInstructions(KeypadType.Directional, '<', 'v', [[Util.Grid2.Dir.East]]);
+            addInstructions(KeypadType.Directional, '<', '>', [[Util.Grid2.Dir.East, Util.Grid2.Dir.East]]);
+            // v
+            addInstructions(KeypadType.Directional, 'v', '>', [[Util.Grid2.Dir.East]]);
+            // >
         }
 
         private List<string> GetInputRequired(FromTo fromTo)
