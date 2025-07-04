@@ -319,7 +319,7 @@ namespace AoC._2024
                         sb.Append(possibleInput.Last());
                         curButton = nextButton;
                     }
-                    Log($"{curInstruction} -> {sb}");
+                    //Log($"{curInstruction} -> {sb}");
                     instructions.Add(sb.ToString());
                 }
             }
