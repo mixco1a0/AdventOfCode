@@ -13,8 +13,8 @@ namespace AoC._2024
         {
             return part switch
             {
-                // Core.Part.One => "v1",
-                // Core.Part.Two => "v1",
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
                 _ => base.GetSolutionVersion(part),
             };
         }
@@ -51,31 +51,31 @@ namespace AoC._2024
 //                     RawInput =
 // @"456A"
 //                 },
-                new Core.TestDatum
-                {
-                    TestPart = Core.Part.One,
-                    Output = "24256",
-                    RawInput =
-@"379A"
-                },
-                new Core.TestDatum
-                {
-                    TestPart = Core.Part.One,
-                    Output = "126384",
-                    RawInput =
-@"029A
-980A
-179A
-456A
-379A"
-                },
-                new Core.TestDatum
-                {
-                    TestPart = Core.Part.Two,
-                    Output = "",
-                    RawInput =
-@""
-                },
+//                 new Core.TestDatum
+//                 {
+//                     TestPart = Core.Part.One,
+//                     Output = "24256",
+//                     RawInput =
+// @"379A"
+//                 },
+//                 new Core.TestDatum
+//                 {
+//                     TestPart = Core.Part.One,
+//                     Output = "126384",
+//                     RawInput =
+// @"029A
+// 980A
+// 179A
+// 456A
+// 379A"
+//                 },
+//                 new Core.TestDatum
+//                 {
+//                     TestPart = Core.Part.Two,
+//                     Output = "",
+//                     RawInput =
+// @""
+//                 },
             ];
             return testData;
         }
@@ -276,39 +276,14 @@ namespace AoC._2024
             // >
         }
 
-        private List<string> GetInputRequired(FromTo fromTo)
-        {
-            StringBuilder sb = new();
-            if (fromTo.From == fromTo.To)
-            {
-                sb.Append(AButton);
-                return new([sb.ToString()]);
-            }
-
-            if (InstructionCache.TryGetValue(fromTo, out List<string> value))
-            {
-                return value;
-            }
-
-            return [];
-        }
-
         private Dictionary<long, Dictionary<FromTo, long>> ShortestPath;
-        private Dictionary<long, Dictionary<FromTo, string>> ShortestVisualPath;
 
         private long GetShortestPath(FromTo ft, int level, int maxLevel)
         {
-            Dictionary<FromTo, string> visualPaths = [];
             if (!ShortestPath.TryGetValue(level, out Dictionary<FromTo, long> levelPaths))
             {
                 ShortestPath[level] = [];
                 levelPaths = ShortestPath[level];
-
-                ShortestVisualPath[level] = visualPaths;
-            }
-            else
-            {
-                visualPaths = ShortestVisualPath[level];
             }
 
             if (levelPaths.TryGetValue(ft, out long value))
@@ -320,15 +295,10 @@ namespace AoC._2024
             {
                 return 1;
             }
-
-            // Log($"[{level}] Processing: {new string(' ', level * 2)} {ft.From}{ft.To}");
-
-            // StringBuilder sb;
+            
             long shortestPath = long.MaxValue;
             foreach (string instruction in InstructionCache[ft])
             {
-                // Log($"[{level}] Processing:   {new string(' ', level * 2)} {instruction}");
-                long preShortestPath = shortestPath;
                 if (level >= maxLevel)
                 {
                     shortestPath = Math.Min(shortestPath, instruction.Length);
@@ -345,13 +315,8 @@ namespace AoC._2024
                     }
                     shortestPath = Math.Min(shortestPath, curPath);
                 }
-                if (shortestPath < preShortestPath)
-                {
-                    visualPaths[ft] = instruction;
-                }
             }
 
-            // Log($"[{level}] ShortestPath: {new string(' ', level * 2)} {visualPaths[ft]}");
             levelPaths[ft] = shortestPath;
             return shortestPath;
         }
@@ -360,39 +325,22 @@ namespace AoC._2024
         {
             ParseKeypads();
             ShortestPath = [];
-            ShortestVisualPath = [];
 
-            // KeypadType[] process = new KeypadType[directionalCount + 1];
-            // process[0] = KeypadType.Number;
-            // for (int i = 1; i <= directionalCount; ++i)
-            // {
-            //     process[i] = KeypadType.Directional;
-            // }
-
-            StringBuilder sb;
+            int idx = 0;
             List<string> instructions = [.. inputs];
             List<long> instructionLengths = [];
-            int _i = 0;
-            //foreach (KeypadType keypadType in process)
+            foreach (string instruction in instructions)
             {
-                //Log($"[{_i++}] Processing: {keypadType}");
-                List<string> curInstructions = [.. instructions];
-                instructions.Clear();
-                foreach (string curInstruction in curInstructions)
+                // Log($"[{idx}] Processing: {instruction}");
+                instructionLengths.Add(0);
+                char curButton = AButton;
+                foreach (char nextButton in instruction)
                 {
-                    Log($"[{_i}] Processing: {curInstruction}");
-                    instructionLengths.Add(0);
-                    sb = new();
-                    char curButton = AButton;
-                    foreach (char nextButton in curInstruction)
-                    {
-                        FromTo ft = new(KeypadType.Number, curButton, nextButton);
-                        instructionLengths[_i] += GetShortestPath(ft, 0, directionalCount);
-                        curButton = nextButton;
-                    }
-                    
-                    ++_i;
+                    FromTo ft = new(KeypadType.Number, curButton, nextButton);
+                    instructionLengths[idx] += GetShortestPath(ft, 0, directionalCount);
+                    curButton = nextButton;
                 }
+                ++idx;
             }
 
             long sum = 0;
@@ -400,7 +348,7 @@ namespace AoC._2024
             {
                 long code = long.Parse(inputs[i][0..^1]);
                 sum += code * instructionLengths[i];
-                Log($"{inputs[i]} = {instructionLengths[i]} * {code}");
+                // Log($"{inputs[i]} = {code} * {instructionLengths[i]}");
             }
 
             return sum.ToString();
