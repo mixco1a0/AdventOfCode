@@ -293,52 +293,123 @@ namespace AoC._2024
             return [];
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool _)
+        private Dictionary<long, Dictionary<FromTo, long>> ShortestPath;
+        private Dictionary<long, Dictionary<FromTo, string>> ShortestVisualPath;
+
+        private long GetShortestPath(FromTo ft, int level, int maxLevel)
+        {
+            Dictionary<FromTo, string> visualPaths = [];
+            if (!ShortestPath.TryGetValue(level, out Dictionary<FromTo, long> levelPaths))
+            {
+                ShortestPath[level] = [];
+                levelPaths = ShortestPath[level];
+
+                ShortestVisualPath[level] = visualPaths;
+            }
+            else
+            {
+                visualPaths = ShortestVisualPath[level];
+            }
+
+            if (levelPaths.TryGetValue(ft, out long value))
+            {
+                return value;
+            }
+
+            if (ft.From == ft.To)
+            {
+                return 1;
+            }
+
+            // Log($"[{level}] Processing: {new string(' ', level * 2)} {ft.From}{ft.To}");
+
+            // StringBuilder sb;
+            long shortestPath = long.MaxValue;
+            foreach (string instruction in InstructionCache[ft])
+            {
+                // Log($"[{level}] Processing:   {new string(' ', level * 2)} {instruction}");
+                long preShortestPath = shortestPath;
+                if (level >= maxLevel)
+                {
+                    shortestPath = Math.Min(shortestPath, instruction.Length);
+                }
+                else
+                {
+                    long curPath = 0;
+                    char curButton = AButton;
+                    foreach (char nextButton in instruction)
+                    {
+                        FromTo subFT = new(KeypadType.Directional, curButton, nextButton);
+                        curPath += GetShortestPath(subFT, level + 1, maxLevel);
+                        curButton = nextButton;
+                    }
+                    shortestPath = Math.Min(shortestPath, curPath);
+                }
+                if (shortestPath < preShortestPath)
+                {
+                    visualPaths[ft] = instruction;
+                }
+            }
+
+            // Log($"[{level}] ShortestPath: {new string(' ', level * 2)} {visualPaths[ft]}");
+            levelPaths[ft] = shortestPath;
+            return shortestPath;
+        }
+
+        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, int directionalCount)
         {
             ParseKeypads();
+            ShortestPath = [];
+            ShortestVisualPath = [];
 
-            KeypadType[] process = [KeypadType.Number, KeypadType.Directional, KeypadType.Directional];
+            // KeypadType[] process = new KeypadType[directionalCount + 1];
+            // process[0] = KeypadType.Number;
+            // for (int i = 1; i <= directionalCount; ++i)
+            // {
+            //     process[i] = KeypadType.Directional;
+            // }
 
             StringBuilder sb;
             List<string> instructions = [.. inputs];
-            foreach (KeypadType keypadType in process)
+            List<long> instructionLengths = [];
+            int _i = 0;
+            //foreach (KeypadType keypadType in process)
             {
-                Log($"Processing: {keypadType}");
+                //Log($"[{_i++}] Processing: {keypadType}");
                 List<string> curInstructions = [.. instructions];
                 instructions.Clear();
                 foreach (string curInstruction in curInstructions)
                 {
+                    Log($"[{_i}] Processing: {curInstruction}");
+                    instructionLengths.Add(0);
                     sb = new();
                     char curButton = AButton;
                     foreach (char nextButton in curInstruction)
                     {
-                        FromTo ft = new(keypadType, curButton, nextButton);
-                        List<string> possibleInput = GetInputRequired(ft);
-                        // Log($"{ft.From} -> {ft.To} | {inputRequired}");
-                        // check here to see if the next level is faster this way or reversed
-                        sb.Append(possibleInput.Last());
+                        FromTo ft = new(KeypadType.Number, curButton, nextButton);
+                        instructionLengths[_i] += GetShortestPath(ft, 0, directionalCount);
                         curButton = nextButton;
                     }
-                    //Log($"{curInstruction} -> {sb}");
-                    instructions.Add(sb.ToString());
+                    
+                    ++_i;
                 }
             }
 
-            int sum = 0;
+            long sum = 0;
             for (int i = 0; i < inputs.Count; ++i)
             {
-                int code = int.Parse(inputs[i][0..^1]);
-                sum += code * instructions[i].Length;
-                Log($"{instructions[i]} = {instructions[i].Length} * {code}");
+                long code = long.Parse(inputs[i][0..^1]);
+                sum += code * instructionLengths[i];
+                Log($"{inputs[i]} = {instructionLengths[i]} * {code}");
             }
 
             return sum.ToString();
         }
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
-            => SharedSolution(inputs, variables, false);
+            => SharedSolution(inputs, variables, 2);
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
-            => SharedSolution(inputs, variables, true);
+            => SharedSolution(inputs, variables, 25);
     }
 }

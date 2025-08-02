@@ -47,7 +47,7 @@ namespace AoC.Core
         public static bool IncludeLogLevel { get; set; }
         public static ELevel LogLevel { get; set; }
         public static bool Enabled { get; set; }
-        public static char ColorMarker => '^';
+        public static char ColorMarker => '$';
         private static string ColorRegex => string.Concat(@"(\", ColorMarker, @"[^\", ColorMarker, @"]*\", ColorMarker, ")");
 
         public static Color Positive => Color.MediumSeaGreen;
