@@ -40,13 +40,13 @@ namespace AoC._2024
 100
 2024"
                 },
-                new Core.TestDatum
-                {
-                    TestPart = Core.Part.Two,
-                    Output = "1",
-                    RawInput =
-@"123"
-                },
+//                 new Core.TestDatum
+//                 {
+//                     TestPart = Core.Part.Two,
+//                     Output = "9",
+//                     RawInput =
+// @"123"
+//                 },
                 new Core.TestDatum
                 {
                     TestPart = Core.Part.Two,
@@ -68,9 +68,11 @@ namespace AoC._2024
         private class Secret
         {
             public long Number { get; set; }
-            public byte PriceChange { get; set; }
+            public long Price { get => Number % 10; }
+            public long PriceChange { get; set; }
             // public int[] Sequence { get; set; }
-            public long Compressed { get; set; }
+            public ulong Compressed { get; set; }
+            public string CString { get => Compressed.ToString("X8"); }
             public bool Usable { get; set; }
 
             public const int SequenceLength = 4;
@@ -87,13 +89,13 @@ namespace AoC._2024
             public Secret(long number, Secret prev, bool usable)
             {
                 Number = number;
-                PriceChange = (byte)((Number % 10 - prev.Number % 10) + 9);
+                PriceChange = Price - prev.Price;
                 // Sequence = new int[SequenceLength];
                 // for (int i = 0; i < SequenceLength - 1; ++i)
                 // {
                 //     Sequence[i] = prev.Sequence[i + 1];
                 // }
-                Compressed = (prev.Compressed << 8) | PriceChange;
+                Compressed = ((prev.Compressed << 8) | (byte)(PriceChange + 9)) & 0xffffffff;
                 // Sequence[SequenceLength - 1] = PriceChange;
                 Usable = usable;
             }
@@ -158,12 +160,70 @@ namespace AoC._2024
             //    find the first pattern for 9-1
             //    check the rest
 
+            long idx = 0;
+            Dictionary<ulong, int> frequency = [];
             for (int i = 0; i < bestSecrets.Count; ++i)
             {
-                bestSecrets[i] = [.. bestSecrets[i].OrderByDescending(s => s.Number % 10)];
+                // if ((idx % (bestSecrets.Count / 10)) == 0)
+                // {
+                //     Log($"indexing.... {idx} / {bestSecrets.Count}");
+                // }
+
+                var curSecretList = bestSecrets[i].Where(s => s.Usable).Select((s, i) => new { Idx = i, Sec = s }).ToList();
+                var pairList = curSecretList.Where(pair => pair.Sec.Price == 0).ToList();
+                foreach (var pl in pairList)
+                {
+                    curSecretList.RemoveAll(pair => pair.Sec.Compressed == pl.Sec.Compressed && pair.Idx >= pl.Idx);
+                }
+                bestSecrets[i] = [.. curSecretList.Select(pair => pair.Sec)];
+                foreach (ulong curCompressed in bestSecrets[i].Select(s => s.Compressed))
+                {
+                    if (frequency.TryGetValue(curCompressed, out int value))
+                    {
+                        frequency[curCompressed] = value + 1;
+                    }
+                    else
+                    {
+                        frequency[curCompressed] = 1;
+                    }
+                }
+                // compressed.UnionWith(bestSecrets[i].Select(s => s.Compressed));
+                ++idx;
+            }
+            IEnumerable<ulong> compressed = frequency.Select(pair => pair).OrderByDescending(pair => pair.Value).Select(pair => pair.Key);
+            foreach (var p in frequency.Select(pair => pair).OrderByDescending(pair => pair.Value).Take(5))
+            {
+                Log($"{p.Key} has {p.Value} instance");
             }
 
-            return "";
+            // ulong temp = (-2 + 9);
+                // temp <<= 8;
+                // temp += (1 + 9);
+                // temp <<= 8;
+                // temp += (-1 + 9);
+                // temp <<= 8;
+                // temp += (3 + 9);
+
+                long curBest = long.MinValue;
+            foreach (ulong c in compressed)
+            {
+                // short circuit
+                int curFreq = frequency[c];
+                if (curFreq * 9 < curBest)
+                {
+                    break;
+                }
+
+                long best = bestSecrets.Select(list => list.FirstOrDefault(s => s.Compressed == c)).Where(s => s != null).Select(s => s.Price).Sum();
+                curBest = Math.Max(best, curBest);
+
+                if (curBest == best)
+                {
+                    Log($"new max! {curBest}");
+                }
+            }
+
+            return curBest.ToString();
         }
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
@@ -171,5 +231,6 @@ namespace AoC._2024
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
             => SharedSolution(inputs, variables, true);
+            // 10195 => TOO HIGH
     }
 }
