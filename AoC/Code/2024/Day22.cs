@@ -13,7 +13,7 @@ namespace AoC._2024
             return part switch
             {
                 Core.Part.One => "v1",
-                // Core.Part.Two => "v1",
+                Core.Part.Two => "v1",
                 _ => base.GetSolutionVersion(part),
             };
         }
@@ -40,13 +40,6 @@ namespace AoC._2024
 100
 2024"
                 },
-//                 new Core.TestDatum
-//                 {
-//                     TestPart = Core.Part.Two,
-//                     Output = "9",
-//                     RawInput =
-// @"123"
-//                 },
                 new Core.TestDatum
                 {
                     TestPart = Core.Part.Two,
@@ -70,7 +63,6 @@ namespace AoC._2024
             public long Number { get; set; }
             public long Price { get => Number % 10; }
             public long PriceChange { get; set; }
-            // public int[] Sequence { get; set; }
             public ulong Compressed { get; set; }
             public string CString { get => Compressed.ToString("X8"); }
             public bool Usable { get; set; }
@@ -81,7 +73,6 @@ namespace AoC._2024
             {
                 Number = 0;
                 PriceChange = 0;
-                // Sequence = [0, 0, 0, 0];
                 Compressed = 0;
                 Usable = false;
             }
@@ -90,13 +81,7 @@ namespace AoC._2024
             {
                 Number = number;
                 PriceChange = Price - prev.Price;
-                // Sequence = new int[SequenceLength];
-                // for (int i = 0; i < SequenceLength - 1; ++i)
-                // {
-                //     Sequence[i] = prev.Sequence[i + 1];
-                // }
                 Compressed = ((prev.Compressed << 8) | (byte)(PriceChange + 9)) & 0xffffffff;
-                // Sequence[SequenceLength - 1] = PriceChange;
                 Usable = usable;
             }
         }
@@ -156,19 +141,9 @@ namespace AoC._2024
                 return secretNumbers.Sum().ToString();
             }
 
-            // loop through each best secret
-            //    find the first pattern for 9-1
-            //    check the rest
-
-            long idx = 0;
             Dictionary<ulong, int> frequency = [];
             for (int i = 0; i < bestSecrets.Count; ++i)
             {
-                // if ((idx % (bestSecrets.Count / 10)) == 0)
-                // {
-                //     Log($"indexing.... {idx} / {bestSecrets.Count}");
-                // }
-
                 var curSecretList = bestSecrets[i].Where(s => s.Usable).Select((s, i) => new { Idx = i, Sec = s }).ToList();
                 var pairList = curSecretList.Where(pair => pair.Sec.Price == 0).ToList();
                 foreach (var pl in pairList)
@@ -187,31 +162,24 @@ namespace AoC._2024
                         frequency[curCompressed] = 1;
                     }
                 }
-                // compressed.UnionWith(bestSecrets[i].Select(s => s.Compressed));
-                ++idx;
             }
             IEnumerable<ulong> compressed = frequency.Select(pair => pair).OrderByDescending(pair => pair.Value).Select(pair => pair.Key);
-            foreach (var p in frequency.Select(pair => pair).OrderByDescending(pair => pair.Value).Take(5))
+            foreach (var p in frequency.Select(pair => pair).OrderByDescending(pair => pair.Value).Take(10))
             {
-                Log($"{p.Key} has {p.Value} instance");
+                Log($"{p.Key:X8} has {p.Value} instance");
             }
 
-            // ulong temp = (-2 + 9);
-                // temp <<= 8;
-                // temp += (1 + 9);
-                // temp <<= 8;
-                // temp += (-1 + 9);
-                // temp <<= 8;
-                // temp += (3 + 9);
-
-                long curBest = long.MinValue;
+            long curBest = long.MinValue;
             foreach (ulong c in compressed)
             {
-                // short circuit
-                int curFreq = frequency[c];
-                if (curFreq * 9 < curBest)
+                if (secretNumbers.Count > 10)
                 {
-                    break;
+                    // short circuit
+                    int curFreq = frequency[c];
+                    if (curFreq * 5 < curBest)
+                    {
+                        break;
+                    }
                 }
 
                 long best = bestSecrets.Select(list => list.FirstOrDefault(s => s.Compressed == c)).Where(s => s != null).Select(s => s.Price).Sum();
@@ -231,6 +199,5 @@ namespace AoC._2024
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
             => SharedSolution(inputs, variables, true);
-            // 10195 => TOO HIGH
     }
 }
