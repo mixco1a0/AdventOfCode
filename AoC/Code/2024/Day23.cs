@@ -25,9 +25,40 @@ namespace AoC._2024
                 new Core.TestDatum
                 {
                     TestPart = Core.Part.One,
-                    Output = "",
+                    Output = "7",
                     RawInput =
-@""
+@"kh-tc
+qp-kh
+de-cg
+ka-co
+yn-aq
+qp-ub
+cg-tb
+vc-aq
+tb-ka
+wh-tc
+yn-cg
+kh-ub
+ta-co
+de-co
+tc-td
+tb-wq
+wh-td
+ta-ka
+td-qp
+aq-cg
+wq-ub
+ub-vc
+de-ta
+wq-aq
+wq-vc
+wh-yn
+ka-de
+kh-ta
+co-tc
+wh-qp
+tb-vc
+td-yn"
                 },
                 new Core.TestDatum
                 {
@@ -40,9 +71,108 @@ namespace AoC._2024
             return testData;
         }
 
+        private record Connection(ushort First, ushort Second)
+        {
+            public static Connection Parse(string connection)
+            {
+                string[] split = Util.String.Split(connection, '-');
+                ushort first = (ushort)(split[0][0] - 'a');
+                first <<= 8;
+                first |= (ushort)(split[0][1] - 'a');
+                ushort second = (ushort)(split[1][0] - 'a');
+                second <<= 8;
+                second |= (ushort)(split[1][1] - 'a');
+                return new Connection(first, second);
+            }
+
+            public override string ToString()
+            {
+                char f2 = (char)((First & 0xff) + 'a');
+                char f1 = (char)((First >> 8) + 'a');
+                char s2 = (char)((Second & 0xff) + 'a');
+                char s1 = (char)((Second >> 8) + 'a');
+                return $"{f1}{f2}-{s1}{s2} => {First:X4}-{Second:X4}";
+            }
+
+            public IEnumerable<ushort> All()
+            {
+                return [First, Second];
+            }
+        }
+
+        static string FromCompressed(ushort node)
+        {
+            char f2 = (char)((node & 0xff) + 'a');
+            char f1 = (char)((node >> 8) + 'a');
+            return $"{f1}{f2}";
+        }
+
+        static ulong CompressTriplet(ushort a, ushort b, ushort c)
+        {
+            List<ushort> ushorts = [a, b, c];
+            ushorts.Sort();
+            return (ulong)ushorts[0] << 32 | (ulong)ushorts[1] << 16 | (ulong)ushorts[2];
+        }
+
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool _)
         {
-            return string.Empty;
+            List<Connection> connections = [.. inputs.Select(Connection.Parse)];
+            Dictionary<ushort, List<Connection>> groups = [];
+            foreach (Connection c in connections)
+            {
+                if (!groups.TryGetValue(c.First, out List<Connection> value))
+                {
+                    value = [];
+                    groups[c.First] = value;
+                }
+
+                if (!groups.TryGetValue(c.Second, out List<Connection> value2))
+                {
+                    value2 = [];
+                    groups[c.Second] = value2;
+                }
+
+                groups[c.First].Add(c);
+                groups[c.Second].Add(c);
+            }
+
+            HashSet<ulong> triplets = [];
+            Dictionary<ushort, List<ushort>> optimized = groups.ToDictionary(pair => pair.Key, pair => pair.Value.SelectMany(v => v.All()).Distinct().Where(v => v != pair.Key).ToList());
+
+            foreach (var kvp in optimized)
+            {
+                for (int i = 0; i < kvp.Value.Count - 1; ++i)
+                {
+                    ushort node1 = kvp.Value[i];
+                    for (int j = i + 1; j < kvp.Value.Count; ++j)
+                    {
+                        ushort node2 = kvp.Value[j];
+                        if (optimized[node1].Contains(node2))
+                        {
+                            ulong temp = CompressTriplet(kvp.Key, node1, node2);
+                            if (!triplets.Contains(temp))
+                            {
+                                // Log($"Found: {FromCompressed(kvp.Key)} - {FromCompressed(node1)} - {FromCompressed(node2)}");
+                                triplets.Add(temp);
+                            }
+                        }
+                    }
+                }
+            }
+
+            const ushort tCheck = ('t' - 'a');
+            long tripletCount = 0;
+            foreach (ulong triplet in triplets)
+            {
+                ushort a = (ushort)((triplet & 0xffff) >> 8);
+                ushort b = (ushort)((triplet >> 16 & 0xffff) >> 8);
+                ushort c = (ushort)((triplet >> 32 & 0xffff) >> 8);
+                if ((a == tCheck) || (b == tCheck) || (c == tCheck))
+                {
+                    ++tripletCount;
+                }
+            }
+            return tripletCount.ToString();
         }
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
