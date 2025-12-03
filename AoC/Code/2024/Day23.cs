@@ -12,8 +12,8 @@ namespace AoC._2024
         {
             return part switch
             {
-                // Core.Part.One => "v1",
-                // Core.Part.Two => "v1",
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
                 _ => base.GetSolutionVersion(part),
             };
         }
@@ -63,9 +63,40 @@ td-yn"
                 new Core.TestDatum
                 {
                     TestPart = Core.Part.Two,
-                    Output = "",
+                    Output = "co,de,ka,ta",
                     RawInput =
-@""
+@"kh-tc
+qp-kh
+de-cg
+ka-co
+yn-aq
+qp-ub
+cg-tb
+vc-aq
+tb-ka
+wh-tc
+yn-cg
+kh-ub
+ta-co
+de-co
+tc-td
+tb-wq
+wh-td
+ta-ka
+td-qp
+aq-cg
+wq-ub
+ub-vc
+de-ta
+wq-aq
+wq-vc
+wh-yn
+ka-de
+kh-ta
+co-tc
+wh-qp
+tb-vc
+td-yn"
                 },
             ];
             return testData;
@@ -114,7 +145,57 @@ td-yn"
             return (ulong)ushorts[0] << 32 | (ulong)ushorts[1] << 16 | (ulong)ushorts[2];
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool _)
+        HashSet<int> Checked { get; set; }
+
+        int GetConnectedComputers(Dictionary<ushort, List<ushort>> allComputers, ushort curComputer, HashSet<ushort> curConnectedComputers, ref HashSet<ushort> maxConnectedComputers)
+        {
+            HashSet<ushort> curComputers = [.. allComputers[curComputer]];
+
+            bool isConnected = true;
+            foreach (ushort computer in curConnectedComputers)
+            {
+                isConnected &= allComputers[computer].Contains(curComputer);
+            }
+
+            if (isConnected)
+            {
+                curConnectedComputers.Add(curComputer);
+
+                // prevent checking paths that have already been checked before
+                int hashCode = 0;
+                foreach (ushort u in curConnectedComputers.ToList().Order())
+                {
+                    hashCode = HashCode.Combine(hashCode, u);
+                }
+                if (Checked.Contains(hashCode))
+                {
+                    return 0;
+                }
+                Checked.Add(hashCode);
+
+                int maxConnected = 0;
+                foreach (ushort nextComputer in curComputers)
+                {
+                    if (curConnectedComputers.Contains(nextComputer))
+                    {
+                        continue;
+                    }
+                    int newMax = GetConnectedComputers(allComputers, nextComputer, curConnectedComputers, ref maxConnectedComputers);
+                    if (newMax > maxConnectedComputers.Count)
+                    {
+                        maxConnectedComputers = [.. curConnectedComputers];
+                        maxConnected = newMax;
+                        //Log($"new max: {string.Join(",", maxConnectedComputers.ToList().Order().Select(c => FromCompressed(c)))}");
+                    }
+                }
+                curConnectedComputers.Remove(curComputer);
+                return maxConnected;
+            }
+
+            return curConnectedComputers.Count;
+        }
+
+        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool findLanParty)
         {
             List<Connection> connections = [.. inputs.Select(Connection.Parse)];
             Dictionary<ushort, List<Connection>> groups = [];
@@ -136,43 +217,54 @@ td-yn"
                 groups[c.Second].Add(c);
             }
 
-            HashSet<ulong> triplets = [];
             Dictionary<ushort, List<ushort>> optimized = groups.ToDictionary(pair => pair.Key, pair => pair.Value.SelectMany(v => v.All()).Distinct().Where(v => v != pair.Key).ToList());
 
-            foreach (var kvp in optimized)
+            if (!findLanParty)
             {
-                for (int i = 0; i < kvp.Value.Count - 1; ++i)
+                HashSet<ulong> triplets = [];
+                foreach (var kvp in optimized)
                 {
-                    ushort node1 = kvp.Value[i];
-                    for (int j = i + 1; j < kvp.Value.Count; ++j)
+                    for (int i = 0; i < kvp.Value.Count - 1; ++i)
                     {
-                        ushort node2 = kvp.Value[j];
-                        if (optimized[node1].Contains(node2))
+                        ushort node1 = kvp.Value[i];
+                        for (int j = i + 1; j < kvp.Value.Count; ++j)
                         {
-                            ulong temp = CompressTriplet(kvp.Key, node1, node2);
-                            if (!triplets.Contains(temp))
+                            ushort node2 = kvp.Value[j];
+                            if (optimized[node1].Contains(node2))
                             {
-                                // Log($"Found: {FromCompressed(kvp.Key)} - {FromCompressed(node1)} - {FromCompressed(node2)}");
-                                triplets.Add(temp);
+                                ulong temp = CompressTriplet(kvp.Key, node1, node2);
+                                if (!triplets.Contains(temp))
+                                {
+                                    // Log($"Found: {FromCompressed(kvp.Key)} - {FromCompressed(node1)} - {FromCompressed(node2)}");
+                                    triplets.Add(temp);
+                                }
                             }
                         }
                     }
                 }
+
+                const ushort tCheck = ('t' - 'a');
+                long tripletCount = 0;
+                foreach (ulong triplet in triplets)
+                {
+                    ushort a = (ushort)((triplet & 0xffff) >> 8);
+                    ushort b = (ushort)((triplet >> 16 & 0xffff) >> 8);
+                    ushort c = (ushort)((triplet >> 32 & 0xffff) >> 8);
+                    if ((a == tCheck) || (b == tCheck) || (c == tCheck))
+                    {
+                        ++tripletCount;
+                    }
+                }
+                return tripletCount.ToString();
             }
 
-            const ushort tCheck = ('t' - 'a');
-            long tripletCount = 0;
-            foreach (ulong triplet in triplets)
+            Checked = [];
+            HashSet<ushort> maxConnectedComputers = [];
+            foreach (ushort computer in optimized.Keys)
             {
-                ushort a = (ushort)((triplet & 0xffff) >> 8);
-                ushort b = (ushort)((triplet >> 16 & 0xffff) >> 8);
-                ushort c = (ushort)((triplet >> 32 & 0xffff) >> 8);
-                if ((a == tCheck) || (b == tCheck) || (c == tCheck))
-                {
-                    ++tripletCount;
-                }
+                GetConnectedComputers(optimized, computer, [], ref maxConnectedComputers);
             }
-            return tripletCount.ToString();
+            return string.Join(",", maxConnectedComputers.ToList().Order().Select(c => FromCompressed(c)));
         }
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
