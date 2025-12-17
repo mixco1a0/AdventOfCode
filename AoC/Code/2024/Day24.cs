@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AoC.Util;
 
 namespace AoC._2024
 {
@@ -127,6 +128,11 @@ tnw OR pbm -> gnj"
 
         private record Gate(uint InputA, uint InputB, uint Output, Op Op)
         {
+            public UInt128 GetId()
+            {
+                return (UInt128)InputA << 72 | (UInt128)InputB << 40 | (UInt128)Output << 8 | (ulong)Op;
+            }
+
             public static Gate Parse(string input)
             {
                 string[] split = Util.String.Split(input, " ->");
@@ -147,6 +153,11 @@ tnw OR pbm -> gnj"
                         break;
                 }
                 return new(inputA, inputB, output, op);
+            }
+
+            public override string ToString()
+            {
+                return $"{ConvertName(InputA)} {Op} {ConvertName(InputB)} -> {ConvertName(Output)}";
             }
         }
 
@@ -177,13 +188,12 @@ tnw OR pbm -> gnj"
             }
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool _)
+        private Dictionary<uint, bool> GenerateZ(Dictionary<uint, bool> memory, List<Gate> gates)
         {
-            Parse(inputs, out Dictionary<uint, bool> memory, out List<Gate> gates);
-
-            while (gates.Count > 0)
+            List<Gate> temp = [.. gates];
+            while (temp.Count > 0)
             {
-                List<Gate> pending = [.. gates];
+                List<Gate> pending = [.. temp];
                 foreach (Gate gate in pending)
                 {
                     if (memory.TryGetValue(gate.InputA, out bool inputA) && memory.TryGetValue(gate.InputB, out bool inputB))
@@ -201,24 +211,163 @@ tnw OR pbm -> gnj"
                                 break;
                         }
                         // Log($"{ConvertName(gate.InputA)} {gate.Op} {ConvertName(gate.InputB)} -> {gate.Output} = {memory[gate.Output]}");
-                        gates.Remove(gate);
+                        temp.Remove(gate);
                         break;
                     }
                 }
             }
+            return memory;
+        }
 
-            List<bool> zBits = [.. memory.Where(m => (char)((m.Key & 0xff0000) >> 16) == 'z').OrderByDescending(m => m.Key).Select(m => m.Value)];
-            ulong zValue = (ulong)(zBits[0] ? 1 : 0);
-            foreach (bool zBit in zBits.Skip(1))
+        private ulong GetNumber(Dictionary<uint, bool> memory, char variable, out int bitCount)
+        {
+            List<bool> bits = [.. memory.Where(m => (char)((m.Key & 0xff0000) >> 16) == variable).OrderByDescending(m => m.Key).Select(m => m.Value)];
+            bitCount = 1;
+            ulong value = (ulong)(bits[0] ? 1 : 0);
+            foreach (bool bit in bits.Skip(1))
             {
-                zValue <<= 1;
-                if (zBit)
+                ++bitCount;
+                value <<= 1;
+                if (bit)
                 {
-                    zValue |= 1;
+                    value |= 1;
+                }
+            }
+            return value;
+        }
+
+        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool fixGates)
+        {
+            Parse(inputs, out Dictionary<uint, bool> initialMemory, out List<Gate> initialGates);
+
+            Dictionary<uint, bool> memory = GenerateZ(initialMemory, initialGates);
+            ulong zValue = GetNumber(memory, 'z', out int bitCount);
+            if (!fixGates)
+            {
+                return zValue.ToString();
+            }
+
+            ulong xValue = GetNumber(memory, 'x', out _);
+            ulong yValue = GetNumber(memory, 'y', out _);
+            
+            HashSet<UInt128> safeGateIds = [];
+            List<Gate> safeGates = [];
+            Dictionary<uint, bool> safeMemory = [];
+
+            ulong zActual = xValue + yValue;
+            for (int i = 0; i < bitCount; ++i)
+            {
+                // get current z node
+                string zNode = $"z{i:D2}";
+                uint zNodeId = ConvertName(zNode);
+
+                // work backwords to find entire
+                HashSet<uint> usedNodes = [];
+                List<Gate> curNodeGates = [];
+                Queue<uint> nodesToProcess = [];
+                nodesToProcess.Enqueue(zNodeId);
+                while (nodesToProcess.Count > 0)
+                {
+                    uint curNodeId = nodesToProcess.Dequeue();
+                    if (usedNodes.Contains(curNodeId))
+                    {
+                        continue;
+                    }
+                    usedNodes.Add(curNodeId);
+
+                    foreach (Gate g in initialGates.Where(g => g.Output == curNodeId && !safeGateIds.Contains(g.GetId())))
+                    {
+                        curNodeGates.Add(g);
+                        // Log($"Adding {g}");
+                    }
+
+                    foreach (uint nodeId in initialGates.Where(g => g.Output == curNodeId && !safeGateIds.Contains(g.GetId())).SelectMany<Gate, uint>(g => [g.InputA, g.InputB]))
+                    {
+                        nodesToProcess.Enqueue(nodeId);
+                        // Log($"Process {ConvertName(nodeId)}");
+                    }
+                }
+
+                ulong flag = (ulong)(1 << i);
+                ulong x = xValue & flag;
+                ulong y = yValue & flag;
+                ulong z = zValue & flag;
+                ulong _z = zActual & flag;
+                
+                Log($"Processing {zNode}...");
+
+                if (z == _z)
+                {
+                    Log($"...safe");
+                    // loop through all nodes used for this and add them to the safe gates
+                    foreach (Gate g in curNodeGates)
+                    {
+                        Log($"......{g}");
+                        safeGateIds.Add(g.GetId());
+                        safeGates.Add(g);
+                    }
+
+                    foreach (uint node in usedNodes)
+                    {
+                        safeMemory[node] = memory[node];
+                    }
+                }
+                else
+                {
+                    Log($"...unsafe");
+                    // loop through all nodes used for this and add them to the safe gates
+                    foreach (Gate g in curNodeGates)
+                    {
+                        string inputA = ConvertName(g.InputA);
+                        if (safeMemory.TryGetValue(g.InputA, out bool valueA))
+                        {
+                            inputA = valueA ? "1" : "0";
+                        }
+                        else
+                        {
+                            char letter = (char)((g.InputA & 0xff0000) >> 16);
+                            if (letter == 'x' || letter == 'y')
+                            {
+                                inputA = memory[g.InputA] ? "1" : "0";
+                            }
+                        }
+
+                        string inputB= ConvertName(g.InputB);
+                        if (safeMemory.TryGetValue(g.InputB, out bool valueB))
+                        {
+                            inputB = valueB ? "1" : "0";
+                        }
+                        else
+                        {
+                            char letter = (char)((g.InputB & 0xff0000) >> 16);
+                            if (letter == 'x' || letter == 'y')
+                            {
+                                inputB = memory[g.InputB] ? "1" : "0";
+                            }
+                        }
+
+                        Log($"......{inputA} {g.Op} {inputB} -> {ConvertName(g.Output)} | {g}");
+                        // safeGateIds.Add(g.GetId());
+                        // safeGates.Add(g);
+                    }
+
+                    // Log("."); Log("..");
+                    // Log($"Node {zNode} is wrong");
+
+                    // foreach (Gate gate in curNodeGates)
+                    // {
+                    //     Log($"{ConvertName(gate.InputA)} {gate.Op} {ConvertName(gate.InputB)} -> {ConvertName(gate.Output)} = {memory[gate.Output]}");
+                    // }
                 }
             }
 
-            return zValue.ToString();
+            Log($"  0x{xValue:B}");
+            Log($"+ 0x{yValue:B}");
+            Log($"----{new string('-', bitCount)}--");
+            Log($" 0x{(xValue + yValue):B}");
+            Log($"----{new string('-', bitCount)}--");
+            Log($" 0x{zValue:B}");
+            return "";
         }
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
