@@ -303,7 +303,7 @@ tnw OR pbm -> gnj"
 
         private bool RunBitTests(Dictionary<uint, bool> initialMemory, List<Gate> gates, int bit, int maxBit)
         {
-            ulong allBits = (ulong)((1 << bit) - 1);
+            ulong allBits = ((ulong)1 << bit) - 1;
 
             // need to run through a suite of tests to make sure things are actually summed correctly
             List<Base.KeyVal<ulong, ulong>> xyValues =
@@ -314,28 +314,29 @@ tnw OR pbm -> gnj"
                 new(allBits, allBits)
             ];
 
+            Dictionary<uint, bool> memory = [];
             foreach (var pair in xyValues)
             {
                 ulong x = pair.First;
                 ulong y = pair.Last;
                 ulong z = x + y;
 
-                // fill int the dynamic memory
-                Dictionary<uint, bool> memory = [];
-                for (int i = 0; i < bit; ++i)
+                // fill in the dynamic memory
+                memory = [];
+                for (int i = 0; i <= bit; ++i)
                 {
                     string xNode = $"x{i:D2}";
                     uint xNodeId = ConvertName(xNode);
                     string yNode = $"y{i:D2}";
                     uint yNodeId = ConvertName(yNode);
 
-                    ulong flag = (ulong)(1 << i);
+                    ulong flag = (ulong)1 << i;
                     memory[xNodeId] = (x & flag) != 0;
                     memory[yNodeId] = (y & flag) != 0;
                 }
 
                 // pad the rest of the memory as empty
-                for (int i = bit; i < (maxBit - 1); ++i)
+                for (int i = bit + 1; i < (maxBit - 1); ++i)
                 {
                     string xNode = $"x{i:D2}";
                     uint xNodeId = ConvertName(xNode);
@@ -354,10 +355,22 @@ tnw OR pbm -> gnj"
 
             }
 
-            // if (!RunBitTest(initialMemory, gates, bit))
-            // {
-            //     return false;
-            // }
+            
+            memory = [];
+            for (int i = 0; i < (maxBit - 1); ++i)
+            {
+                string xNode = $"x{i:D2}";
+                uint xNodeId = ConvertName(xNode);
+                string yNode = $"y{i:D2}";
+                uint yNodeId = ConvertName(yNode);
+                memory[xNodeId] = i <= bit && initialMemory[xNodeId];
+                memory[yNodeId] = i <= bit && initialMemory[yNodeId];
+            }
+
+            if (!RunBitTest(memory, gates, bit))
+            {
+                return false;
+            }
 
             return true;
         }
@@ -373,26 +386,11 @@ tnw OR pbm -> gnj"
             }
 
             // make sure the expected values were correct
-            ulong zValue = GetNumber(memory, 'z', out int bitCount);
-            ulong xValue = GetNumber(memory, 'x', out _);
-            ulong yValue = GetNumber(memory, 'y', out _);
+            ulong zValue = GetNumber(memory, 'z', out int bitCount) & (ulong)((1 << (maxBit + 2)) - 1);
+            ulong xValue = GetNumber(memory, 'x', out _) & (ulong)((1 << (maxBit + 1)) - 1);
+            ulong yValue = GetNumber(memory, 'y', out _) & (ulong)((1 << (maxBit + 1)) - 1);
             ulong zActual = xValue + yValue;
-
-            for (int i = 0; i <= maxBit; ++i)
-            {
-                ulong flag = (ulong)(1 << i);
-                ulong x = xValue & flag;
-                ulong y = yValue & flag;
-                ulong z = zValue & flag;
-                ulong _z = zActual & flag;
-
-                if (z != _z)
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return zValue == zActual;
         }
 
         private void TryAndFix(Dictionary<uint, bool> initialMemory, ref List<Gate> gates, HashSet<UInt128> safeGateIds, int bit, int maxBit, ref HashSet<uint> swapped)
@@ -440,6 +438,7 @@ tnw OR pbm -> gnj"
                     }
 
                     // are the nodes actually functional now?
+                    // TODO: @index 36 -> why is this failing on the sample tests?
                     if (RunBitTests(initialMemory, tempGates, bit + 1, maxBit))
                     {
                         swapped.Add(curNodeAsIs.Output);
@@ -450,7 +449,7 @@ tnw OR pbm -> gnj"
                         Log($"     {nextNodeAsIs} | {newNext}");
 
                         gates = [.. tempGates];
-                        break;
+                        return;
                     }
                 }
             }
@@ -468,6 +467,24 @@ tnw OR pbm -> gnj"
             }
 
             List<Gate> workingGates = [.. initialGates];
+
+            {
+                // Dictionary<uint, bool> tempMem = [];
+                // tempMem[ConvertName("x00")] = true;
+                // tempMem[ConvertName("x01")] = true;
+                // tempMem[ConvertName("x02")] = true;
+                // tempMem[ConvertName("y00")] = true;
+                // tempMem[ConvertName("y01")] = false;
+                // tempMem[ConvertName("y02")] = false;
+
+                // for (int i = 3; i < maxBit; ++i)
+                // {
+                //     tempMem[ConvertName($"x{i:D2}")] = i > 3;
+                //     tempMem[ConvertName($"y{i:D2}")] = i > 3;
+                // }
+
+                // RunBitTest(tempMem, workingGates, 2);
+            }
 
             ulong xValue = GetNumber(memory, 'x', out _);
             ulong yValue = GetNumber(memory, 'y', out _);
@@ -533,6 +550,8 @@ tnw OR pbm -> gnj"
                     }
                     TryAndFix(initialMemory, ref workingGates, safeGateIds, bit, maxBit, ref swapped);
                     memory = GenerateZ(initialMemory, workingGates);
+
+                    Log($"Current Fixes: {string.Join(',', swapped.Select(output => ConvertName(output)).Order())}");
                 }
             }
 
@@ -554,5 +573,6 @@ tnw OR pbm -> gnj"
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
             => SharedSolution(inputs, variables, true);
+            // fbq,pbv,qff,qnw,qqp,z16,z23,z36
     }
 }
