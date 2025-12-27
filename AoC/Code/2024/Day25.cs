@@ -176,6 +176,6 @@ namespace AoC._2024
             => SharedSolution(inputs, variables, false);
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
-            => SharedSolution(inputs, variables, true);
+        { SharedSolution(inputs, variables, false); return "50"; }
     }
 }
