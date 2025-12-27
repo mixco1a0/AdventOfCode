@@ -161,7 +161,7 @@ tnw OR pbm -> gnj"
             }
         }
 
-        private void Parse(List<string> inputs, out Dictionary<uint, bool> memory, out List<Gate> gates)
+        private static void Parse(List<string> inputs, out Dictionary<uint, bool> memory, out List<Gate> gates)
         {
             memory = [];
             gates = [];
@@ -188,7 +188,7 @@ tnw OR pbm -> gnj"
             }
         }
 
-        private Dictionary<uint, bool> GenerateZ(Dictionary<uint, bool> memory, List<Gate> gates)
+        private static Dictionary<uint, bool> GenerateZ(Dictionary<uint, bool> memory, List<Gate> gates)
         {
             List<Gate> temp = [.. gates];
             while (temp.Count > 0)
@@ -211,7 +211,6 @@ tnw OR pbm -> gnj"
                                 memory[gate.Output] = inputA != inputB;
                                 break;
                         }
-                        // Log($"{ConvertName(gate.InputA)} {gate.Op} {ConvertName(gate.InputB)} -> {gate.Output} = {memory[gate.Output]}");
                         temp.Remove(gate);
                         break;
                     }
@@ -226,7 +225,7 @@ tnw OR pbm -> gnj"
             return memory;
         }
 
-        private ulong GetNumber(Dictionary<uint, bool> memory, char variable, out int maxBit)
+        private static ulong GetNumber(Dictionary<uint, bool> memory, char variable, out int maxBit)
         {
             List<bool> bits = [.. memory.Where(m => (char)((m.Key & 0xff0000) >> 16) == variable).OrderByDescending(m => m.Key).Select(m => m.Value)];
             maxBit = 1;
@@ -243,7 +242,7 @@ tnw OR pbm -> gnj"
             return value;
         }
 
-        private void GetNodeInformation(List<Gate> gates, HashSet<UInt128> safeGateIds, uint zNodeId, out HashSet<uint> usedNodes, out List<Gate> curNodeGates)
+        private static void GetNodeInformation(List<Gate> gates, HashSet<UInt128> safeGateIds, uint zNodeId, out HashSet<uint> usedNodes, out List<Gate> curNodeGates)
         {
             usedNodes = [];
             curNodeGates = [];
@@ -270,7 +269,7 @@ tnw OR pbm -> gnj"
             }
         }
 
-        private bool NodeHasCorrectGates(int curBit, int maxBit, List<Gate> curNodeGates)
+        private static bool NodeHasCorrectGates(int curBit, int maxBit, List<Gate> curNodeGates)
         {
             int xorCount = curNodeGates.Count(g => g.Op == Op.Xor);
             int andCount = curNodeGates.Count(g => g.Op == Op.And);
@@ -303,7 +302,7 @@ tnw OR pbm -> gnj"
 
         private bool RunBitTests(Dictionary<uint, bool> initialMemory, List<Gate> gates, int bit, int maxBit)
         {
-            ulong allBits = ((ulong)1 << bit) - 1;
+            ulong allBits = ((ulong)1 << bit) - (ulong)1;
 
             // need to run through a suite of tests to make sure things are actually summed correctly
             List<Base.KeyVal<ulong, ulong>> xyValues =
@@ -352,9 +351,7 @@ tnw OR pbm -> gnj"
                 {
                     return false;
                 }
-
             }
-
             
             memory = [];
             for (int i = 0; i < (maxBit - 1); ++i)
@@ -375,7 +372,7 @@ tnw OR pbm -> gnj"
             return true;
         }
 
-        private bool RunBitTest(Dictionary<uint, bool> initialMemory, List<Gate> gates, int maxBit)
+        private static bool RunBitTest(Dictionary<uint, bool> initialMemory, List<Gate> gates, int maxBit)
         {
             Dictionary<uint, bool> memory = GenerateZ(initialMemory, gates);
 
@@ -386,9 +383,9 @@ tnw OR pbm -> gnj"
             }
 
             // make sure the expected values were correct
-            ulong zValue = GetNumber(memory, 'z', out int bitCount) & (ulong)((1 << (maxBit + 2)) - 1);
-            ulong xValue = GetNumber(memory, 'x', out _) & (ulong)((1 << (maxBit + 1)) - 1);
-            ulong yValue = GetNumber(memory, 'y', out _) & (ulong)((1 << (maxBit + 1)) - 1);
+            ulong zValue = GetNumber(memory, 'z', out int bitCount) & ((ulong)1 << (maxBit + 2)) - 1;
+            ulong xValue = GetNumber(memory, 'x', out _) & ((ulong)1 << (maxBit + 1)) - 1;
+            ulong yValue = GetNumber(memory, 'y', out _) & ((ulong)1 << (maxBit + 1)) - 1;
             ulong zActual = xValue + yValue;
             return zValue == zActual;
         }
@@ -444,9 +441,9 @@ tnw OR pbm -> gnj"
                         swapped.Add(curNodeAsIs.Output);
                         swapped.Add(nextNodeAsIs.Output);
 
-                        Log($"Swapping...");
-                        Log($"     {curNodeAsIs} | {newCur}");
-                        Log($"     {nextNodeAsIs} | {newNext}");
+                        // Log($"Swapping...");
+                        // Log($"     {curNodeAsIs} | {newCur}");
+                        // Log($"     {nextNodeAsIs} | {newNext}");
 
                         gates = [.. tempGates];
                         return;
@@ -467,25 +464,6 @@ tnw OR pbm -> gnj"
             }
 
             List<Gate> workingGates = [.. initialGates];
-
-            {
-                // Dictionary<uint, bool> tempMem = [];
-                // tempMem[ConvertName("x00")] = true;
-                // tempMem[ConvertName("x01")] = true;
-                // tempMem[ConvertName("x02")] = true;
-                // tempMem[ConvertName("y00")] = true;
-                // tempMem[ConvertName("y01")] = false;
-                // tempMem[ConvertName("y02")] = false;
-
-                // for (int i = 3; i < maxBit; ++i)
-                // {
-                //     tempMem[ConvertName($"x{i:D2}")] = i > 3;
-                //     tempMem[ConvertName($"y{i:D2}")] = i > 3;
-                // }
-
-                // RunBitTest(tempMem, workingGates, 2);
-            }
-
             ulong xValue = GetNumber(memory, 'x', out _);
             ulong yValue = GetNumber(memory, 'y', out _);
 
@@ -514,15 +492,15 @@ tnw OR pbm -> gnj"
                 ulong z = zValue & flag;
                 ulong _z = zActual & flag;
 
-                Log($"Processing {zNode}...");
+                // Log($"Processing {zNode}...");
 
                 if (curIndexSafe)
                 {
-                    Log($"...safe");
+                    // Log($"...safe");
                     // loop through all nodes used for this and add them to the safe gates
                     foreach (Gate g in curNodeGates)
                     {
-                        Log($"......{g}");
+                        // Log($"......{g}");
                         safeGateIds.Add(g.GetId());
                         safeGates.Add(g);
                     }
@@ -530,40 +508,39 @@ tnw OR pbm -> gnj"
                     foreach (uint node in usedNodes)
                     {
                         safeMemory[node] = memory[node];
-                        Log($".........{ConvertName(node)} = {memory[node]}");
+                        // Log($".........{ConvertName(node)} = {memory[node]}");
                     }
 
                     ++bit;
                 }
                 else
                 {
-                    Log($"...unsafe");
-                    // loop through all nodes used for this and add them to the safe gates
-                    foreach (Gate g in curNodeGates)
-                    {
-                        Log($"......{g}");
-                    }
+                    // Log($"...unsafe");
+                    // foreach (Gate g in curNodeGates)
+                    // {
+                    //     Log($"......{g}");
+                    // }
+                    // foreach (uint node in usedNodes)
+                    // {
+                    //     Log($".........{ConvertName(node)} = {memory[node]}");
+                    // }
 
-                    foreach (uint node in usedNodes)
-                    {
-                        Log($".........{ConvertName(node)} = {memory[node]}");
-                    }
                     TryAndFix(initialMemory, ref workingGates, safeGateIds, bit, maxBit, ref swapped);
                     memory = GenerateZ(initialMemory, workingGates);
 
-                    Log($"Current Fixes: {string.Join(',', swapped.Select(output => ConvertName(output)).Order())}");
+                    // Log($"Current Fixes: {string.Join(',', swapped.Select(output => ConvertName(output)).Order())}");
                 }
             }
 
-            Log($"  0x{xValue:B}");
-            Log($"+ 0x{yValue:B}");
-            Log($"----{new string('-', maxBit)}--");
-            Log($" 0x{(xValue + yValue):B}");
-            Log($"----{new string('-', maxBit)}--");
+            // Log($"  0x{xValue:B}");
+            // Log($"+ 0x{yValue:B}");
+            // Log($"----{new string('-', maxBit)}--");
+            // Log($" 0x{(xValue + yValue):B}");
+            // Log($"----{new string('-', maxBit)}--");
 
-            safeMemory = GenerateZ(initialMemory, workingGates);
-            ulong zFinalValue = GetNumber(memory, 'z', out int _);
-            Log($" 0x{zFinalValue:B}");
+            // safeMemory = GenerateZ(initialMemory, workingGates);
+            // ulong zFinalValue = GetNumber(memory, 'z', out int _);
+            // Log($" 0x{zFinalValue:B}");
 
             return string.Join(',', swapped.Select(output => ConvertName(output)).Order());
         }
