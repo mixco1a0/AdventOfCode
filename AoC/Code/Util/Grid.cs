@@ -1,65 +1,208 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace AoC.Util
 {
+    #region Grid2
+    namespace Grid2
+    {
+        public enum Dir { North, NorthEast, East, SouthEast, South, SouthWest, West, NorthWest, None }
+
+        public static class Map
+        {
+            /// <summary>
+            /// NorthWest (-1, -1) | North     ( 0, -1) | NorthEast ( 1, -1)
+            /// West      (-1,  0) | None      ( 0,  0) | East      ( 1,  0)
+            /// SouthWest (-1,  1) | South     ( 0,  1) | SouthEast ( 1,  1)
+            /// </summary>
+            public static readonly Dictionary<Dir, Base.Vec2> Neighbor = new()
+            {
+                { Dir.North,        new Base.Vec2( 0, -1) },
+                { Dir.NorthEast,    new Base.Vec2( 1, -1) },
+                { Dir.East,         new Base.Vec2( 1,  0) },
+                { Dir.SouthEast,    new Base.Vec2( 1,  1) },
+                { Dir.South,        new Base.Vec2( 0,  1) },
+                { Dir.SouthWest,    new Base.Vec2(-1,  1) },
+                { Dir.West,         new Base.Vec2(-1,  0) },
+                { Dir.NorthWest,    new Base.Vec2(-1, -1) },
+                { Dir.None,         new Base.Vec2( 0,  0) },
+            };
+
+            public static readonly Dictionary<Dir, char> Arrow = new()
+            {
+                { Dir.North,        '↑' },
+                { Dir.NorthEast,    '↗' },
+                { Dir.East,         '→' },
+                { Dir.SouthEast,    '↘' },
+                { Dir.South,        '↓' },
+                { Dir.SouthWest,    '↙' },
+                { Dir.West,         '←' },
+                { Dir.NorthWest,    '↖' },
+                { Dir.None,         '.' },
+            };
+
+            public static readonly Dictionary<Dir, char> SimpleArrow = new()
+            {
+                { Dir.North,        '^' },
+                // { Dir.NorthEast,    '.' },
+                { Dir.East,         '>' },
+                // { Dir.SouthEast,    '.' },
+                { Dir.South,        'v' },
+                // { Dir.SouthWest,    '.' },
+                { Dir.West,         '<' },
+                // { Dir.NorthWest,    '.' },
+                // { Dir.None,         '.' },
+            };
+
+            public static readonly Dictionary<char, Dir> SimpleArrowFlipped = new()
+            {
+                { '^', Dir.North},
+                // { '.', Dir.NorthEast },
+                { '>', Dir.East },
+                // { '.', Dir.SouthEast },
+                { 'v', Dir.South },
+                // { '.', Dir.SouthWest },
+                { '<', Dir.West  },
+                // { '.', Dir.NorthWest },
+                // { '.', Dir.None },
+            };
+
+            public static readonly Dictionary<Dir, Dir> Opposite = new()
+            {
+                { Dir.North,        Dir.South     },
+                { Dir.NorthEast,    Dir.SouthWest },
+                { Dir.East,         Dir.West      },
+                { Dir.SouthEast,    Dir.NorthWest },
+                { Dir.South,        Dir.North     },
+                { Dir.SouthWest,    Dir.NorthEast },
+                { Dir.West,         Dir.East      },
+                { Dir.NorthWest,    Dir.SouthEast },
+                { Dir.None,         Dir.None      },
+            };
+
+            public static readonly Dictionary<Dir, Dir> RotateCW = new()
+            {
+                { Dir.North,        Dir.East      },
+                { Dir.NorthEast,    Dir.SouthEast },
+                { Dir.East,         Dir.South     },
+                { Dir.SouthEast,    Dir.SouthWest },
+                { Dir.South,        Dir.West      },
+                { Dir.SouthWest,    Dir.NorthWest },
+                { Dir.West,         Dir.North     },
+                { Dir.NorthWest,    Dir.NorthEast },
+                { Dir.None,         Dir.None      },
+            };
+
+            public static readonly Dictionary<Dir, Dir> RotateCCW = new()
+            {
+                { Dir.North,        Dir.West      },
+                { Dir.NorthEast,    Dir.NorthWest },
+                { Dir.East,         Dir.North     },
+                { Dir.SouthEast,    Dir.NorthEast },
+                { Dir.South,        Dir.East      },
+                { Dir.SouthWest,    Dir.SouthEast },
+                { Dir.West,         Dir.South     },
+                { Dir.NorthWest,    Dir.SouthWest },
+                { Dir.None,         Dir.None      },
+            };
+        };
+
+        public static class Iter
+        {
+            public static readonly Dir[] All =
+            [
+                Dir.North,
+                Dir.NorthEast,
+                Dir.East,
+                Dir.SouthEast,
+                Dir.South,
+                Dir.SouthWest,
+                Dir.West,
+                Dir.NorthWest
+            ];
+
+            public static readonly Dir[] Cardinal =
+            [
+                Dir.North,
+                Dir.East,
+                Dir.South,
+                Dir.West
+            ];
+
+            public static readonly Dir[] Ordinal =
+            [
+                Dir.NorthEast,
+                Dir.SouthEast,
+                Dir.SouthWest,
+                Dir.NorthWest
+            ];
+        };
+
+        public class Scanner<T> : IEnumerable
+        {
+            protected readonly Base.Grid2<T> m_grid;
+            protected readonly Base.Vec2 m_origin;
+            protected readonly int m_maxScan;
+
+            protected Scanner()
+            {
+                m_grid = default;
+                m_origin = default;
+                m_maxScan = default;
+            }
+
+            public Scanner(Base.Grid2<T> grid, Base.Vec2 origin, int maxScan)
+            {
+                m_grid = grid;
+                m_origin = origin;
+                m_maxScan = maxScan;
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+
+            IEnumerator<Base.Vec2> GetEnumerator()
+            {
+                yield return m_origin;
+
+                for (int curMax = 1; curMax <= m_maxScan; ++curMax)
+                {
+                    foreach (Dir dir in Iter.Cardinal)
+                    {
+                        // current max manhatten
+                        Base.Vec2 next = m_origin + Map.Neighbor[dir] * curMax;
+                        if (m_grid.Contains(next))
+                        {
+                            yield return next;
+                        }
+
+                        // iterate over all of the other max manhatten distances
+                        Dir rot = Map.RotateCW[dir];
+                        for (int rotDist = 1; curMax - rotDist > 0; ++rotDist)
+                        {
+                            int dirDist = curMax - rotDist;
+                            Base.Vec2 dirVec2 = Map.Neighbor[dir] * dirDist;
+                            Base.Vec2 rotVec2 = Map.Neighbor[rot] * rotDist;
+                            next = m_origin + dirVec2 + rotVec2;
+                            if (m_grid.Contains(next))
+                            {
+                                yield return next;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    #endregion
+
     public static class Grid
     {
-        #region Direction 2D
-        public enum Direction2D { North, NorthEast, East, SouthEast, South, SouthWest, West, NorthWest }
-
-        public static readonly Dictionary<Direction2D, char> DirectionArrowMap = new()
-        {
-            { Direction2D.North,        '↑' },
-            { Direction2D.NorthEast,    '↗' },
-            { Direction2D.East,         '→' },
-            { Direction2D.SouthEast,    '↘' },
-            { Direction2D.South,        '↓' },
-            { Direction2D.SouthWest,    '↙' },
-            { Direction2D.West,         '←' },
-            { Direction2D.NorthWest,    '↖' },
-        };
-
-        /// <summary>
-        /// NorthWest (-1, -1) | North     ( 0, -1) | NorthEast ( 1, -1)
-        /// West      (-1,  0) |           ( 0,  0) | East      ( 1,  0)
-        /// SouthWest (-1,  1) | South     ( 0,  1) | SouthEast ( 1,  1)
-        /// </summary>
-        public static readonly Dictionary<Direction2D, Base.Vec2> DirectionVec2DMap = new()
-        {
-            { Direction2D.North,        new Base.Vec2( 0, -1) },
-            { Direction2D.NorthEast,    new Base.Vec2( 1, -1) },
-            { Direction2D.East,         new Base.Vec2( 1,  0) },
-            { Direction2D.SouthEast,    new Base.Vec2( 1,  1) },
-            { Direction2D.South,        new Base.Vec2( 0,  1) },
-            { Direction2D.SouthWest,    new Base.Vec2(-1,  1) },
-            { Direction2D.West,         new Base.Vec2(-1,  0) },
-            { Direction2D.NorthWest,    new Base.Vec2(-1, -1) },
-        };
-
-        public static readonly Direction2D[] IterOrth = 
-        [
-            Direction2D.North,
-            Direction2D.East,
-            Direction2D.South,
-            Direction2D.West
-        ];
-
-        public static readonly Direction2D[] IterAll = 
-        [
-            Direction2D.North,
-            Direction2D.NorthEast,
-            Direction2D.East,
-            Direction2D.SouthEast,
-            Direction2D.South,
-            Direction2D.SouthWest,
-            Direction2D.West,
-            Direction2D.NorthWest
-        ];
-        #endregion
-
         #region Print 2D
         public static void Print2D(Core.Log.ELevel level, List<string> grid)
         {

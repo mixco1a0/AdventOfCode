@@ -8,21 +8,6 @@ using System.Text.RegularExpressions;
 namespace AoC.Core
 {
 
-    public static class TempLog
-    {
-        public static Action<string> WriteLine { get; set; }
-        public static Action<string> WriteFile { get; set; }
-        static TempLog()
-        {
-            Reset();
-        }
-        public static void Reset()
-        {
-            WriteLine = (_) => { };
-            WriteFile = (_) => { };
-        }
-    }
-
     public static class Log
     {
         private static readonly int STD_OUTPUT_HANDLE = -11;
@@ -62,7 +47,7 @@ namespace AoC.Core
         public static bool IncludeLogLevel { get; set; }
         public static ELevel LogLevel { get; set; }
         public static bool Enabled { get; set; }
-        public static char ColorMarker => '^';
+        public static char ColorMarker => '$';
         private static string ColorRegex => string.Concat(@"(\", ColorMarker, @"[^\", ColorMarker, @"]*\", ColorMarker, ")");
 
         public static Color Positive => Color.MediumSeaGreen;

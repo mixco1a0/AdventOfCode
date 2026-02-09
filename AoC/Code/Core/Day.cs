@@ -161,7 +161,10 @@ namespace AoC.Core
         private void RunInternal(Part part, IEnumerable<string> problemInput, IEnumerable<string> problemOutput)
         {
             Log(Core.Log.ELevel.Info, "");
-            Core.Log.WriteLine(Core.Log.ELevel.Info, $"Running {Year}.{DayName}.Part{part}");
+            if (UseLogs)
+            {
+                Core.Log.WriteLine(Core.Log.ELevel.Info, $"Running {Year}.{DayName}.Part{part}");
+            }
 
             // get test data if there is any
             IEnumerable<TestDatum> partSpecificTestData = TestData[DayName].Where(datum => datum.TestPart == part);
@@ -188,14 +191,14 @@ namespace AoC.Core
 
         private double RunTimedInternal(RunType runType, Part part, List<string> inputs, string expectedOuput, Dictionary<string, string> variables)
         {
-            TempLog.WriteLine = Log;
-            TempLog.WriteFile = LogFile;
+            Util.Log.WriteLine = Log;
+            Util.Log.WriteFile = LogFile;
             LogFiller();
 
             TimeWaste = 0.0f;
             RunTimedPartInternal(runType, part, inputs, expectedOuput, variables, out Util.Timer timer);
 
-            TempLog.Reset();
+            Util.Log.Reset();
             Log(Core.Log.ELevel.Info, $"{timer.Print()}");
             return timer.GetElapsedMs();
         }
