@@ -39,7 +39,6 @@
             ]
         },
 
-
         {
             "label": "publish",
             "command": "dotnet",
@@ -52,6 +51,7 @@
             ],
             "problemMatcher": "$msCompile"
         },
+        
         {
             "label": "watch",
             "command": "dotnet",
