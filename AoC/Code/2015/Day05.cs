@@ -10,41 +10,40 @@ namespace AoC._2015
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "2",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "2",
+                    RawInput =
 @"ugknbfddgicrmopn
 aaa
 jchzalrnumimnmhp
 haegwjzuvuyypxyu
 dvszwmarrgswjxmb"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "2",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "2",
+                    RawInput =
 @"qjhvhtzxzqqjkmpb
 xxyxx
 uurcxstgmygtbstg
 ieodomkazucvgmuy"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -55,7 +54,7 @@ ieodomkazucvgmuy"
                 return false;
             }
 
-            if (input.Length - input.Replace("a", "").Replace("e", "").Replace("i", "").Replace("o", "").Replace("u", "").Count() < 3)
+            if (input.Length - input.Replace("a", "").Replace("e", "").Replace("i", "").Replace("o", "").Replace("u", "").Length < 3)
             {
                 return false;
             }
@@ -97,7 +96,7 @@ ieodomkazucvgmuy"
             return false;
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, Func<string, bool> validFunc)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, Func<string, bool> validFunc)
         {
             int count = 0;
             foreach (string input in inputs)
