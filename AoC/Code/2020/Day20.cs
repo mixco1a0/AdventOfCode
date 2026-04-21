@@ -465,7 +465,7 @@ Tile 3079:
                 Right = temp;
 
                 List<string> raw = Raw;
-                Util.Grid.Rotate2D(true, ref raw);
+                Util.Grid2.Rotate(true, ref raw);
                 Raw = raw;
             }
 
@@ -479,7 +479,7 @@ Tile 3079:
                 Left = temp;
 
                 List<string> raw = Raw;
-                Util.Grid.Rotate2D(false, ref raw);
+                Util.Grid2.Rotate(false, ref raw);
                 Raw = raw;
             }
 
@@ -494,7 +494,7 @@ Tile 3079:
                 Left = LeftR;
 
                 List<string> raw = Raw;
-                Util.Grid.Flip2D(false, ref raw);
+                Util.Grid2.Flip(false, ref raw);
                 Raw = raw;
             }
 
@@ -509,7 +509,7 @@ Tile 3079:
                 Bottom = BottomR;
 
                 List<string> raw = Raw;
-                Util.Grid.Flip2D(true, ref raw);
+                Util.Grid2.Flip(true, ref raw);
             }
 
             public List<string> Prune()
@@ -741,11 +741,11 @@ Tile 3079:
                 }
 
                 // DebugWriteLine($"[{checkCount}] No monsters found, rotating image");
-                Util.Grid.Rotate2D(true, ref grid);
+                Util.Grid2.Rotate(true, ref grid);
                 if (++checkCount % 4 == 0)
                 {
                     // DebugWriteLine($"[{checkCount}] No monsters found, flipping image");
-                    Util.Grid.Flip2D(true, ref grid);
+                    Util.Grid2.Flip(true, ref grid);
                 }
 
                 if (checkCount > 8)

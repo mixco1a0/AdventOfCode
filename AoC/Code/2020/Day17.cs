@@ -46,8 +46,8 @@ namespace AoC._2020
 
         private char ProcessCube(Dictionary<string, char> grid, List<int> index)
         {
-            int activeCount = Util.Grid.ProcessIndexBorder(index, grid, '#');
-            string indexKey = Util.Grid.GetDynamicIndexKey(index);
+            int activeCount = Util.Grid2.ProcessIndexBorder(index, grid, '#');
+            string indexKey = Util.Grid2.GetDynamicIndexKey(index);
             if (!grid.ContainsKey(indexKey))
             {
                 grid[indexKey] = '.';
@@ -84,7 +84,7 @@ namespace AoC._2020
                     --indexRange.Min;
                     ++indexRange.Max;
                 }
-                Util.Grid.ProcessGrid(ref grid, indexRanges, ProcessCube);
+                Util.Grid2.Process(ref grid, indexRanges, ProcessCube);
             }
             return grid.Values.Where(c => c == '#').Count().ToString();
         }
@@ -113,7 +113,7 @@ namespace AoC._2020
                     --indexRange.Min;
                     ++indexRange.Max;
                 }
-                Util.Grid.ProcessGrid(ref grid, indexRanges, ProcessCube);
+                Util.Grid2.Process(ref grid, indexRanges, ProcessCube);
             }
             return grid.Values.Where(c => c == '#').Count().ToString();
         }

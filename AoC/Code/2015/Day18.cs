@@ -56,7 +56,7 @@ namespace AoC._2015
 
         private char GetLocationState(int x, int y, List<List<char>> lights)
         {
-            int onCount = Util.Grid.ProcessIndexBorder(x, y, lights, '#');
+            int onCount = Util.Grid2.ProcessIndexBorder(x, y, lights, '#');
 
             switch (lights[x][y])
             {
@@ -76,7 +76,7 @@ namespace AoC._2015
             List<List<char>> lights = inputs.Select(a => a.ToCharArray().ToList()).ToList();
             for (int i = 0; i < steps; ++i)
             {
-                Util.Grid.ProcessGrid(ref lights, GetLocationState);
+                Util.Grid2.Process(ref lights, GetLocationState);
             }
             return string.Join("", lights.Select(c => string.Join("", c))).Replace(".", "").Count().ToString();
         }
@@ -96,7 +96,7 @@ namespace AoC._2015
                 return '#';
             }
 
-            int onCount = Util.Grid.ProcessIndexBorder(x, y, lights, '#');
+            int onCount = Util.Grid2.ProcessIndexBorder(x, y, lights, '#');
 
             switch (lights[x][y])
             {
@@ -122,7 +122,7 @@ namespace AoC._2015
             // Util.Grid.Print2D(Core.Log.ELevel.Spam, lights);
             for (int i = 0; i < steps; ++i)
             {
-                Util.Grid.ProcessGrid(ref lights, GetLocationStateCornersOn);
+                Util.Grid2.Process(ref lights, GetLocationStateCornersOn);
                 // Core.Log.WriteLine(Core.Log.ELevel.Spam, $"After {i + 1} step");
                 // Util.Grid.Print2D(Core.Log.ELevel.Spam, lights);
             }

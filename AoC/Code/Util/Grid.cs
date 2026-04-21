@@ -7,8 +7,9 @@ using System.Text;
 namespace AoC.Util
 {
     #region Grid2
-    namespace Grid2
+    public class Grid2
     {
+        #region Constants
         public enum Dir { North, NorthEast, East, SouthEast, South, SouthWest, West, NorthWest, None }
 
         public static class Map
@@ -140,7 +141,9 @@ namespace AoC.Util
                 Dir.NorthWest
             ];
         };
+        #endregion
 
+        #region Scanner
         public class Scanner<T> : IEnumerable
         {
             protected readonly Base.Grid2<T> m_grid;
@@ -198,13 +201,10 @@ namespace AoC.Util
                 }
             }
         }
-    }
-    #endregion
+        #endregion
 
-    public static class Grid
-    {
-        #region Print 2D
-        public static void Print2D(Core.Log.ELevel level, List<string> grid)
+        #region Print
+        public static void Print(Core.Log.ELevel level, List<string> grid)
         {
             StringBuilder sb = new();
             Core.Log.WriteLine(level, $"Printing grid {grid.First().Length}x{grid.Count}:");
@@ -218,7 +218,7 @@ namespace AoC.Util
             }
         }
 
-        public static void Print2D(Core.Log.ELevel level, List<List<char>> grid)
+        public static void Print(Core.Log.ELevel level, List<List<char>> grid)
         {
             StringBuilder sb = new();
             Core.Log.WriteLine(level, $"Printing grid {grid[0].Count}x{grid.Count}:");
@@ -231,7 +231,7 @@ namespace AoC.Util
             }
         }
 
-        public static void Print2D(Core.Log.ELevel level, char[][] grid)
+        public static void Print(Core.Log.ELevel level, char[][] grid)
         {
             StringBuilder sb = new();
             Core.Log.WriteLine(level, $"Printing grid {grid[0].Length}x{grid.Length}:");
@@ -244,7 +244,7 @@ namespace AoC.Util
             }
         }
 
-        public static void Print2D(Core.Log.ELevel level, char[,] grid)
+        public static void Print(Core.Log.ELevel level, char[,] grid)
         {
             StringBuilder sb = new();
             Core.Log.WriteLine(level, $"Printing grid {grid.GetLength(0)}x{grid.GetLength(1)}:");
@@ -258,8 +258,8 @@ namespace AoC.Util
         }
         #endregion
 
-        #region Parse 2D
-        public static void Parse2D(List<string> inputs, out char[][] grid, out int maxCol, out int maxRow)
+        #region Parse
+        public static void Parse(List<string> inputs, out char[][] grid, out int maxCol, out int maxRow)
         {
             maxCol = inputs[0].Length;
             maxRow = inputs.Count;
@@ -275,7 +275,7 @@ namespace AoC.Util
             }
         }
 
-        public static void Parse2D(List<string> inputs, out char[,] grid, out int maxCol, out int maxRow)
+        public static void Parse(List<string> inputs, out char[,] grid, out int maxCol, out int maxRow)
         {
             maxCol = inputs[0].Length;
             maxRow = inputs.Count;
@@ -291,11 +291,11 @@ namespace AoC.Util
         }
         #endregion
 
-        #region Modify 2D
-        public static void Rotate2D(bool right, ref List<string> grid)
+        #region Modification
+        public static void Rotate(bool cw, ref List<string> grid)
         {
             List<string> newGrid = [];
-            if (right)
+            if (cw)
             {
                 for (int i = 0; i < grid[0].Length; ++i)
                 {
@@ -312,7 +312,7 @@ namespace AoC.Util
             grid = newGrid;
         }
 
-        public static void Flip2D(bool horizontal, ref List<string> grid)
+        public static void Flip(bool horizontal, ref List<string> grid)
         {
             if (horizontal)
             {
@@ -327,9 +327,10 @@ namespace AoC.Util
             }
         }
         #endregion
+        
 
         #region Process 2D
-        public static bool ProcessGrid(ref List<List<char>> grid, Func<int, int, List<List<char>>, char> ProcessIndexFunc)
+        public static bool Process(ref List<List<char>> grid, Func<int, int, List<List<char>>, char> ProcessIndexFunc)
         {
             List<List<char>> newGrid = [];
             foreach (List<char> row in grid)
@@ -354,6 +355,7 @@ namespace AoC.Util
 
         public static int ProcessIndexBorder(int x, int y, List<List<char>> grid, char match)
         {
+            // TODO: use a scanner
             int borderMatch = 0;
             for (int _x = x - 1; _x <= x + 1; ++_x)
             {
@@ -385,6 +387,7 @@ namespace AoC.Util
 
         public static Dictionary<char, int> ProcessIndexBorder(int x, int y, List<List<char>> grid)
         {
+            // TODO: use a scanner
             Dictionary<char, int> borderValues = [];
             for (int _x = x - 1; _x <= x + 1; ++_x)
             {
@@ -430,7 +433,7 @@ namespace AoC.Util
             return sb.ToString();
         }
 
-        public static bool ProcessGrid(ref Dictionary<string, char> grid, List<Base.Range> indexRanges, Func<Dictionary<string, char>, List<int>, char> ProcessIndexFunc)
+        public static bool Process(ref Dictionary<string, char> grid, List<Base.Range> indexRanges, Func<Dictionary<string, char>, List<int>, char> ProcessIndexFunc)
         {
             bool complete = true;
 
@@ -500,4 +503,5 @@ namespace AoC.Util
         }
         #endregion
     }
+    #endregion
 }
