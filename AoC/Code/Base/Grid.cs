@@ -167,7 +167,7 @@ namespace AoC.Base
         public override void Print(Core.Log.ELevel level)
         {
             StringBuilder sb = new();
-            Core.Log.WriteLine(Core.Log.ELevel.Spam, $"Printing grid {MaxCol}x{MaxRow}:");
+            Core.Log.WriteLine(level, $"Printing grid {MaxCol}x{MaxRow}:");
             for (int _r = 0; _r < MaxRow; ++_r)
             {
                 sb.Clear();
@@ -176,8 +176,21 @@ namespace AoC.Base
                 {
                     sb.Append(m_array[_r, _c] == 0 ? '.' : m_array[_r, _c].ToString());
                 }
-                Core.Log.WriteLine(Core.Log.ELevel.Spam, sb.ToString());
+                Core.Log.WriteLine(level, sb.ToString());
             }
+        }
+
+        public long Sum()
+        {
+            long sum = 0;
+            for (int _c = 0; _c < MaxCol; ++_c)
+            {
+                for (int _r = 0; _r < MaxRow; ++_r)
+                {
+                    sum += m_array[_r, _c];
+                }
+            }
+            return sum;
         }
     }
 
