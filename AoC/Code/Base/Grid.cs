@@ -81,7 +81,8 @@ namespace AoC.Base
         }
     }
 
-    public class Grid2CharScanner(Grid2Char grid, Vec2 origin, int maxScan) : Util.Grid2.Scanner<char>(grid, origin, maxScan);
+    public class Grid2CharSpiralScanner(Grid2Char grid, Vec2 origin, Util.Grid2.Dir startingDir, int maxScan, bool outwardScan)
+        : Util.Grid2.SpiralScanner<char>(grid, origin, startingDir, maxScan, outwardScan);
 
     public class Grid2Bool : Grid2<bool>
     {

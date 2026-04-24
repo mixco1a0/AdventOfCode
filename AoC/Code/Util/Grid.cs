@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -144,24 +145,18 @@ namespace AoC.Util
         #endregion
 
         #region Scanner
-        public class Scanner<T> : IEnumerable
+        public abstract class ScannerBase<T> : IEnumerable
         {
             protected readonly Base.Grid2<T> m_grid;
-            protected readonly Base.Vec2 m_origin;
-            protected readonly int m_maxScan;
 
-            protected Scanner()
+            protected ScannerBase() : base()
             {
                 m_grid = default;
-                m_origin = default;
-                m_maxScan = default;
             }
 
-            public Scanner(Base.Grid2<T> grid, Base.Vec2 origin, int maxScan)
+            protected ScannerBase(Base.Grid2<T> grid)
             {
                 m_grid = grid;
-                m_origin = origin;
-                m_maxScan = maxScan;
             }
 
             IEnumerator IEnumerable.GetEnumerator()
@@ -169,10 +164,42 @@ namespace AoC.Util
                 return GetEnumerator();
             }
 
-            IEnumerator<Base.Vec2> GetEnumerator()
+            abstract protected IEnumerator<Base.Vec2> GetEnumerator();
+        }
+
+        public class SpiralScanner<T> : ScannerBase<T>
+        {
+            protected readonly Base.Vec2 m_origin;
+            protected readonly Dir m_startingDir;
+            protected readonly int m_maxScan;
+            protected readonly bool m_outwardScan;
+
+            protected SpiralScanner() : base()
+            {
+                m_origin = default;
+                m_startingDir = default;
+                m_maxScan = default;
+                m_outwardScan = default;
+            }
+
+            public SpiralScanner(Base.Grid2<T> grid, Base.Vec2 origin, Dir startingDir, int maxScan, bool outwardScan) : base(grid)
+            {
+                m_origin = origin;
+                m_startingDir = startingDir;
+                m_maxScan = maxScan;
+                m_outwardScan = outwardScan;
+                
+                Debug.Assert(m_startingDir == Dir.North, "Only Dir.North currently supported");
+                Debug.Assert(outwardScan, "Only outward scan supported currently");
+            }
+
+            protected override IEnumerator<Base.Vec2> GetEnumerator()
             {
                 yield return m_origin;
 
+                // TODO: support m_startingDir
+                // TODO: support m_outwardScan
+                
                 for (int curMax = 1; curMax <= m_maxScan; ++curMax)
                 {
                     foreach (Dir dir in Iter.Cardinal)
@@ -327,7 +354,7 @@ namespace AoC.Util
             }
         }
         #endregion
-        
+
 
         #region Process 2D
         public static bool Process(ref List<List<char>> grid, Func<int, int, List<List<char>>, char> ProcessIndexFunc)
