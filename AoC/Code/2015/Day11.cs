@@ -10,48 +10,47 @@ namespace AoC._2015
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "abcdffaa",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "abcdffaa",
+                    RawInput =
 @"abcdefgh"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "ghjaabcc",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "ghjaabcc",
+                    RawInput =
 @"ghijklmn"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
 
-        private string RemoveInvalid(string password)
+        private static string RemoveInvalid(string password)
         {
             int curIndex = 0;
-            StringBuilder newPassword = new StringBuilder();
+            StringBuilder newPassword = new();
             foreach (char p in password)
             {
                 ++curIndex;
@@ -95,7 +94,7 @@ namespace AoC._2015
             return RemoveInvalid(newPassword.ToString());
         }
 
-        private bool HasStraight(string password)
+        private static bool HasStraight(string password)
         {
             const int Straight = 3;
             char[] p = password.ToCharArray();
@@ -121,7 +120,7 @@ namespace AoC._2015
             return false;
         }
 
-        private bool HasDoubles(string password)
+        private static bool HasDoubles(string password)
         {
             const int Doubles = 2;
             char[] p = password.ToCharArray();
