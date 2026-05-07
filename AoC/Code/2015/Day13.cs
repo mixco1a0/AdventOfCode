@@ -99,7 +99,6 @@ David would gain 41 happiness units by sitting next to Carol."
             Dictionary<string, List<Units>> people = [];
             foreach (string input in inputs)
             {
-                
                 string[] split = Util.String.Split(input, " .");
                 if (!people.TryGetValue(split[0], out List<Units> value))
                 {

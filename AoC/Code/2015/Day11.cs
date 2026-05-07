@@ -68,9 +68,9 @@ namespace AoC._2015
             return newPassword.ToString();
         }
 
-        private string Increment(string password)
+        private static string Increment(string password)
         {
-            StringBuilder newPassword = new StringBuilder(password);
+            StringBuilder newPassword = new(password);
             if (password.Last() == 'z')
             {
                 bool carryOver = true;
@@ -145,7 +145,7 @@ namespace AoC._2015
             return false;
         }
 
-        private string GetNextPassword(string password)
+        private static string GetNextPassword(string password)
         {
             do
             {
@@ -154,7 +154,7 @@ namespace AoC._2015
             return password;
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, int cycles)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, int cycles)
         {
             string password = inputs.First();
             for (int i = 0; i < cycles; ++i)

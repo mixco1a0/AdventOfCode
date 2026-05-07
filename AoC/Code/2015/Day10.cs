@@ -25,7 +25,7 @@ namespace AoC._2015
                 new Core.TestDatum
                 {
                     TestPart = Core.Part.One,
-                    Variables = new Dictionary<string, string> { { "times", "5" } },
+                    Variables = new Dictionary<string, string> { { nameof(_Times), "5" } },
                     Output = "6",
                     RawInput =
 @"1"
@@ -40,6 +40,10 @@ namespace AoC._2015
             ];
             return testData;
         }
+
+#pragma warning disable IDE1006 // Naming Styles
+        private static string _Times { get; }
+#pragma warning restore IDE1006 // Naming Styles
 
         private static string Process(string input)
         {
@@ -68,8 +72,7 @@ namespace AoC._2015
 
         private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, int defaultTimes)
         {
-            int times;
-            GetVariable(nameof(times), defaultTimes, variables, out times);
+            GetVariable(nameof(_Times), defaultTimes, variables, out int times);
 
             string input = inputs.First();
             for (int i = 0; i < times; ++i)

@@ -99,7 +99,7 @@ namespace AoC._2015
 
         static bool RunCombatSimulation(bool hardMode, Boss boss, Player player, int turnCount, int spentMana, ref int minMana)
         {
-            string curTab = new string('-', turnCount * 2);
+            string curTab = new('-', turnCount * 2);
 
             if (hardMode && turnCount % 2 == 0)
             {
@@ -127,7 +127,7 @@ namespace AoC._2015
 
             // Core.Log.WriteLine(Core.Log.ELevel.Spam, $"{curTab}Turn {turnCount} - Boss HP = {boss.HP} - Player HP = {player.HP}, Mana = {player.Mana}");
 
-            List<KeyValuePair<int, int>> curEffects = player.Effects.Select(p => new KeyValuePair<int, int>(p.Key, p.Value)).ToList();
+            List<KeyValuePair<int, int>> curEffects = [.. player.Effects.Select(p => new KeyValuePair<int, int>(p.Key, p.Value))];
             // resolve effects now
             foreach (KeyValuePair<int, int> pair in player.Effects)
             {
@@ -205,6 +205,7 @@ namespace AoC._2015
             RunCombatSimulation(hardMode, boss, player, 0, 0, ref minMana);
             return minMana.ToString();
         }
+
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
             => SharedSolution(inputs, variables, false);
 

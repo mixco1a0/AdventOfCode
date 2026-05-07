@@ -74,7 +74,7 @@ HOHOHO"
             return testData;
         }
 
-        public record Replacement(string pre, string post) { }
+        public record Replacement(string Pre, string Post) { }
 
         private static int Fabricate(string molecule, List<Replacement> replacements, string target)
         {
@@ -112,15 +112,15 @@ HOHOHO"
                 return;
             }
 
-            List<Replacement> curUsable = [.. replacements.Where(r => molecule.Contains(r.post, StringComparison.CurrentCulture))];
+            List<Replacement> curUsable = [.. replacements.Where(r => molecule.Contains(r.Post, StringComparison.CurrentCulture))];
             if (greedy)
             {
                 foreach (Replacement replacement in curUsable)
                 {
-                    string cur = molecule.Replace(replacement.post, replacement.pre);
+                    string cur = molecule.Replace(replacement.Post, replacement.Pre);
                     if (cur != molecule)
                     {
-                        Fabricate(cur, steps + molecule.Split(replacement.post).Length - 1, replacements, target, greedy, ref minSteps, ref unique);
+                        Fabricate(cur, steps + molecule.Split(replacement.Post).Length - 1, replacements, target, greedy, ref minSteps, ref unique);
                     }
                 }
             }
@@ -128,9 +128,9 @@ HOHOHO"
             {
                 foreach (Replacement replacement in curUsable)
                 {
-                    for (int i = molecule.IndexOf(replacement.post); i >= 0 && i < molecule.Length; i = molecule.IndexOf(replacement.post, i + 1))
+                    for (int i = molecule.IndexOf(replacement.Post); i >= 0 && i < molecule.Length; i = molecule.IndexOf(replacement.Post, i + 1))
                     {
-                        string cur = molecule.Remove(i, replacement.post.Length).Insert(i, replacement.pre);
+                        string cur = molecule.Remove(i, replacement.Post.Length).Insert(i, replacement.Pre);
                         if (cur.Length <= molecule.Length)
                         {
                             Fabricate(cur, steps + 1, replacements, target, greedy, ref minSteps, ref unique);
@@ -165,9 +165,9 @@ HOHOHO"
             HashSet<string> unique = [];
             foreach (Replacement replacement in replacements)
             {
-                for (int i = molecule.IndexOf(replacement.pre); i >= 0 && i < molecule.Length; i = molecule.IndexOf(replacement.pre, i + 1))
+                for (int i = molecule.IndexOf(replacement.Pre); i >= 0 && i < molecule.Length; i = molecule.IndexOf(replacement.Pre, i + 1))
                 {
-                    string cur = molecule.Remove(i, replacement.pre.Length).Insert(i, replacement.post);
+                    string cur = molecule.Remove(i, replacement.Pre.Length).Insert(i, replacement.Post);
                     unique.Add(cur);
                 }
             }
