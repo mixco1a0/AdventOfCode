@@ -6,51 +6,54 @@ namespace AoC._2015
     class Day17 : Core.Day
     {
         public Day17() { }
-        
+
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Variables = new Dictionary<string, string> { { "liters", "25" } },
-                Output = "4",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Variables = new Dictionary<string, string> { { nameof(_Liters), "25" } },
+                    Output = "4",
+                    RawInput =
 @"20
 15
 10
 5
 5"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Variables = new Dictionary<string, string> { { "liters", "25" } },
-                Output = "3",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Variables = new Dictionary<string, string> { { nameof(_Liters), "25" } },
+                    Output = "3",
+                    RawInput =
 @"20
 15
 10
 5
 5"
-            });
+                },
+            ];
             return testData;
         }
 
-        private int GetTotal(IEnumerable<int> inputs)
+#pragma warning disable IDE1006 // Naming Styles
+        private static int _Liters { get; }
+#pragma warning restore IDE1006 // Naming Styles
+
+        private static int GetTotal(IEnumerable<int> inputs)
         {
             int total = 0;
             foreach (int input in inputs)
@@ -60,13 +63,13 @@ namespace AoC._2015
             return total;
         }
 
-        private int TryNext(int result, List<int> inputs, out int uniqueMin)
+        private static int TryNext(int result, List<int> inputs, out int uniqueMin)
         {
             uniqueMin = 0;
             int total = 0;
             int count = 0;
-            List<bool> bools = inputs.Select(_ => false).ToList();
-            Dictionary<int, int> solutionCount = new Dictionary<int, int>();
+            List<bool> bools = [.. inputs.Select(_ => false)];
+            Dictionary<int, int> solutionCount = [];
             if (inputs.Count > 0)
             {
                 for (int i = 0; i < inputs.Count; ++i)
@@ -85,14 +88,14 @@ namespace AoC._2015
                     else if (total == result)
                     {
                         bools[i] = true;
-                        int used = bools.Where(b => b).Count();
-                        if (!solutionCount.ContainsKey(used))
+                        int used = bools.Count(b => b);
+                        if (!solutionCount.TryGetValue(used, out int value))
                         {
                             solutionCount[used] = 1;
                         }
                         else
                         {
-                            ++solutionCount[used];
+                            solutionCount[used] = ++value;
                         }
                         // Log(Core.Log.ELevel.Spam, $"VALID: {string.Join(',', bools.Select((b, i) => new { b = b, i = i }).Where(pair => pair.b).Select(pair => $"{inputs[pair.i]}[#{pair.i}]"))}");
                         bools[i] = false;
@@ -131,23 +134,22 @@ namespace AoC._2015
             return count;
         }
 
-        protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool findUnique)
         {
-            int liters;
-            GetVariable(nameof(liters), 150, variables, out liters);
+            GetVariable(nameof(_Liters), 150, variables, out int liters);
 
-            int dummy;
-            return TryNext(liters, inputs.Select(int.Parse).OrderByDescending(_ => _).ToList(), out dummy).ToString();
+            int nextVal = TryNext(liters, [.. inputs.Select(int.Parse).OrderByDescending(_ => _)], out int uniqueMin);
+            if (findUnique)
+            {
+                return uniqueMin.ToString();
+            }
+            return nextVal.ToString();
         }
+
+        protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
+            => SharedSolution(inputs, variables, false);
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
-        {
-            int liters;
-            GetVariable(nameof(liters), 150, variables, out liters);
-
-            int uniqueMin;
-            TryNext(liters, inputs.Select(int.Parse).OrderByDescending(_ => _).ToList(), out uniqueMin);
-            return uniqueMin.ToString();
-        }
+            => SharedSolution(inputs, variables, true);
     }
 }

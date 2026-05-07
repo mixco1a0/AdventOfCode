@@ -10,38 +10,37 @@ namespace AoC._2015
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "",
+                    RawInput =
 @""
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
 
-        private long Sum(long lhn)
+        private long Part1Sum(long lhn)
         {
             long maxHouse = lhn / 10;
             long[] sums = new long[maxHouse];
@@ -55,10 +54,10 @@ namespace AoC._2015
             return sums.Select((s, i) => new {val = s, idx = i}).Where(o => o.val >= lhn).Min(o => o.idx);
         }
 
-        private long Sum2(long lhn)
+        private long Part2Sum(long lhn)
         {
             long maxHouse = lhn / 10;
-            List<long> sums = new List<long>();
+            List<long> sums = [];
             for (int i = 1; i < maxHouse; ++i)
             {
                 IEnumerable<int> newValues = Enumerable.Range(1, 50).Reverse().Select(e => e * i);
@@ -79,16 +78,16 @@ namespace AoC._2015
             return 0;
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, Func<long, long> sumFunc)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, Func<long, long> sumFunc)
         {
             long lhn = inputs.Select(long.Parse).First();
             return sumFunc(lhn).ToString();
         }
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
-            => SharedSolution(inputs, variables, Sum);
+            => SharedSolution(inputs, variables, Part1Sum);
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
-            => SharedSolution(inputs, variables, Sum2);
+            => SharedSolution(inputs, variables, Part2Sum);
     }
 }

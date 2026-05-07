@@ -10,36 +10,35 @@ namespace AoC._2015
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "62842880",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "62842880",
+                    RawInput =
 @"Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
 Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "57600000",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "57600000",
+                    RawInput =
 @"Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
 Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -47,21 +46,21 @@ Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3"
         {
             static public Ingredient Parse(string input)
             {
-                string[] split = input.Split(" :,".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                int[] values = split.Where(s => { int v; return int.TryParse(s, out v); }).Select(int.Parse).ToArray();
+                string[] split = Util.String.Split(input, " :,");
+                int[] values = [.. split.Where(s => { return int.TryParse(s, out int v); }).Select(int.Parse)];
                 return new Ingredient(split[0], values[0], values[1], values[2], values[3], values[4]);
             }
         }
 
-        private bool Increment(ref List<int> allCounts)
+        private static bool Increment(ref List<int> allCounts)
         {
             if (allCounts.First() == 100)
             {
                 return false;
             }
 
-            --allCounts[allCounts.Count - 1];
-            ++allCounts[allCounts.Count - 2];
+            --allCounts[^1];
+            ++allCounts[^2];
 
             if (allCounts.Last() < 0)
             {
@@ -85,14 +84,14 @@ Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3"
                     max += other;
                 }
 
-                allCounts[allCounts.Count - 1] = 100 - max;
-                allCounts[allCounts.Count - 2] = 0;
+                allCounts[^1] = 100 - max;
+                allCounts[^2] = 0;
             }
 
             return true;
         }
 
-        private int Score(List<Ingredient> ingredients, List<int> counts, bool countCalories)
+        private static int Score(List<Ingredient> ingredients, List<int> counts, bool countCalories)
         {
             int capacityScore = 0, durabilityScore = 0, flavorScore = 0, textureScore = 0, calorieScore = 0;
             for (int i = 0; i < ingredients.Count; ++i)
@@ -121,49 +120,33 @@ Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3"
                 return score;
             }
         }
+        
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool countCalories)
+        {
+            List<Ingredient> allIngredients = [.. inputs.Select(Ingredient.Parse)];
+            List<int> allCounts = [];
+            for (int i = 0; i < allIngredients.Count; ++i)
+            {
+                allCounts.Add(i == allIngredients.Count - 1 ? 100 : 0);
+            }
+
+            long score = int.MinValue;
+            while (true)
+            {
+                if (!Increment(ref allCounts))
+                {
+                    break;
+                }
+                score = Math.Max(score, Score(allIngredients, allCounts, countCalories));
+            }
+
+            return score.ToString();
+        }
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
-        {
-            List<Ingredient> allIngredients = inputs.Select(Ingredient.Parse).ToList();
-            List<int> allCounts = new List<int>();
-            for (int i = 0; i < allIngredients.Count; ++i)
-            {
-                allCounts.Add(i == allIngredients.Count - 1 ? 100 : 0);
-            }
-
-            long score = int.MinValue;
-            while (true)
-            {
-                if (!Increment(ref allCounts))
-                {
-                    break;
-                }
-                score = Math.Max(score, Score(allIngredients, allCounts, false));
-            }
-
-            return score.ToString();
-        }
+            => SharedSolution(inputs, variables, false);
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
-        {
-            List<Ingredient> allIngredients = inputs.Select(Ingredient.Parse).ToList();
-            List<int> allCounts = new List<int>();
-            for (int i = 0; i < allIngredients.Count; ++i)
-            {
-                allCounts.Add(i == allIngredients.Count - 1 ? 100 : 0);
-            }
-
-            long score = int.MinValue;
-            while (true)
-            {
-                if (!Increment(ref allCounts))
-                {
-                    break;
-                }
-                score = Math.Max(score, Score(allIngredients, allCounts, true));
-            }
-
-            return score.ToString();
-        }
+            => SharedSolution(inputs, variables, true);
     }
 }

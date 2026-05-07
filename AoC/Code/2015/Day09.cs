@@ -83,13 +83,13 @@ Dublin to Belfast = 141"
             return dist + FindPathRecurse(map, nextCity, [.. visitableCities.Where(c => c != nextCity)], findMin);
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool findMin)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool findMin)
         {
             Dictionary<string, List<ToInfo>> map = [];
             List<Distance> distances = [];
             foreach (string input in inputs)
             {
-                string[] splits = input.Split(" =".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string[] splits = Util.String.Split(input, " =");
                 string cityA = splits[0];
                 string cityB = splits[2];
                 int distance = int.Parse(splits[3]);

@@ -10,47 +10,45 @@ namespace AoC._2015
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "4",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "4",
+                    RawInput =
 @"H => HO
 H => OH
 O => HH
 
 HOH"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "7",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "7",
+                    RawInput =
 @"H => HO
 H => OH
 O => HH
 
 HOHOHO"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "3",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "3",
+                    RawInput =
 @"e => H
 e => O
 H => HO
@@ -58,12 +56,12 @@ H => OH
 O => HH
 
 HOH"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "6",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "6",
+                    RawInput =
 @"e => H
 e => O
 H => HO
@@ -71,60 +69,29 @@ H => OH
 O => HH
 
 HOHOHO"
-            });
+                },
+            ];
             return testData;
         }
 
-        public record Replacement(string pre, string post) {}
+        public record Replacement(string pre, string post) { }
 
-        protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
-        {
-            List<Replacement> replacements = new List<Replacement>();
-            string molecule = "";
-            foreach (string input in inputs)
-            {
-                if (input.Contains("=>"))
-                {
-                    string[] split = input.Split("=>", StringSplitOptions.RemoveEmptyEntries).Select(_ => _.Trim()).ToArray();
-                    replacements.Add(new Replacement(split[0], split[1]));
-                }
-                else if (input.Trim().Length > 0)
-                {
-                    molecule = input;
-                }
-            }
-
-            HashSet<string> unique = new HashSet<string>();
-            foreach (Replacement replacement in replacements)
-            {
-                for (int i = molecule.IndexOf(replacement.pre); i >= 0 && i < molecule.Length; i = molecule.IndexOf(replacement.pre, i + 1))
-                {
-                    string cur = molecule.Remove(i, replacement.pre.Length).Insert(i, replacement.post);
-                    if (!unique.Contains(cur))
-                    {
-                        unique.Add(cur);
-                    }
-                }
-            }
-            return unique.Count.ToString();
-        }
-
-        private int Fabricate(string molecule, List<Replacement> replacements, string target)
+        private static int Fabricate(string molecule, List<Replacement> replacements, string target)
         {
             int minSteps = int.MaxValue;
-            HashSet<string> unique = new HashSet<string>();
+            HashSet<string> unique = [];
             Fabricate(molecule, 0, replacements, target, true, ref minSteps, ref unique);
             Fabricate(molecule, 0, replacements, target, false, ref minSteps, ref unique);
             return minSteps;
         }
 
-        private void Fabricate(string molecule, int steps, List<Replacement> replacements, string target, bool greedy, ref int minSteps, ref HashSet<string> unique)
+        private static void Fabricate(string molecule, int steps, List<Replacement> replacements, string target, bool greedy, ref int minSteps, ref HashSet<string> unique)
         {
             if (minSteps < int.MaxValue)
             {
                 return;
             }
-            
+
             if (molecule == target)
             {
                 if (steps != minSteps && steps < minSteps)
@@ -140,17 +107,12 @@ HOHOHO"
                 return;
             }
 
-            if (!unique.Contains(molecule))
-            {
-                unique.Add(molecule);
-                // Core.Log.WriteLine(Core.Log.ELevel.Spam, $"Testing: {molecule}");
-            }
-            else
+            if (!unique.Add(molecule))
             {
                 return;
             }
 
-            List<Replacement> curUsable = replacements.Where(r => molecule.IndexOf(r.post) != -1).ToList();
+            List<Replacement> curUsable = [.. replacements.Where(r => molecule.Contains(r.post, StringComparison.CurrentCulture))];
             if (greedy)
             {
                 foreach (Replacement replacement in curUsable)
@@ -178,15 +140,15 @@ HOHOHO"
             }
         }
 
-        protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool runFabrication)
         {
-            List<Replacement> replacements = new List<Replacement>();
+            List<Replacement> replacements = [];
             string molecule = "";
             foreach (string input in inputs)
             {
                 if (input.Contains("=>"))
                 {
-                    string[] split = input.Split("=>", StringSplitOptions.RemoveEmptyEntries).Select(_ => _.Trim()).ToArray();
+                    string[] split = [.. Util.String.Split(input, "=>").Select(_ => _.Trim())];
                     replacements.Add(new Replacement(split[0], split[1]));
                 }
                 else if (input.Trim().Length > 0)
@@ -195,7 +157,27 @@ HOHOHO"
                 }
             }
 
-            return Fabricate(molecule, replacements, "e").ToString();
+            if (runFabrication)
+            {
+                return Fabricate(molecule, replacements, "e").ToString();
+            }
+            
+            HashSet<string> unique = [];
+            foreach (Replacement replacement in replacements)
+            {
+                for (int i = molecule.IndexOf(replacement.pre); i >= 0 && i < molecule.Length; i = molecule.IndexOf(replacement.pre, i + 1))
+                {
+                    string cur = molecule.Remove(i, replacement.pre.Length).Insert(i, replacement.post);
+                    unique.Add(cur);
+                }
+            }
+            return unique.Count.ToString();
         }
+
+        protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
+            => SharedSolution(inputs, variables, false);
+
+        protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
+            => SharedSolution(inputs, variables, true);
     }
 }

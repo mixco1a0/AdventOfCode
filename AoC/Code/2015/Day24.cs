@@ -9,25 +9,23 @@ namespace AoC._2015
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "99",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "99",
+                    RawInput =
 @"1
 2
 3
@@ -38,12 +36,12 @@ namespace AoC._2015
 9
 10
 11"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "44",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "44",
+                    RawInput =
 @"1
 2
 3
@@ -54,14 +52,15 @@ namespace AoC._2015
 9
 10
 11"
-            });
+                },
+            ];
             return testData;
         }
 
         record QuantumEntanglement(long Value, int Count, List<int> Weights) { }
-        static QuantumEntanglement MaxQE = new QuantumEntanglement(int.MaxValue, int.MaxValue, new List<int>());
+        static readonly QuantumEntanglement MaxQE = new(int.MaxValue, int.MaxValue, []);
 
-        private QuantumEntanglement OptimizedEQ(QuantumEntanglement a, QuantumEntanglement b)
+        private static QuantumEntanglement OptimizedEQ(QuantumEntanglement a, QuantumEntanglement b)
         {
             if (a.Count < b.Count)
             {
@@ -81,14 +80,14 @@ namespace AoC._2015
             return b;
         }
 
-        private QuantumEntanglement GenerateQuantumEntanglement(List<int> weights)
+        private static QuantumEntanglement GenerateQuantumEntanglement(List<int> weights)
         {
             long mult = 1;
-            weights.ForEach(i => mult *= (long)i);
+            weights.ForEach(i => mult *= i);
             return new QuantumEntanglement(mult, weights.Count, weights);
         }
 
-        private void Find(int maxSum, List<int> pending, List<int> a, ref QuantumEntanglement best)
+        private static void Find(int maxSum, List<int> pending, List<int> a, bool checkMaxQE, ref QuantumEntanglement best)
         {
             // check for possible match
             int sumA = 0;
@@ -111,72 +110,35 @@ namespace AoC._2015
             {
                 if (sumA + p <= maxSum)
                 {
-                    List<int> newList = new List<int>(a);
+                    List<int> newList = [.. a];
                     newList.Add(p);
-                    Find(maxSum, pending.Where(i => i != p).ToList(), newList, ref best);
+                    Find(maxSum, [.. pending.Where(i => i != p)], newList, checkMaxQE, ref best);
                 }
 
-                if (best != MaxQE)
+                if (checkMaxQE && best != MaxQE)
                 {
                     return;
                 }
             }
         }
 
-        protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, int groupSize, bool checkMaxQE)
         {
             int maxSum = 0;
-            List<int> numbers = inputs.Select(int.Parse).ToList();
+            List<int> numbers = [.. inputs.Select(int.Parse)];
             numbers.ForEach(n => maxSum += n);
-            maxSum /= 3;
+            maxSum /= groupSize;
             numbers.Sort();
             numbers.Reverse();
             QuantumEntanglement best = MaxQE;
-            Find(maxSum, numbers, new List<int>(), ref best);
+            Find(maxSum, numbers, [], checkMaxQE, ref best);
             return best.Value.ToString();
         }
 
-        private void Find2(int maxSum, List<int> pending, List<int> a, ref QuantumEntanglement best)
-        {
-            // check for possible match
-            int sumA = 0;
-            a.ForEach(i => sumA += i);
-            if (sumA == maxSum)
-            {
-                long val = best.Value;
-                best = OptimizedEQ(best, GenerateQuantumEntanglement(a));
-                return;
-            }
-
-            // ignore anything worse than current
-            if (best.Weights.Count > 0 && a.Count >= best.Weights.Count)
-            {
-                return;
-            }
-
-            // check next weight
-            foreach (int p in pending)
-            {
-                if (sumA + p <= maxSum)
-                {
-                    List<int> newList = new List<int>(a);
-                    newList.Add(p);
-                    Find2(maxSum, pending.Where(i => i != p).ToList(), newList, ref best);
-                }
-            }
-        }
+        protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
+            => SharedSolution(inputs, variables, 3, true);
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
-        {
-            int maxSum = 0;
-            List<int> numbers = inputs.Select(int.Parse).ToList();
-            numbers.ForEach(n => maxSum += n);
-            maxSum /= 4;
-            numbers.Sort();
-            numbers.Reverse();
-            QuantumEntanglement best = MaxQE;
-            Find2(maxSum, numbers, new List<int>(), ref best);
-            return best.Value.ToString();
-        }
+            => SharedSolution(inputs, variables, 4, false);
     }
 }

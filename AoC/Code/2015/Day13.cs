@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+// asdasd
 namespace AoC._2015
 {
     class Day13 : Core.Day
@@ -94,12 +94,13 @@ David would gain 41 happiness units by sitting next to Carol."
             return 0;
         }
 
-        protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool addMe)
         {
             Dictionary<string, List<Units>> people = [];
             foreach (string input in inputs)
             {
-                string[] split = input.Split(" .".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                
+                string[] split = Util.String.Split(input, " .");
                 if (!people.TryGetValue(split[0], out List<Units> value))
                 {
                     value = [];
@@ -108,6 +109,25 @@ David would gain 41 happiness units by sitting next to Carol."
 
                 value.Add(new Units(split.Last(), (split[2] == "gain" ? 1 : -1) * int.Parse(split[3])));
             }
+
+            if (addMe)
+            {
+                string me = "Me";
+                foreach (string person in people.Keys)
+                {
+                    people[person].Add(new Units(me, 0));
+                }
+                people[me] = [];
+                foreach (string person in people.Keys)
+                {
+                    if (person == me)
+                    {
+                        continue;
+                    }
+                    people[me].Add(new Units(person, 0));
+                }
+            }
+
             int max = int.MinValue;
             foreach (var pair in people)
             {
@@ -116,44 +136,11 @@ David would gain 41 happiness units by sitting next to Carol."
             }
             return max.ToString();
         }
+
+        protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
+            => SharedSolution(inputs, variables, false);
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
-        {
-            Dictionary<string, List<Units>> people = [];
-            foreach (string input in inputs)
-            {
-                string[] split = input.Split(" .".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                if (!people.TryGetValue(split[0], out List<Units> value))
-                {
-                    value = [];
-                    people[split[0]] = value;
-                }
-
-                value.Add(new Units(split.Last(), (split[2] == "gain" ? 1 : -1) * int.Parse(split[3])));
-            }
-
-            string me = "Me";
-            foreach (string person in people.Keys)
-            {
-                people[person].Add(new Units(me, 0));
-            }
-            people[me] = [];
-            foreach (string person in people.Keys)
-            {
-                if (person == me)
-                {
-                    continue;
-                }
-                people[me].Add(new Units(person, 0));
-            }
-
-            int max = int.MinValue;
-            foreach (var pair in people)
-            {
-                int h = ArrangeSeats(people, pair.Key, [], 0);
-                max = Math.Max(max, h);
-            }
-            return max.ToString();
-        }
+            => SharedSolution(inputs, variables, true);
     }
 }

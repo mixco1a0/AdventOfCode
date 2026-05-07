@@ -41,9 +41,9 @@ namespace AoC._2015
             return testData;
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<int> coords = inputs.First().Split(" ,.".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Where(c => { int res; return int.TryParse(c, out res); }).Select(int.Parse).ToList();
+            List<int> coords = [.. Util.String.Split(inputs.First(), " ,.").Where(c => { return int.TryParse(c, out int res); }).Select(int.Parse)];
             long code = 20151125;
             int targetR = coords[0];
             int targetC = coords[1];

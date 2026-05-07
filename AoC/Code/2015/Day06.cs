@@ -62,11 +62,11 @@ namespace AoC._2015
             Toggle
         }
 
-        private record Instruction(InstructionType Type, int xMin, int xMax, int yMin, int yMax)
+        private record Instruction(InstructionType Type, int MinX, int MaxX, int MinY, int MaxY)
         {
             public static Instruction Parse(string input)
             {
-                string[] split = [.. input.Split(" ,g".ToCharArray(), System.StringSplitOptions.RemoveEmptyEntries)];
+                string[] split = [.. Util.String.Split(input, " ,g")];
 
                 InstructionType type = InstructionType.Invalid;
                 switch (split[1][1])
@@ -82,7 +82,7 @@ namespace AoC._2015
                         break;
                 }
 
-                int[] intVals = [.. split.Where(s => { int i; return int.TryParse(s, out i); }).Select(int.Parse)];
+                int[] intVals = [.. split.Where(s => { return int.TryParse(s, out int i); }).Select(int.Parse)];
                 return new Instruction(type, intVals[0], intVals[2], intVals[1], intVals[3]);
             }
         }
@@ -94,9 +94,9 @@ namespace AoC._2015
             Instruction[] instructions = [.. inputs.Select(Instruction.Parse)];
             foreach (Instruction instruction in instructions)
             {
-                for (int x = instruction.xMin; x <= instruction.xMax; ++x)
+                for (int x = instruction.MinX; x <= instruction.MaxX; ++x)
                 {
-                    for (int y = instruction.yMin; y <= instruction.yMax; ++y)
+                    for (int y = instruction.MinY; y <= instruction.MaxY; ++y)
                     {
                         switch (instruction.Type)
                         {
