@@ -10,50 +10,52 @@ namespace AoC._2016
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Variables = new Dictionary<string, string> { { "chipOne", "2" }, { "chipTwo", "5" } },
-                Output = "2",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Variables = new Dictionary<string, string> { { nameof(_ChipOne), "2" }, { nameof(_ChipTwo), "5" } },
+                    Output = "2",
+                    RawInput =
 @"value 5 goes to bot 2
 bot 2 gives low to bot 1 and high to bot 0
 value 3 goes to bot 1
 bot 1 gives low to output 1 and high to bot 0
 bot 0 gives low to output 2 and high to output 0
 value 2 goes to bot 2"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
+        
+#pragma warning disable IDE1006 // Naming Styles
+        private static string _ChipOne { get; }
+        private static string _ChipTwo { get; }
+#pragma warning restore IDE1006 // Naming Styles
 
         public class Bot
         {
             public Bot()
             {
-                Chips = new List<int>();
-                Chips.Add(int.MaxValue);
-                Chips.Add(int.MaxValue);
+                Chips = [int.MaxValue, int.MaxValue];
             }
 
             public void Assign(int number)
@@ -92,44 +94,35 @@ value 2 goes to bot 2"
             public List<int> Chips { get; set; }
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool useOutputs)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool useOutputs)
         {
-            int chipOne = 17;
-            int chipTwo = 61;
-            if (variables != null)
-            {
-                if (variables.ContainsKey(nameof(chipOne)))
-                {
-                    chipOne = int.Parse(variables[nameof(chipOne)]);
-                }
-                if (variables.ContainsKey(nameof(chipTwo)))
-                {
-                    chipTwo = int.Parse(variables[nameof(chipTwo)]);
-                }
-            }
+            GetVariable(nameof(_ChipOne), 17, variables, out int chipOne);
+            GetVariable(nameof(_ChipTwo), 61, variables, out int chipTwo);
 
-            Dictionary<int, Bot> bots = new Dictionary<int, Bot>();
+            Dictionary<int, Bot> bots = [];
             foreach (string i in inputs.Where(i => i.StartsWith("value")).ToList())
             {
-                List<int> values = i.Split(' ').Where(s => { int tryParse; return int.TryParse(s, out tryParse); }).Select(s => int.Parse(s)).ToList();
-                if (!bots.ContainsKey(values[1]))
+                List<int> values = [.. i.Split(' ').Where(s => { return int.TryParse(s, out int tryParse); }).Select(s => int.Parse(s))];
+                if (!bots.TryGetValue(values[1], out Bot value))
                 {
-                    bots[values[1]] = new Bot();
+                    value = new Bot();
+                    bots[values[1]] = value;
                 }
-                bots[values[1]].Assign(values[0]);
 
-                if (bots[values[1]].IsComparing(chipOne, chipTwo) && !useOutputs)
+                value.Assign(values[0]);
+
+                if (value.IsComparing(chipOne, chipTwo) && !useOutputs)
                 {
                     return values[1].ToString();
                 }
             }
 
-            Dictionary<int, Bot> outputs = new Dictionary<int, Bot>();
-            List<string> instructions = inputs.Where(i => !i.StartsWith("value")).ToList();
+            Dictionary<int, Bot> outputs = [];
+            List<string> instructions = [.. inputs.Where(i => !i.StartsWith("value"))];
             while (instructions.Count > 0)
             {
                 string instruction = instructions.First();
-                string[] split = instruction.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(instruction, ' ');
                 int giverId = int.Parse(split[1]);
                 if (!bots.ContainsKey(giverId))
                 {
@@ -151,20 +144,22 @@ value 2 goes to bot 2"
                 bool checkLow = false;
                 if (split[5] == "output")
                 {
-                    if (!outputs.ContainsKey(lowId))
+                    if (!outputs.TryGetValue(lowId, out Bot value))
                     {
-                        outputs[lowId] = new Bot();
+                        value = new Bot();
+                        outputs[lowId] = value;
                     }
-                    low = outputs[lowId];
+                    low = value;
                 }
                 else
                 {
                     checkLow = true;
-                    if (!bots.ContainsKey(lowId))
+                    if (!bots.TryGetValue(lowId, out Bot value))
                     {
-                        bots[lowId] = new Bot();
+                        value = new Bot();
+                        bots[lowId] = value;
                     }
-                    low = bots[lowId];
+                    low = value;
                 }
 
                 Bot high;
@@ -172,20 +167,22 @@ value 2 goes to bot 2"
                 bool checkHigh = false;
                 if (split[10] == "output")
                 {
-                    if (!outputs.ContainsKey(highId))
+                    if (!outputs.TryGetValue(highId, out Bot value))
                     {
-                        outputs[highId] = new Bot();
+                        value = new Bot();
+                        outputs[highId] = value;
                     }
-                    high = outputs[highId];
+                    high = value;
                 }
                 else
                 {
                     checkHigh = true;
-                    if (!bots.ContainsKey(highId))
+                    if (!bots.TryGetValue(highId, out Bot value))
                     {
-                        bots[highId] = new Bot();
+                        value = new Bot();
+                        bots[highId] = value;
                     }
-                    high = bots[highId];
+                    high = value;
                 }
 
                 giver.Give(ref low, ref high);

@@ -10,48 +10,47 @@ namespace AoC._2016
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "3",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "3",
+                    RawInput =
 @"abba[mnop]qrst
 qrst[mnop]abba
 abcd[bddb]xyyx
 aaaa[qwer]tyui
 ioxxoj[asdfgh]zxcvbn"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "4",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "4",
+                    RawInput =
 @"aba[bab]xyz
 xyx[xyx]xyx
 aaa[kek]eke
 zazbz[bzb]cdb
 xyx[xyxy]xyx"
-            });
+                },
+            ];
             return testData;
         }
 
         private List<string> GetABBA(string input)
         {
-            List<string> found = new List<string>();
+            List<string> found = [];
             for (int i = 0; i < input.Length - 3; ++i)
             {
                 if (input[i] == input[i + 3] && input[i + 1] == input[i + 2] && input[i] != input[i + 1])
@@ -64,7 +63,7 @@ xyx[xyxy]xyx"
 
         private List<string> GetABA(string input)
         {
-            List<string> found = new List<string>();
+            List<string> found = [];
             for (int i = 0; i < input.Length - 2; ++i)
             {
                 if (input[i] == input[i + 2] && input[i] != input[i + 1])
@@ -75,14 +74,14 @@ xyx[xyxy]xyx"
             return found;
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, Func<string, List<string>> patternFunc, bool checkSupernet)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, Func<string, List<string>> patternFunc, bool checkSupernet)
         {
             int tlsSupportCount = 0;
             foreach (string input in inputs)
             {
-                List<string> patterns = new List<string>();
-                List<string> revPatterns = new List<string>();
-                string[] split = input.Replace("[", "[|").Split("[]".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                List<string> patterns = [];
+                List<string> revPatterns = [];
+                string[] split = Util.String.Split(input.Replace("[", "[|"), "[]");
                 foreach (string s in split)
                 {
                     bool supernetSeq = s.First() == '|';
@@ -106,7 +105,7 @@ xyx[xyxy]xyx"
                             continue;
                         }
 
-                        if (patterns.Intersect(revPatterns).Count() == 0)
+                        if (!patterns.Intersect(revPatterns).Any())
                         {
                             continue;
                         }

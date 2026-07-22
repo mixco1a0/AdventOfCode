@@ -11,56 +11,49 @@ namespace AoC._2016
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Variables = new Dictionary<string, string> { { "gridW", "7" }, { "gridH", "3" } },
-                Output = "6",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Variables = new Dictionary<string, string> { { nameof(_GridH), "3" }, { nameof(_GridW), "7" } },
+                    Output = "6",
+                    RawInput =
 @"rect 3x2
 rotate column x=1 by 1
 rotate row y=0 by 4
 rotate column x=1 by 1"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
 
-        private string[] InitGrid(Dictionary<string, string> variables, out int gridW, out int gridH)
+#pragma warning disable IDE1006 // Naming Styles
+        private static string _GridH { get; }
+        private static string _GridW { get; }
+#pragma warning restore IDE1006 // Naming Styles
+
+        private static string[] InitGrid(Dictionary<string, string> variables, out int gridW, out int gridH)
         {
-            gridW = 50;
-            gridH = 6;
-            if (variables != null)
-            {
-                if (variables.ContainsKey(nameof(gridW)))
-                {
-                    gridW = int.Parse(variables[nameof(gridW)]);
-                }
-                if (variables.ContainsKey(nameof(gridH)))
-                {
-                    gridH = int.Parse(variables[nameof(gridH)]);
-                }
-            }
+            GetVariable(nameof(_GridH), 6, variables, out gridH);
+            GetVariable(nameof(_GridW), 50, variables, out gridW);
 
             string[] grid = new string[gridH];
             for (int i = 0; i < gridH; ++i)
@@ -83,7 +76,7 @@ rotate column x=1 by 1"
             public static Instruction Parse(string input)
             {
                 InstructionType type = InstructionType.Invalid;
-                string[] split = input.Split(" xby=".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(input, " xby=");
                 if (split[0] == "rect")
                 {
                     type = InstructionType.Rect;
@@ -101,10 +94,10 @@ rotate column x=1 by 1"
             }
         }
 
-        private void PerformRect(ref string[] grid, int x, int y)
+        private static void PerformRect(ref string[] grid, int x, int y)
         {
-            StringBuilder sb = new StringBuilder();
-            string newRow = new string(Util.Glyph.On, x);
+            StringBuilder sb = new();
+            string newRow = new(Util.Glyph.On, x);
             for (int i = 0; i < y; ++i)
             {
                 sb.Clear();
@@ -114,31 +107,30 @@ rotate column x=1 by 1"
             }
         }
 
-        private void PerformRow(ref string[] grid, int row, int count)
+        private static void PerformRow(ref string[] grid, int row, int count)
         {
             count = (count + grid[0].Length) % grid[0].Length;
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             string val = grid[row];
             sb.Append(val[^count..]);
-            sb.Append(val.Substring(0, val.Length - count));
+            sb.Append(val.AsSpan(0, val.Length - count));
             grid[row] = sb.ToString();
         }
 
-        private void PerformCol(ref string[] grid, int col, int count)
+        private static void PerformCol(ref string[] grid, int col, int count)
         {
             count = (count + grid.Length) % grid.Length;
             string val = string.Join("", grid.Select(g => g[col]));
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             sb.Append(val[count..]);
             sb.Append(val[0..count]);
-            grid = grid.Select((g, i) => $"{g[..col]}{sb[i]}{g[(col + 1)..]}").ToArray();
+            grid = [.. grid.Select((g, i) => $"{g[..col]}{sb[i]}{g[(col + 1)..]}")];
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool readGlyph)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool readGlyph)
         {
-            int gridW, gridH;
-            string[] grid = InitGrid(variables, out gridW, out gridH);
-            List<Instruction> instructions = inputs.Select(Instruction.Parse).ToList();
+            string[] grid = InitGrid(variables, out int gridW, out int gridH);
+            List<Instruction> instructions = [.. inputs.Select(Instruction.Parse)];
             foreach (Instruction instruction in instructions)
             {
                 switch (instruction.Type)
@@ -154,6 +146,7 @@ rotate column x=1 by 1"
                         break;
                 }
             }
+            
             if (readGlyph)
             {
                 return Util.GlyphConverter.Process(grid, Util.GlyphConverter.EType._5x6);
