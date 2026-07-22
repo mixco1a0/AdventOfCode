@@ -11,53 +11,52 @@ namespace AoC._2016
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "1985",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "1985",
+                    RawInput =
 @"ULL
 RRDDD
 LURDL
 UUUUD"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "5DB3",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "5DB3",
+                    RawInput =
 @"ULL
 RRDDD
 LURDL
 UUUUD"
-            });
+                },
+            ];
             return testData;
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, string[] numPad, Base.Vec2 start)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, string[] numPad, Base.Vec2 start)
         {
-            Base.Range range = new Base.Range(0, numPad.First().Length - 1);
-            StringBuilder code = new StringBuilder();
+            Base.Range range = new(0, numPad.First().Length - 1);
+            StringBuilder code = new();
             int x = start.X, y = start.Y;
             foreach (string input in inputs)
             {
                 foreach (char c in input)
                 {
-                    Base.Vec2 old = new Base.Vec2(x, y);
+                    Base.Vec2 old = new(x, y);
                     switch (c)
                     {
                         case 'U':
@@ -84,12 +83,12 @@ UUUUD"
             return code.ToString();
         }
 
-        static string[] numberPad1 = { "123", "456", "789" };
+        static readonly string[] numberPad1 = ["123", "456", "789"];
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
             => SharedSolution(inputs, variables, numberPad1, new Base.Vec2(1, 1));
 
-        static string[] numberPad2 = { "  1  ", " 234 ", "56789", " ABC ", "  D  " };
+        static readonly string[] numberPad2 = ["  1  ", " 234 ", "56789", " ABC ", "  D  "];
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
             => SharedSolution(inputs, variables, numberPad2, new Base.Vec2(0, 2));

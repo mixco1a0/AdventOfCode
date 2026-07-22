@@ -11,37 +11,36 @@ namespace AoC._2016
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "1514",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "1514",
+                    RawInput =
 @"aaaaa-bbb-z-y-x-123[abxyz]
 a-b-c-d-e-f-g-h-987[abcde]
 not-a-real-room-404[oarel]
 totally-real-room-200[decoy]"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
 
@@ -49,10 +48,10 @@ totally-real-room-200[decoy]"
         {
             static public Room Parse(string input)
             {
-                string[] split = input.Split("-[],".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                StringBuilder sb = new StringBuilder();
+                string[] split = Util.String.Split(input, "-[],");
+                StringBuilder sb = new();
                 split.SkipLast(2).ToList().ForEach(s => sb.Append(s));
-                return new Room(sb.ToString(), input.Split("0123456789".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).First(), long.Parse(split.TakeLast(2).First()), split.Last());
+                return new Room(sb.ToString(), Util.String.Split(input, "0123456789").First(), long.Parse(split.TakeLast(2).First()), split.Last());
             }
 
             private struct SortHelper
@@ -83,7 +82,7 @@ totally-real-room-200[decoy]"
 
             public string ShiftName()
             {
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
                 foreach (char c in RawName)
                 {
                     if (c == '-')
@@ -101,10 +100,10 @@ totally-real-room-200[decoy]"
             }
         };
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool nameShift)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool nameShift)
         {
-            List<Room> validRooms = new List<Room>();
-            List<Room> allRooms = inputs.Select(Room.Parse).ToList();
+            List<Room> validRooms = [];
+            List<Room> allRooms = [.. inputs.Select(Room.Parse)];
             long sectorIdSum = 0;
             foreach (Room room in allRooms)
             {

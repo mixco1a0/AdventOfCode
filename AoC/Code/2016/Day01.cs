@@ -10,59 +10,58 @@ namespace AoC._2016
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "5",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "5",
+                    RawInput =
 @"R2, L3"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "2",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "2",
+                    RawInput =
 @"R2, R2, R2"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "12",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "12",
+                    RawInput =
 @"R5, L5, R5, R3"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "4",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "4",
+                    RawInput =
 @"R8, R4, R4, R8"
-            });
+                },
+            ];
             return testData;
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool segmentCheck)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool segmentCheck)
         {
             // used for segment checks
-            List<Base.Segment> visited = new List<Base.Segment>();
-            Base.Vec2 prev = new Base.Vec2(0, 0);
+            List<Base.Ray2> visited = [];
+            Base.Vec2 prev = new(0, 0);
 
             int coordX = 0, coordY = 0, curDirection = 0;
-            string[] input = inputs[0].Split(" ,".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            string[] input = Util.String.Split(inputs[0], " ,");
             foreach (string i in input)
             {
                 curDirection += (i[0] == 'R' ? 1 : -1);
@@ -88,26 +87,27 @@ namespace AoC._2016
 
                 if (segmentCheck)
                 {
-                    Base.Segment cur = new Base.Segment(prev, new Base.Vec2(coordX, coordY));
-                    // Core.Log.WriteLine(Core.Log.ELevel.Spam, $"({cur.A.X,4},{cur.A.Y,4}) -> ({cur.B.X,4}, {cur.B.Y,4})");
+                    Base.Ray2 cur = Base.Ray2.FromPos(prev, new(coordX, coordY));
+                    // Core.Log.WriteLine(Core.Log.ELevel.Spam, $"({cur.Pos.X,4},{cur.Pos.Y,4}) -> ({cur.Next.X,4}, {cur.Next.Y,4})");
                     Base.Vec2 intersection = null;
                     // check for intersection
-                    foreach (Base.Segment visit in visited.Take(visited.Count - 1))
+                    foreach (Base.Ray2 visit in visited.Take(visited.Count - 1))
                     {
-                        intersection = cur.GetIntersection(visit);
-                        if (intersection != null)
+                        if (cur.Intersects(visit, out intersection))
                         {
                             break;
                         }
                     }
+
                     if (intersection != null)
                     {
                         coordX = intersection.X;
                         coordY = intersection.Y;
                         break;
                     }
+                    
                     visited.Add(cur);
-                    prev = cur.B;
+                    prev = cur.Next;
                 }
             }
             return (Math.Abs(coordX) + Math.Abs(coordY)).ToString();
