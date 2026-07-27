@@ -135,7 +135,7 @@ namespace AoC.Util
             Nodes[Start.X, Start.Y].Length = 0;
 
             // walk all the nodes
-            PriorityQueue<Base.Vec2, long> priorityQueue = new PriorityQueue<Base.Vec2, long>();
+            PriorityQueue<Base.Vec2, long> priorityQueue = new();
             priorityQueue.Enqueue(Start, 0);
             while (priorityQueue.Count > 0)
             {
@@ -197,7 +197,7 @@ namespace AoC.Util
         {
             for (int y = 0; y < MaxY; ++y)
             {
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
                 sb.Append($"{y,3} | ");
                 for (int x = 0; x < MaxX; ++x)
                 {
