@@ -11,25 +11,23 @@ namespace AoC._2023
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "136",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "136",
+                    RawInput =
 @"O....#....
 O.OO#....#
 .....##...
@@ -40,12 +38,12 @@ O.#..O.#.#
 .......O..
 #....###..
 #OO..#...."
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "64",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "64",
+                    RawInput =
 @"O....#....
 O.OO#....#
 .....##...
@@ -56,7 +54,8 @@ O.#..O.#.#
 .......O..
 #....###..
 #OO..#...."
-            });
+                },
+            ];
             return testData;
         }
 
@@ -187,11 +186,11 @@ O.#..O.#.#
             int totalLoad = 0;
             int xLoad = grid.GetLength(0), yLoad = grid.GetLength(1);
 
-            List<int> hashCycle = new List<int>();
+            List<int> hashCycle = [];
             int nonCycleIntro = 0;
             int cycleLength = -1;
             bool verifyCycle = false;
-            Queue<int> verifyQueue = new Queue<int>();
+            Queue<int> verifyQueue = new();
             bool doHash = true;
 
             if (fullCycle)

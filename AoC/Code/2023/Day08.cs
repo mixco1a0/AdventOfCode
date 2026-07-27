@@ -10,25 +10,23 @@ namespace AoC._2023
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "2",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "2",
+                    RawInput =
 @"RL
 
 AAA = (BBB, CCC)
@@ -38,22 +36,23 @@ DDD = (DDD, DDD)
 EEE = (EEE, EEE)
 GGG = (GGG, GGG)
 ZZZ = (ZZZ, ZZZ)"
-            }); testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "6",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "6",
+                    RawInput =
 @"LLR
 
 AAA = (BBB, BBB)
 BBB = (AAA, ZZZ)
 ZZZ = (ZZZ, ZZZ)"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "6",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "6",
+                    RawInput =
 @"LR
 
 11A = (11B, XXX)
@@ -64,7 +63,8 @@ ZZZ = (ZZZ, ZZZ)"
 22C = (22Z, 22Z)
 22Z = (22B, 22B)
 XXX = (XXX, XXX)"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -99,7 +99,7 @@ XXX = (XXX, XXX)"
                 Instructions = inputs.First();
                 Networks = inputs.Skip(2).Select(Network.Parse).ToList();
                 MappedNetworks = Networks.ToDictionary(n => n.Id, n => n);
-                InitialWalks = new List<InitialWalk>();
+                InitialWalks = [];
                 PrintFunc = printFunc;
             }
 
@@ -118,8 +118,8 @@ XXX = (XXX, XXX)"
                 foreach (string startNode in startNodes)
                 {
                     // find all potential ends
-                    HashSet<string> processed = new HashSet<string>();
-                    Queue<string> pending = new Queue<string>();
+                    HashSet<string> processed = [];
+                    Queue<string> pending = new();
                     pending.Enqueue(startNode);
                     while (pending.Count > 0)
                     {
@@ -141,7 +141,7 @@ XXX = (XXX, XXX)"
 
                     foreach (string endNode in possibleEndNodes)
                     {
-                        string finalNode = new string(endNode);
+                        string finalNode = new(endNode);
                         long stepCount = Walk(startNode, 0, ref finalNode);
                         InitialWalks.Add(new InitialWalk(startNode, finalNode, stepCount));
                         // PrintFunc($"{startNode} -> {endNode} in {stepCount} steps");
@@ -184,7 +184,7 @@ XXX = (XXX, XXX)"
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool ghostWalk)
         {
-            Map map = new Map(inputs, (_) => { });
+            Map map = new(inputs, (_) => { });
             // Map map = new Map(inputs, DebugWriteLine);
             if (ghostWalk)
             {

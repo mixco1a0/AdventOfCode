@@ -10,42 +10,41 @@ namespace AoC._2023
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "6440",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "6440",
+                    RawInput =
 @"32T3K 765
 T55J5 684
 KK677 28
 KTJJT 220
 QQQJA 483"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "5905",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "5905",
+                    RawInput =
 @"32T3K 765
 T55J5 684
 KK677 28
 KTJJT 220
 QQQJA 483"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -72,7 +71,7 @@ QQQJA 483"
             public string SortedHand { get; set; }
             public long Bid { get; set; }
 
-            private static Dictionary<char, char> EasyCompare = new Dictionary<char, char>()
+            private static Dictionary<char, char> EasyCompare = new()
             {
                 {'2', 'a'},
                 {'3', 'b'},
@@ -89,7 +88,7 @@ QQQJA 483"
                 {'A', 'm'},
             };
 
-            private static Dictionary<char, char> JokerCompare = new Dictionary<char, char>()
+            private static Dictionary<char, char> JokerCompare = new()
             {
                 {'J', 'a'},
                 {'2', 'b'},
@@ -117,7 +116,7 @@ QQQJA 483"
 
             public static Hand Parse(string input)
             {
-                Hand hand = new Hand();
+                Hand hand = new();
                 string[] split = Util.String.Split(input, ' ');
                 hand.RawHand = split[0];
                 if (UseJokers)

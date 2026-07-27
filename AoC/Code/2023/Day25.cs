@@ -12,66 +12,65 @@ namespace AoC._2023
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-//             testData.Add(new Core.TestDatum
-//             {
-//                 TestPart = Core.Part.One,
-//                 Output = "54",
-//                 RawInput =
-// @"jqt: rhn xhk nvd
-// rsh: frs pzl lsr
-// xhk: hfx
-// cmg: qnr nvd lhk bvb
-// rhn: xhk bvb hfx
-// bvb: xhk hfx
-// pzl: lsr hfx nvd
-// qnr: nvd
-// ntq: jqt hfx bvb xhk
-// nvd: lhk
-// lsr: lhk
-// rzs: qnr cmg lsr rsh
-// frs: qnr lhk lsr"
-//             });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                //             testData.Add(new Core.TestDatum
+                //             {
+                //                 TestPart = Core.Part.One,
+                //                 Output = "54",
+                //                 RawInput =
+                // @"jqt: rhn xhk nvd
+                // rsh: frs pzl lsr
+                // xhk: hfx
+                // cmg: qnr nvd lhk bvb
+                // rhn: xhk bvb hfx
+                // bvb: xhk hfx
+                // pzl: lsr hfx nvd
+                // qnr: nvd
+                // ntq: jqt hfx bvb xhk
+                // nvd: lhk
+                // lsr: lhk
+                // rzs: qnr cmg lsr rsh
+                // frs: qnr lhk lsr"
+                //             });
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
 
         private Dictionary<string, HashSet<string>> Parse(List<string> inputs)
         {
-            Dictionary<string, HashSet<string>> components = new Dictionary<string, HashSet<string>>();
+            Dictionary<string, HashSet<string>> components = [];
 
             foreach (string input in inputs)
             {
                 string[] split = Util.String.Split(input, ": ");
                 if (!components.ContainsKey(split[0]))
                 {
-                    components[split[0]] = new HashSet<string>();
+                    components[split[0]] = [];
                 }
                 foreach (string s in split[1..])
                 {
                     components[split[0]].Add(s);
                     if (!components.ContainsKey(s))
                     {
-                        components[s] = new HashSet<string>();
+                        components[s] = [];
                     }
                     components[s].Add(split[0]);
                 }
@@ -150,7 +149,7 @@ namespace AoC._2023
                 Nodes = components.Keys.Select(k => Node.New(k, 1)).ToHashSet();
                 // DebugIdToName = components.Keys.ToDictionary(k => k.GetHashCode(), k => k);
                 Dictionary<int, Node> allNodes = Nodes.ToDictionary(n => n.Id, _ => _);
-                List<Edge> edges = new();
+                List<Edge> edges = [];
                 foreach (var pair in components)
                 {
                     Node first = allNodes[pair.Key.GetHashCode()];
@@ -213,7 +212,7 @@ namespace AoC._2023
                 Nodes.Remove(toRemove.First);
                 Nodes.Remove(toRemove.Last);
 
-                List<Edge> updatedEdges = new List<Edge>();
+                List<Edge> updatedEdges = [];
                 Node newNode = toRemove.ConvertToNode();
                 Nodes.Add(newNode);
                 // StringBuilder sb = new StringBuilder();
@@ -256,7 +255,7 @@ namespace AoC._2023
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables)
         {
             Dictionary<string, HashSet<string>> components = Parse(inputs);
-            Graph graph = new Graph(components);
+            Graph graph = new(components);
             // graph.PrintState(Log);
 
             while (graph.Nodes.Count > 2)

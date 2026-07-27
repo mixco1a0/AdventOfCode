@@ -12,25 +12,23 @@ namespace AoC._2023
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "62",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "62",
+                    RawInput =
 @"R 6 (#70c710)
 D 5 (#0dc571)
 L 2 (#5713f0)
@@ -45,12 +43,12 @@ R 2 (#7807d2)
 U 3 (#a77fa3)
 L 2 (#015232)
 U 2 (#7a21e3)"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "952408144115",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "952408144115",
+                    RawInput =
 @"R 6 (#70c710)
 D 5 (#0dc571)
 L 2 (#5713f0)
@@ -65,7 +63,8 @@ R 2 (#7807d2)
 U 3 (#a77fa3)
 L 2 (#015232)
 U 2 (#7a21e3)"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -74,14 +73,14 @@ U 2 (#7a21e3)"
         private const char Empty = '.';
 
         private enum Direction { North = 'U', South = 'D', East = 'R', West = 'L', None = '.' }
-        private static Dictionary<Direction, Base.Vec2L> Next = new Dictionary<Direction, Base.Vec2L>()
+        private static Dictionary<Direction, Base.Vec2L> Next = new()
         {
             {Direction.North, new Base.Vec2L(0, -1)},
             {Direction.South, new Base.Vec2L(0, 1)},
             {Direction.East, new Base.Vec2L(1, 0)},
             {Direction.West, new Base.Vec2L(-1, 0)}
         };
-        static readonly Base.Vec2L[] GridMoves = new Base.Vec2L[] { new Base.Vec2L(0, 1), new Base.Vec2L(1, 0), new Base.Vec2L(-1, 0), new Base.Vec2L(0, -1) };
+        static readonly Base.Vec2L[] GridMoves = new Base.Vec2L[] { new(0, 1), new(1, 0), new(-1, 0), new(0, -1) };
 
         private record Instruction(Direction Direction, long Meters, string RGB)
         {
@@ -128,11 +127,11 @@ U 2 (#7a21e3)"
                 instructions = inputs.Select(Instruction.Parse).ToList();
             }
 
-            positions = new List<Base.Vec2L>();
-            Base.Vec2L cur = new Base.Vec2L(), min = new Base.Vec2L();
+            positions = [];
+            Base.Vec2L cur = new(), min = new();
             foreach (Instruction instruction in instructions)
             {
-                Base.Vec2L next = new Base.Vec2L();
+                Base.Vec2L next = new();
                 switch (instruction.Direction)
                 {
                     case Direction.North:

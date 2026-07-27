@@ -10,25 +10,23 @@ namespace AoC._2023
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "19114",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "19114",
+                    RawInput =
 @"px{a<2006:qkq,m>2090:A,rfg}
 pv{a>1716:R,A}
 lnx{m>1548:A,A}
@@ -46,12 +44,12 @@ hdj{m>838:A,pv}
 {x=2036,m=264,a=79,s=2244}
 {x=2461,m=1339,a=466,s=291}
 {x=2127,m=1623,a=2188,s=1013}"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "167409079868000",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "167409079868000",
+                    RawInput =
 @"px{a<2006:qkq,m>2090:A,rfg}
 pv{a>1716:R,A}
 lnx{m>1548:A,A}
@@ -69,7 +67,8 @@ hdj{m>838:A,pv}
 {x=2036,m=264,a=79,s=2244}
 {x=2461,m=1339,a=466,s=291}
 {x=2127,m=1623,a=2188,s=1013}"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -113,7 +112,7 @@ hdj{m>838:A,pv}
             public static Workflow Parse(string input)
             {
                 string[] split = Util.String.Split(input, "{,}");
-                List<Rule> rules = new List<Rule>();
+                List<Rule> rules = [];
                 foreach (string s in split.Skip(1))
                 {
                     if (s.Contains(':'))
@@ -162,7 +161,7 @@ hdj{m>838:A,pv}
             public static PartRating Parse(string input)
             {
                 string[] split = Util.String.Split(input, "{=, }");
-                Dictionary<Part, int> ratings = new Dictionary<Part, int>();
+                Dictionary<Part, int> ratings = [];
                 Part key = Part.None;
                 foreach (string s in split)
                 {
@@ -203,7 +202,7 @@ hdj{m>838:A,pv}
         {
             Dictionary<string, List<Rule>> workflowDictionary = workflows.ToDictionary(w => w.Id, w => w.Rules);
             // TODO: don't use Pos2, needs a range or something else
-            Dictionary<Part, Base.Vec2> completeState = new Dictionary<Part, Base.Vec2>()
+            Dictionary<Part, Base.Vec2> completeState = new()
             {
                 {Part.X, new Base.Vec2(1, 4000)},
                 {Part.M, new Base.Vec2(1, 4000)},
@@ -287,7 +286,7 @@ hdj{m>838:A,pv}
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool findAll)
         {
             ParseInput(inputs, out List<Workflow> workflows, out List<PartRating> partRatings);
-            Dictionary<PartRating, string> partLocations = new Dictionary<PartRating, string>();
+            Dictionary<PartRating, string> partLocations = [];
             foreach (PartRating pr in partRatings)
             {
                 partLocations[pr] = Initial;
@@ -303,7 +302,7 @@ hdj{m>838:A,pv}
             while (process)
             {
                 process = false;
-                Dictionary<PartRating, string> newLocations = new Dictionary<PartRating, string>();
+                Dictionary<PartRating, string> newLocations = [];
                 foreach (var pl in partLocations)
                 {
                     if (pl.Value == Accept || pl.Value == Reject)

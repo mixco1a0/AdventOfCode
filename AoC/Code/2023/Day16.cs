@@ -11,25 +11,23 @@ namespace AoC._2023
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "46",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "46",
+                    RawInput =
 @".|...\....
 |.-.\.....
 .....|-...
@@ -40,12 +38,12 @@ namespace AoC._2023
 .-.-/..|..
 .|....-|.\
 ..//.|...."
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "51",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "51",
+                    RawInput =
 @".|...\....
 |.-.\.....
 .....|-...
@@ -56,7 +54,8 @@ namespace AoC._2023
 .-.-/..|..
 .|....-|.\
 ..//.|...."
-            });
+                },
+            ];
             return testData;
         }
 
@@ -65,28 +64,28 @@ namespace AoC._2023
         private enum Dir { North, South, East, West }
         private record ReDirect(Dir Dir, Base.Vec2 Re);
 
-        private static Dictionary<Node, Dictionary<Dir, List<ReDirect>>> ReDirects = new Dictionary<Node, Dictionary<Dir, List<ReDirect>>>()
+        private static Dictionary<Node, Dictionary<Dir, List<ReDirect>>> ReDirects = new()
         {
             { Node.Empty, new Dictionary<Dir, List<ReDirect>>()
             {
                 { Dir.North, new List<ReDirect>()
                     {
-                        new ReDirect(Dir.North, new Base.Vec2(0, -1))
+                        new(Dir.North, new Base.Vec2(0, -1))
                     }
                 },
                 { Dir.South, new List<ReDirect>()
                     {
-                        new ReDirect(Dir.South, new Base.Vec2(0, 1))
+                        new(Dir.South, new Base.Vec2(0, 1))
                     }
                 },
                 { Dir.East, new List<ReDirect>()
                     {
-                        new ReDirect(Dir.East, new Base.Vec2(1, 0))
+                        new(Dir.East, new Base.Vec2(1, 0))
                     }
                 },
                 { Dir.West, new List<ReDirect>()
                     {
-                        new ReDirect(Dir.West, new Base.Vec2(-1, 0))
+                        new(Dir.West, new Base.Vec2(-1, 0))
                     }
                 },
             }},
@@ -94,22 +93,22 @@ namespace AoC._2023
             {
                 { Dir.North, new List<ReDirect>()
                     {
-                        new ReDirect(Dir.East, new Base.Vec2(1, 0))
+                        new(Dir.East, new Base.Vec2(1, 0))
                     }
                 },
                 { Dir.South, new List<ReDirect>()
                     {
-                        new ReDirect(Dir.West, new Base.Vec2(-1, 0))
+                        new(Dir.West, new Base.Vec2(-1, 0))
                     }
                 },
                 { Dir.East, new List<ReDirect>()
                     {
-                        new ReDirect(Dir.North, new Base.Vec2(0, -1))
+                        new(Dir.North, new Base.Vec2(0, -1))
                     }
                 },
                 { Dir.West, new List<ReDirect>()
                     {
-                        new ReDirect(Dir.South, new Base.Vec2(0, 1))
+                        new(Dir.South, new Base.Vec2(0, 1))
                     }
                 },
             }},
@@ -117,22 +116,22 @@ namespace AoC._2023
             {
                 { Dir.North, new List<ReDirect>()
                     {
-                        new ReDirect(Dir.West, new Base.Vec2(-1, 0))
+                        new(Dir.West, new Base.Vec2(-1, 0))
                     }
                 },
                 { Dir.South, new List<ReDirect>()
                     {
-                        new ReDirect(Dir.East, new Base.Vec2(1, 0))
+                        new(Dir.East, new Base.Vec2(1, 0))
                     }
                 },
                 { Dir.East, new List<ReDirect>()
                     {
-                        new ReDirect(Dir.South, new Base.Vec2(0, 1))
+                        new(Dir.South, new Base.Vec2(0, 1))
                     }
                 },
                 { Dir.West, new List<ReDirect>()
                     {
-                        new ReDirect(Dir.North, new Base.Vec2(0, -1))
+                        new(Dir.North, new Base.Vec2(0, -1))
                     }
                 },
             }},
@@ -140,24 +139,24 @@ namespace AoC._2023
             {
                 { Dir.North, new List<ReDirect>()
                     {
-                        new ReDirect(Dir.North, new Base.Vec2(0, -1))
+                        new(Dir.North, new Base.Vec2(0, -1))
                     }
                 },
                 { Dir.South, new List<ReDirect>()
                     {
-                        new ReDirect(Dir.South, new Base.Vec2(0, 1))
+                        new(Dir.South, new Base.Vec2(0, 1))
                     }
                 },
                 { Dir.East, new List<ReDirect>()
                     {
-                        new ReDirect(Dir.North, new Base.Vec2(0, -1)),
-                        new ReDirect(Dir.South, new Base.Vec2(0, 1))
+                        new(Dir.North, new Base.Vec2(0, -1)),
+                        new(Dir.South, new Base.Vec2(0, 1))
                     }
                 },
                 { Dir.West, new List<ReDirect>()
                     {
-                        new ReDirect(Dir.North, new Base.Vec2(0, -1)),
-                        new ReDirect(Dir.South, new Base.Vec2(0, 1))
+                        new(Dir.North, new Base.Vec2(0, -1)),
+                        new(Dir.South, new Base.Vec2(0, 1))
                     }
                 },
             }},
@@ -165,24 +164,24 @@ namespace AoC._2023
             {
                 { Dir.North, new List<ReDirect>()
                     {
-                        new ReDirect(Dir.East, new Base.Vec2(1, 0)),
-                        new ReDirect(Dir.West, new Base.Vec2(-1, 0))
+                        new(Dir.East, new Base.Vec2(1, 0)),
+                        new(Dir.West, new Base.Vec2(-1, 0))
                     }
                 },
                 { Dir.South, new List<ReDirect>()
                     {
-                        new ReDirect(Dir.East, new Base.Vec2(1, 0)),
-                        new ReDirect(Dir.West, new Base.Vec2(-1, 0))
+                        new(Dir.East, new Base.Vec2(1, 0)),
+                        new(Dir.West, new Base.Vec2(-1, 0))
                     }
                 },
                 { Dir.East, new List<ReDirect>()
                     {
-                        new ReDirect(Dir.East, new Base.Vec2(1, 0))
+                        new(Dir.East, new Base.Vec2(1, 0))
                     }
                 },
                 { Dir.West, new List<ReDirect>()
                     {
-                        new ReDirect(Dir.West, new Base.Vec2(-1, 0))
+                        new(Dir.West, new Base.Vec2(-1, 0))
                     }
                 },
             }},
@@ -198,20 +197,14 @@ namespace AoC._2023
 
         private Node GetNode(char node)
         {
-            switch (node)
+            return node switch
             {
-                case '/':
-                    return Node.Pos45;
-                case '\\':
-                    return Node.Neg45;
-                case '-':
-                    return Node.HSplit;
-                case '|':
-                    return Node.VSplit;
-                case '.':
-                default:
-                    return Node.Empty;
-            }
+                '/' => Node.Pos45,
+                '\\' => Node.Neg45,
+                '-' => Node.HSplit,
+                '|' => Node.VSplit,
+                _ => Node.Empty,
+            };
         }
 
         private void ParseInput(List<string> inputs, out Node[,] nodes)
@@ -228,7 +221,7 @@ namespace AoC._2023
 
         private void PrintGrid(Node[,] nodes)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             Core.Log.WriteLine(Core.Log.ELevel.Debug, $"Printing grid {nodes.GetLength(0)}x{nodes.GetLength(1)}:");
             for (int y = 0; y < nodes.GetLength(1); ++y)
             {
@@ -244,8 +237,8 @@ namespace AoC._2023
             int xMax = nodes.GetLength(0);
             int yMax = nodes.GetLength(1);
 
-            HashSet<Target> visited = new HashSet<Target>();
-            Stack<Target> targets = new Stack<Target>();
+            HashSet<Target> visited = [];
+            Stack<Target> targets = new();
             targets.Push(new Target(startPos, startDir));
             while (targets.Count > 0)
             {

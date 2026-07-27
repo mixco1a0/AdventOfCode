@@ -10,34 +10,33 @@ namespace AoC._2023
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "1320",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "1320",
+                    RawInput =
 @"rn=1,cm-,qp=3,cm=2,qp-,pc=4,ot=9,ab=5,pc-,pc=6,ot=7"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "145",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "145",
+                    RawInput =
 @"rn=1,cm-,qp=3,cm=2,qp-,pc=4,ot=9,ab=5,pc-,pc=6,ot=7"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -50,7 +49,7 @@ namespace AoC._2023
 
             public static Sequence Parse(string input)
             {
-                Sequence sequence = new Sequence();
+                Sequence sequence = new();
                 sequence.Raw = input;
                 string[] split = Util.String.Split(input, "=-");
                 sequence.Id = split[0];
@@ -111,13 +110,13 @@ namespace AoC._2023
                 return sequences.Select(s => s.RawHash()).Sum().ToString();
             }
 
-            Dictionary<long, List<Sequence>> boxes = new Dictionary<long, List<Sequence>>();
+            Dictionary<long, List<Sequence>> boxes = [];
             foreach (Sequence sequence in sequences)
             {
                 long hash = sequence.IdHash();
                 if (!boxes.ContainsKey(hash))
                 {
-                    boxes[hash] = new List<Sequence>();
+                    boxes[hash] = [];
                 }
 
                 var lenses = boxes[hash];

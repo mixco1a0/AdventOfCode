@@ -10,25 +10,23 @@ namespace AoC._2023
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "35",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "35",
+                    RawInput =
 @"seeds: 79 14 55 13
 
 seed-to-soil map:
@@ -62,12 +60,12 @@ temperature-to-humidity map:
 humidity-to-location map:
 60 56 37
 56 93 4"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "46",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "46",
+                    RawInput =
 @"seeds: 79 14 55 13
 
 seed-to-soil map:
@@ -101,7 +99,8 @@ temperature-to-humidity map:
 humidity-to-location map:
 60 56 37
 56 93 4"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -130,14 +129,14 @@ humidity-to-location map:
 
             public Almanac(List<string> inputs, bool simpleParse)
             {
-                Seeds = new List<Base.RangeL>();
-                SoilMap = new List<Base.KeyVal<Base.RangeL, long>>();
-                FertilizerMap = new List<Base.KeyVal<Base.RangeL, long>>();
-                WaterMap = new List<Base.KeyVal<Base.RangeL, long>>();
-                LightMap = new List<Base.KeyVal<Base.RangeL, long>>();
-                TempMap = new List<Base.KeyVal<Base.RangeL, long>>();
-                HumidityMap = new List<Base.KeyVal<Base.RangeL, long>>();
-                LocMap = new List<Base.KeyVal<Base.RangeL, long>>();
+                Seeds = [];
+                SoilMap = [];
+                FertilizerMap = [];
+                WaterMap = [];
+                LightMap = [];
+                TempMap = [];
+                HumidityMap = [];
+                LocMap = [];
 
                 Mapping mapping = Mapping.Seed;
                 foreach (string input in inputs)
@@ -161,7 +160,7 @@ humidity-to-location map:
                         Seeds = input.Split(": ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Where(s => long.TryParse(s, out long result)).Select(long.Parse).Select(s => new Base.RangeL(s, s)).ToList();
                         if (!simpleParse)
                         {
-                            Queue<Base.RangeL> complexList = new Queue<Base.RangeL>(Seeds);
+                            Queue<Base.RangeL> complexList = new(Seeds);
                             Seeds.Clear();
                             while (complexList.Count > 0)
                             {
@@ -215,13 +214,13 @@ humidity-to-location map:
                 //split[1] = source
                 //split[2] = range length
                 long diff = split[0] - split[1];
-                Base.RangeL sourceToDest = new Base.RangeL(split[1], split[1] + split[2] - 1);
+                Base.RangeL sourceToDest = new(split[1], split[1] + split[2] - 1);
                 curList.Add(new Base.KeyVal<Base.RangeL, long>(sourceToDest, diff));
             }
 
             public long GetLowestLocation()
             {
-                List<Base.RangeL> numbersToConvert = new List<Base.RangeL>(Seeds);
+                List<Base.RangeL> numbersToConvert = new(Seeds);
                 Convert(Mapping.Soil, ref numbersToConvert);
                 Convert(Mapping.Fertilizer, ref numbersToConvert);
                 Convert(Mapping.Water, ref numbersToConvert);
@@ -235,7 +234,7 @@ humidity-to-location map:
             private void Convert(Mapping mapping, ref List<Base.RangeL> ranges)
             {
                 GetMap(mapping, out List<Base.KeyVal<Base.RangeL, long>> list);
-                List<Base.RangeL> converted = new List<Base.RangeL>();
+                List<Base.RangeL> converted = [];
                 foreach (Base.RangeL range in ranges)
                 {
                     for (long curNumber = range.Min; curNumber <= range.Max; ++curNumber)
@@ -247,8 +246,8 @@ humidity-to-location map:
                             long maxCount = Math.Min(curKey.Key.Max, range.Max) - curNumber;
                             long convertedValue = curNumber + curKey.Val;
 
-                            Base.RangeL preConvertedRange = new Base.RangeL(curNumber, curNumber + maxCount);
-                            Base.RangeL convertedRange = new Base.RangeL(convertedValue, convertedValue + maxCount);
+                            Base.RangeL preConvertedRange = new(curNumber, curNumber + maxCount);
+                            Base.RangeL convertedRange = new(convertedValue, convertedValue + maxCount);
                             converted.Add(convertedRange);
                             curNumber += maxCount;
                         }
@@ -275,7 +274,7 @@ humidity-to-location map:
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool simpleParse)
         {
-            Almanac almanac = new Almanac(inputs, simpleParse);
+            Almanac almanac = new(inputs, simpleParse);
             return almanac.GetLowestLocation().ToString();
         }
 

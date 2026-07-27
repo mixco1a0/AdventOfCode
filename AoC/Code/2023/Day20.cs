@@ -10,49 +10,48 @@ namespace AoC._2023
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "32000000",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "32000000",
+                    RawInput =
 @"%a -> b
 broadcaster -> a, b, c
 %b -> c
 %c -> inv
 &inv -> a"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "11687500",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "11687500",
+                    RawInput =
 @"broadcaster -> a
 %a -> inv, con
 &inv -> b
 %b -> con
 &con -> output"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
 
@@ -87,8 +86,8 @@ broadcaster -> a, b, c
             {
                 Id = id;
                 Type = EType.None;
-                Targets = new List<string>();
-                Received = new Dictionary<string, bool>();
+                Targets = [];
+                Received = [];
                 On = false;
             }
 
@@ -97,7 +96,7 @@ broadcaster -> a, b, c
                 Id = id;
                 Type = type;
                 Targets = new List<string>(targets);
-                Received = new Dictionary<string, bool>();
+                Received = [];
                 On = false;
             }
 
@@ -184,8 +183,8 @@ broadcaster -> a, b, c
         {
             ParseInput(inputs, out List<Module> modules);
             Dictionary<string, Module> moduleMap = modules.ToDictionary(m => m.Id, m => m);
-            Dictionary<string, bool> moduleStates = new Dictionary<string, bool>();
-            Queue<Pulse> pulses = new Queue<Pulse>();
+            Dictionary<string, bool> moduleStates = [];
+            Queue<Pulse> pulses = new();
             long lowCount = 0, highCount = 0;
             string mainId = modules.Where(m => m.Targets.Contains(Rx)).FirstOrDefault()?.Id;
             Dictionary<string, long> cycleModules = modules.Where(m => m.Targets.Contains(mainId)).Select(m => m.Id).ToDictionary(id => id, id => (long)0);

@@ -10,25 +10,23 @@ namespace AoC._2023
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "374",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "374",
+                    RawInput =
 @"...#......
 .......#..
 #.........
@@ -39,13 +37,13 @@ namespace AoC._2023
 ..........
 .......#..
 #...#....."
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Variables = new Dictionary<string, string> { { nameof(_ExpansionMultiplier), "10" } },
-                Output = "1030",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Variables = new Dictionary<string, string> { { nameof(_ExpansionMultiplier), "10" } },
+                    Output = "1030",
+                    RawInput =
 @"...#......
 .......#..
 #.........
@@ -56,13 +54,13 @@ namespace AoC._2023
 ..........
 .......#..
 #...#....."
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Variables = new Dictionary<string, string> { { nameof(_ExpansionMultiplier), "100" } },
-                Output = "8410",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Variables = new Dictionary<string, string> { { nameof(_ExpansionMultiplier), "100" } },
+                    Output = "8410",
+                    RawInput =
 @"...#......
 .......#..
 #.........
@@ -73,7 +71,8 @@ namespace AoC._2023
 ..........
 .......#..
 #...#....."
-            });
+                },
+            ];
             return testData;
         }
 
@@ -81,10 +80,10 @@ namespace AoC._2023
 
         private char[][] ExpandUniverse(List<string> inputs, out HashSet<int> emptyRows, out HashSet<int> emptyCols)
         {
-            emptyRows = new HashSet<int>();
-            emptyCols = new HashSet<int>();
+            emptyRows = [];
+            emptyCols = [];
 
-            List<string> expandedY = new List<string>();
+            List<string> expandedY = [];
             int i = 0;
             foreach (string input in inputs)
             {
@@ -96,7 +95,7 @@ namespace AoC._2023
                 ++i;
             }
             Util.Grid2.Rotate(true, ref expandedY);
-            List<string> expandedX = new List<string>();
+            List<string> expandedX = [];
             i = 0;
             foreach (string input in expandedY)
             {
@@ -115,7 +114,7 @@ namespace AoC._2023
 
         private Galaxy[] GetGalaxies(char[][] universe)
         {
-            List<Galaxy> galaxies = new List<Galaxy>();
+            List<Galaxy> galaxies = [];
             int galaxyId = 1;
             for (int y = 0; y < universe.Length; ++y)
             {

@@ -10,25 +10,25 @@ namespace AoC._2023
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
                 // case Core.Part.One:
                 //     return "v1";
                 // case Core.Part.Two:
                 //     return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "5",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "5",
+                    RawInput =
 @"1,0,1~1,2,1
 0,0,2~2,0,2
 0,2,3~2,2,3
@@ -36,12 +36,12 @@ namespace AoC._2023
 2,0,5~2,2,5
 0,1,6~2,1,6
 1,1,8~1,1,9"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "7",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "7",
+                    RawInput =
 @"1,0,1~1,2,1
 0,0,2~2,0,2
 0,2,3~2,2,3
@@ -49,7 +49,8 @@ namespace AoC._2023
 2,0,5~2,2,5
 0,1,6~2,1,6
 1,1,8~1,1,9"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -104,17 +105,17 @@ namespace AoC._2023
         private int SettleBricks(List<Brick> bricks, out Dictionary<int, List<BrickSpace>> brickOccupiedSpaces, out List<Brick> settledBricks, out Dictionary<int, HashSet<int>> supports)
         {
             int settledBrickCount = 0;
-            brickOccupiedSpaces = new Dictionary<int, List<BrickSpace>>();
-            settledBricks = new List<Brick>();
+            brickOccupiedSpaces = [];
+            settledBricks = [];
 
-            Dictionary<int, HashSet<int>> localSupports = new Dictionary<int, HashSet<int>>();
+            Dictionary<int, HashSet<int>> localSupports = [];
             Action<Brick, IEnumerable<BrickSpace>> addSupport = (brick, potential) =>
             {
                 foreach (BrickSpace bs in potential)
                 {
                     if (!localSupports.ContainsKey(bs.Owner))
                     {
-                        localSupports[bs.Owner] = new HashSet<int>();
+                        localSupports[bs.Owner] = [];
                     }
                     localSupports[bs.Owner].Add(brick.Id);
                     // Log($"Brick {bs.Owner} is supporting {brick.Id}");
@@ -194,7 +195,7 @@ namespace AoC._2023
                 {
                     if (!brickOccupiedSpaces.ContainsKey(z))
                     {
-                        brickOccupiedSpaces[z] = new List<BrickSpace>();
+                        brickOccupiedSpaces[z] = [];
                     }
 
                     for (int y = brick.Start.Y; y <= brick.End.Y; ++y)
@@ -218,7 +219,7 @@ namespace AoC._2023
             SettleBricks(originalBricks, out Dictionary<int, List<BrickSpace>> brickOccupiedSpaces, out List<Brick> settledBricks, out Dictionary<int, HashSet<int>> supports);
 
             int safeToDestroy = 0;
-            HashSet<int> supportBricks = new HashSet<int>();
+            HashSet<int> supportBricks = [];
             foreach (var pair in supports)
             {
                 bool canBreak = true;

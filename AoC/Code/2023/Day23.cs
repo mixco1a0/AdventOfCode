@@ -11,25 +11,25 @@ namespace AoC._2023
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
                 // case Core.Part.One:
                 //     return "v1";
                 // case Core.Part.Two:
                 //     return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "94",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "94",
+                    RawInput =
 @"#.#####################
 #.......#########...###
 #######.#########.#.###
@@ -53,12 +53,12 @@ namespace AoC._2023
 #.###.###.#.###.#.#v###
 #.....###...###...#...#
 #####################.#"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "154",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "154",
+                    RawInput =
 @"#.#####################
 #.......#########...###
 #######.#########.#.###
@@ -82,21 +82,22 @@ namespace AoC._2023
 #.###.###.#.###.#.#v###
 #.....###...###...#...#
 #####################.#"
-            });
+                },
+            ];
             return testData;
         }
 
         private static char Path = '.';
         private static char Forest = '#';
 
-        static readonly Base.Vec2L[] GridMoves = new Base.Vec2L[] { new Base.Vec2L(0, 1), new Base.Vec2L(1, 0), new Base.Vec2L(-1, 0), new Base.Vec2L(0, -1) };
-        static readonly Dictionary<char, Base.Vec2[]> PathMoves = new Dictionary<char, Base.Vec2[]>()
+        static readonly Base.Vec2L[] GridMoves = new Base.Vec2L[] { new(0, 1), new(1, 0), new(-1, 0), new(0, -1) };
+        static readonly Dictionary<char, Base.Vec2[]> PathMoves = new()
         {
-            {Path, new Base.Vec2[] { new Base.Vec2(0, 1), new Base.Vec2(1, 0), new Base.Vec2(-1, 0), new Base.Vec2(0, -1) }},
-            {'^',  new Base.Vec2[] { new Base.Vec2(0, -1) }},
-            {'>',  new Base.Vec2[] { new Base.Vec2(1, 0)  }},
-            {'<',  new Base.Vec2[] { new Base.Vec2(-1, 0) }},
-            {'v',  new Base.Vec2[] { new Base.Vec2(0, 1)  }},
+            {Path, new Base.Vec2[] { new(0, 1), new(1, 0), new(-1, 0), new(0, -1) }},
+            {'^',  new Base.Vec2[] { new(0, -1) }},
+            {'>',  new Base.Vec2[] { new(1, 0)  }},
+            {'<',  new Base.Vec2[] { new(-1, 0) }},
+            {'v',  new Base.Vec2[] { new(0, 1)  }},
         };
 
         private void ParseInput(List<string> inputs, bool slippery, out char[,] grid, out Base.Vec2 start, out Base.Vec2 end, out int xMax, out int yMax)
@@ -140,12 +141,12 @@ namespace AoC._2023
             public Trail()
             {
                 Pos = new Base.Vec2();
-                Paths = new Dictionary<Base.Vec2, int>();
+                Paths = [];
             }
 
             public override string ToString()
             {
-                StringBuilder stringBuilder = new StringBuilder();
+                StringBuilder stringBuilder = new();
                 if (Paths.Count > 0)
                 {
                     foreach (var pair in Paths)
@@ -162,8 +163,8 @@ namespace AoC._2023
         private void GenerateTrails(char[,] grid, Base.Vec2 start, Base.Vec2 curPos, Base.Vec2 end, int xMax, int yMax, ref Dictionary<Base.Vec2, Trail> trails)
         {
             // Log($"Checking {start}");
-            HashSet<Base.Vec2> visited = new HashSet<Base.Vec2>() { start };
-            HashSet<Base.Vec2> split = new HashSet<Base.Vec2>();
+            HashSet<Base.Vec2> visited = [start];
+            HashSet<Base.Vec2> split = [];
             int length = start.Manhattan(curPos);
             while (true)
             {
@@ -178,7 +179,7 @@ namespace AoC._2023
                     return;
                 }
 
-                List<Base.Vec2> potentials = new List<Base.Vec2>();
+                List<Base.Vec2> potentials = [];
                 foreach (Base.Vec2 movePos2 in PathMoves[path])
                 {
                     Base.Vec2 nextPos2 = curPos + movePos2;
@@ -261,11 +262,13 @@ namespace AoC._2023
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool slippery)
         {
             ParseInput(inputs, slippery, out char[,] grid, out Base.Vec2 start, out Base.Vec2 end, out int xMax, out int yMax);
-            Dictionary<Base.Vec2, Trail> trails = new Dictionary<Base.Vec2, Trail>();
-            trails[start] = new Trail() { Pos = start };
+            Dictionary<Base.Vec2, Trail> trails = new()
+            {
+                [start] = new Trail() { Pos = start }
+            };
             GenerateTrails(grid, start, start, end, xMax, yMax, ref trails);
             trails[end] = new Trail() { Pos = end };
-            GetLongestTrail(trails, start, end, new HashSet<Base.Vec2>(), out int longestTrail);
+            GetLongestTrail(trails, start, end, [], out int longestTrail);
             return longestTrail.ToString();
         }
 

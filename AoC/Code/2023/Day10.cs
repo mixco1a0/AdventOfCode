@@ -11,48 +11,46 @@ namespace AoC._2023
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "8",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "8",
+                    RawInput =
 @"..F7.
 .FJ|.
 SJ.L7
 |F--J
 LJ..."
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "2",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "2",
+                    RawInput =
 @".S--7.
 F|..|.
 .|F-J.
 .||.F7
 .|L-J|
 .L---J"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "8",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "8",
+                    RawInput =
 @".F----7F7F7F7F-7....
 .|F--7||||||||FJ....
 .||.FJ||||||||L7....
@@ -63,12 +61,12 @@ L--J.L7...LJS7F-7L7.
 .....|FJLJ|FJ|F7|.LJ
 ....FJL-7.||.||||...
 ....L---J.LJ.LJLJ..."
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "10",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "10",
+                    RawInput =
 @"FF7FSF7F7F7F7F7F---7
 L|LJ||||||||||||F--J
 FL-7LJLJ||||||LJL-77
@@ -79,24 +77,25 @@ L---JF-JLJ.||-FJLJJ7
 7-L-JL7||F7|L7F-7F7|
 L.L7LFJ|||||FJL7||LJ
 L7JLJL-JLJLJL--JLJ.L"
-            });
+                },
+            ];
             return testData;
         }
 
-        public Dictionary<char, List<Base.Vec2>> NextDirections = new Dictionary<char, List<Base.Vec2>>()
+        public Dictionary<char, List<Base.Vec2>> NextDirections = new()
         {
-            {'|', new List<Base.Vec2>() {new Base.Vec2(0, -1), new Base.Vec2(0, 1)}},
-            {'-', new List<Base.Vec2>() {new Base.Vec2(-1, 0), new Base.Vec2(1, 0)}},
-            {'L', new List<Base.Vec2>() {new Base.Vec2(0, -1), new Base.Vec2(1, 0)}},
-            {'J', new List<Base.Vec2>() {new Base.Vec2(-1, 0), new Base.Vec2(0, -1)}},
-            {'7', new List<Base.Vec2>() {new Base.Vec2(-1, 0), new Base.Vec2(0, 1)}},
-            {'F', new List<Base.Vec2>() {new Base.Vec2(0, 1), new Base.Vec2(1, 0)}},
+            {'|', new List<Base.Vec2>() {new(0, -1), new(0, 1)}},
+            {'-', new List<Base.Vec2>() {new(-1, 0), new(1, 0)}},
+            {'L', new List<Base.Vec2>() {new(0, -1), new(1, 0)}},
+            {'J', new List<Base.Vec2>() {new(-1, 0), new(0, -1)}},
+            {'7', new List<Base.Vec2>() {new(-1, 0), new(0, 1)}},
+            {'F', new List<Base.Vec2>() {new(0, 1), new(1, 0)}},
             {'.', new List<Base.Vec2>() {}},
         };
 
 
-        private List<Base.Vec2> Neighbors = new List<Base.Vec2>
-        {
+        private List<Base.Vec2> Neighbors =
+        [
             new Base.Vec2(-1, -1),
             new Base.Vec2(-1, 0),
             new Base.Vec2(-1, 1),
@@ -105,9 +104,9 @@ L7JLJL-JLJLJL--JLJ.L"
             new Base.Vec2(-1, -1),
             new Base.Vec2(0, -1),
             new Base.Vec2(1, -1),
-        };
+        ];
 
-        public Dictionary<char, List<string>> Expanded = new Dictionary<char, List<string>>()
+        public Dictionary<char, List<string>> Expanded = new()
         {
             {'|', new List<string>() {".|.", ".|.", ".|."}},
             {'-', new List<string>() {"...", "---", "..."}},
@@ -197,8 +196,8 @@ L7JLJL-JLJLJL--JLJ.L"
 
         private int StepThroughPipes(ref char[][] grid, ref char[][] gridSimple, int startX, int startY)
         {
-            PriorityQueue<Step, int> priorityQueue = new PriorityQueue<Step, int>();
-            Dictionary<Base.Vec2, int> visited = new Dictionary<Base.Vec2, int>();
+            PriorityQueue<Step, int> priorityQueue = new();
+            Dictionary<Base.Vec2, int> visited = [];
             priorityQueue.Enqueue(new Step(new Base.Vec2(startX, startY), 0), 0);
             int maxSteps = 0;
             while (priorityQueue.Count > 0)
@@ -239,10 +238,10 @@ L7JLJL-JLJLJL--JLJ.L"
 
         private char[][] Expand(char[][] source)
         {
-            List<string> expanded = new List<string>();
+            List<string> expanded = [];
             for (int y = 0; y < source.Length; ++y)
             {
-                StringBuilder row1 = new StringBuilder(), row2 = new StringBuilder(), row3 = new StringBuilder();
+                StringBuilder row1 = new(), row2 = new(), row3 = new();
                 for (int x = 0; x < source[y].Length; ++x)
                 {
                     row1.Append(Expanded[source[y][x]][0]);
@@ -258,7 +257,7 @@ L7JLJL-JLJLJL--JLJ.L"
 
         private void FloodFill(ref char[][] gridExpanded)
         {
-            Queue<Base.Vec2> queue = new Queue<Base.Vec2>();
+            Queue<Base.Vec2> queue = new();
             Func<char, bool> check = (c) => c != '#';
             for (int x = 0; x < gridExpanded[0].Length; ++x)
             {
@@ -307,7 +306,7 @@ L7JLJL-JLJLJL--JLJ.L"
         private char[][] Shrink(char[][] source)
         {
             List<string> source2 = source.Select(s => string.Join("", s)).ToList();
-            List<string> shrunk = new List<string>();
+            List<string> shrunk = [];
             for (int i = 0; i < source2.Count; ++i)
             {
                 if (i % 3 == 1)
