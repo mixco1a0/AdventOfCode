@@ -184,5 +184,39 @@ namespace AoC.Util
             PrimeFactors(number, out List<long> primeFactorsList);
             primeFactors = primeFactorsList.Distinct().ToDictionary(pf => pf, pf => primeFactorsList.Where(_pf => _pf == pf).Count());
         }
+        /// <summary>
+        /// Return the positive modulo using provided values
+        /// </summary>
+        /// <param name="dividend">value to be modded</param>
+        /// <param name="divisor">the number value needs to be modded by</param>
+        /// <returns></returns>
+        public static float Mod(float dividend, float divisor)
+        {
+            return (dividend % divisor + divisor) % divisor;
+        }
+                
+        /// <summary>
+        /// Call split on a string and then parse it into floats
+        /// </summary>
+        /// <param name="input">string of separated floats</param>
+        /// <param name="seperator">characters used as seperator</param>
+        /// <returns></returns>
+        public static IEnumerable<float> SplitF(string input, string seperators)
+        {
+            string[] split = String.Split(input, seperators);
+            return split.Where(s => float.TryParse(s, out float result)).Select(float.Parse);
+        }
+                
+        /// <summary>
+        /// Call split on a string and then parse it into floats
+        /// </summary>
+        /// <param name="input">string of separated floats</param>
+        /// <param name="seperator">character used as seperator</param>
+        /// <returns></returns>
+        public static IEnumerable<float> SplitF(string input, char seperator)
+        {
+            string[] split = String.Split(input, seperator);
+            return split.Where(s => float.TryParse(s, out float result)).Select(float.Parse);
+        }
     }
 }

@@ -287,7 +287,7 @@ namespace AoC.Base
 
 
     #region Vec2BI
-    public class Vec2BI : IVec2<Vec2BI, BigInteger>,  IEquatable<Vec2BI>, IComparable<Vec2BI>, IComparable
+    public class Vec2BI : IVec2<Vec2BI, BigInteger>, IEquatable<Vec2BI>, IComparable<Vec2BI>, IComparable
     {
         public BigInteger X { get; set; }
         public BigInteger Y { get; set; }
@@ -419,12 +419,13 @@ namespace AoC.Base
 
 
     #region Vec2F
-    public class Vec2F : IEquatable<Vec2F>, IComparable<Vec2F>, IComparable
+    public class Vec2F : IVec2<Vec2F, float>, IEquatable<Vec2F>, IComparable<Vec2F>, IComparable
     {
         public float X { get; set; }
         public float Y { get; set; }
 
-        public static readonly Vec2F Zero = new();
+        protected static readonly Vec2F _zero = new();
+        public static Vec2F Zero { get => _zero; }
 
         public Vec2F()
         {
@@ -451,10 +452,11 @@ namespace AoC.Base
                 return null;
             }
 
-            float[] split = [.. Util.String.Split(input, ',').Select(float.Parse)];
-            return new(split[0], split[1]);
+            IEnumerable<float> split = Util.Number.SplitF(input, ',');
+            return new(split.ElementAt(0), split.ElementAt(1));
         }
 
+        #region Interfaces
         public static Vec2F operator +(Vec2F a, Vec2F b)
         {
             return new(a.X + b.X, a.Y + b.Y);
@@ -470,13 +472,23 @@ namespace AoC.Base
             return new(a.X * mult, a.Y * mult);
         }
 
-        public static Vec2F operator /(Vec2F a, float mult)
+        public static Vec2F operator /(Vec2F a, float div)
         {
-            if (mult == 0.0f)
+            if (div == 0.0f)
             {
                 return new();
             }
-            return new(a.X / mult, a.Y / mult);
+            return new(a.X / div, a.Y / div);
+        }
+
+        public static Vec2F operator %(Vec2F a, float mod)
+        {
+            if (mod == 0.0f)
+            {
+                return new();
+            }
+
+            return new(Util.Number.Mod(a.X, mod), Util.Number.Mod(a.Y, mod));
         }
 
         public float Manhattan(Vec2F other)
@@ -484,7 +496,6 @@ namespace AoC.Base
             return Math.Abs(X - other.X) + Math.Abs(Y - other.Y);
         }
 
-        #region Interfaces
         public bool Equals(Vec2F other)
         {
             return X == other.X && Y == other.Y;
