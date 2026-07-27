@@ -7,6 +7,7 @@ namespace AoC.Util
 {
     public static class Number
     {
+        #region int functions
         /// <summary>
         /// Return the positive modulo using provided values
         /// </summary>
@@ -41,7 +42,9 @@ namespace AoC.Util
             string[] split = String.Split(input, seperator);
             return split.Where(s => int.TryParse(s, out int result)).Select(int.Parse);
         }
+        #endregion
 
+        #region long functions
         /// <summary>
         /// Return the positive modulo using provided values
         /// </summary>
@@ -77,41 +80,6 @@ namespace AoC.Util
             return split.Where(s => long.TryParse(s, out long result)).Select(long.Parse);
         }
         
-        /// <summary>
-        /// Return the positive modulo using provided values
-        /// </summary>
-        /// <param name="dividend">value to be modded</param>
-        /// <param name="divisor">the number value needs to be modded by</param>
-        /// <returns></returns>
-        public static BigInteger Mod(BigInteger dividend, BigInteger divisor)
-        {
-            return (dividend % divisor + divisor) % divisor;
-        }
-
-        /// <summary>
-        /// Call split on a string and then parse it into BigIntegers
-        /// </summary>
-        /// <param name="input">string of separated BigIntegers</param>
-        /// <param name="seperators">characters used as seperators</param>
-        /// <returns></returns>
-        public static IEnumerable<BigInteger> SplitBI(string input, string seperators)
-        {
-            string[] split = String.Split(input, seperators);
-            return split.Where(s => BigInteger.TryParse(s, out BigInteger result)).Select(BigInteger.Parse);
-        }
-
-        /// <summary>
-        /// Call split on a string and then parse it into BigIntegers
-        /// </summary>
-        /// <param name="input">string of separated BigIntegers</param>
-        /// <param name="seperator">character used as seperator</param>
-        /// <returns></returns>
-        public static IEnumerable<BigInteger> SplitBI(string input, char seperator)
-        {
-            string[] split = String.Split(input, seperator);
-            return split.Where(s => BigInteger.TryParse(s, out BigInteger result)).Select(BigInteger.Parse);
-        }
-
         /// <summary>
         /// Get the least common multiples
         /// </summary>
@@ -184,6 +152,46 @@ namespace AoC.Util
             PrimeFactors(number, out List<long> primeFactorsList);
             primeFactors = primeFactorsList.Distinct().ToDictionary(pf => pf, pf => primeFactorsList.Where(_pf => _pf == pf).Count());
         }
+        #endregion
+
+        #region bigint functions
+        /// <summary>
+        /// Return the positive modulo using provided values
+        /// </summary>
+        /// <param name="dividend">value to be modded</param>
+        /// <param name="divisor">the number value needs to be modded by</param>
+        /// <returns></returns>
+        public static BigInteger Mod(BigInteger dividend, BigInteger divisor)
+        {
+            return (dividend % divisor + divisor) % divisor;
+        }
+
+        /// <summary>
+        /// Call split on a string and then parse it into BigIntegers
+        /// </summary>
+        /// <param name="input">string of separated BigIntegers</param>
+        /// <param name="seperators">characters used as seperators</param>
+        /// <returns></returns>
+        public static IEnumerable<BigInteger> SplitBI(string input, string seperators)
+        {
+            string[] split = String.Split(input, seperators);
+            return split.Where(s => BigInteger.TryParse(s, out BigInteger result)).Select(BigInteger.Parse);
+        }
+
+        /// <summary>
+        /// Call split on a string and then parse it into BigIntegers
+        /// </summary>
+        /// <param name="input">string of separated BigIntegers</param>
+        /// <param name="seperator">character used as seperator</param>
+        /// <returns></returns>
+        public static IEnumerable<BigInteger> SplitBI(string input, char seperator)
+        {
+            string[] split = String.Split(input, seperator);
+            return split.Where(s => BigInteger.TryParse(s, out BigInteger result)).Select(BigInteger.Parse);
+        }
+        #endregion
+
+        #region float functions
         /// <summary>
         /// Return the positive modulo using provided values
         /// </summary>
@@ -218,6 +226,9 @@ namespace AoC.Util
             string[] split = String.Split(input, seperator);
             return split.Where(s => float.TryParse(s, out float result)).Select(float.Parse);
         }
+        #endregion
+        
+        #region double functions
         /// <summary>
         /// Return the positive modulo using provided values
         /// </summary>
@@ -252,5 +263,6 @@ namespace AoC.Util
             string[] split = String.Split(input, seperator);
             return split.Where(s => double.TryParse(s, out double result)).Select(double.Parse);
         }
+        #endregion
     }
 }
