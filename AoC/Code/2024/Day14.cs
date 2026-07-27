@@ -111,7 +111,8 @@ p=9,5 v=-3,-3"
                 foreach (Base.Ray2 robot in robots)
                 {
                     Base.Vec2 pos = robot.Tick(100);
-                    pos.Mod(tilesWide, tilesTall);
+                    pos.X = Util.Number.Mod(pos.X, tilesWide);
+                    pos.Y = Util.Number.Mod(pos.Y, tilesTall);
                     int quadrant = GetQuadrant(tilesWide, tilesTall, ref pos);
                     ++quadrants[quadrant];
                 }
@@ -133,7 +134,8 @@ p=9,5 v=-3,-3"
                 foreach (Base.Ray2 robot in robots)
                 {
                     Base.Vec2 pos = robot.Tick(i);
-                    pos.Mod(tilesWide, tilesTall);
+                    pos.X = Util.Number.Mod(pos.X, tilesWide);
+                    pos.Y = Util.Number.Mod(pos.Y, tilesTall);
                     grid[pos] = '#';
                     used.Add(pos);
                 }
