@@ -59,7 +59,7 @@ p=9,5 v=-3,-3"
 
         public static Base.Ray2 Parse(string input)
         {
-            int[] split = Util.String.Split(input, "pv=, ").Where(i => int.TryParse(i, out int _)).Select(int.Parse).ToArray();
+            int[] split = [.. Util.String.Split(input, "pv=, ").Where(i => int.TryParse(i, out int _)).Select(int.Parse)];
             Base.Vec2 start = new(split[0], split[1]);
             Base.Vec2 vel = new(split[2], split[3]);
             return Base.Ray2.FromVel(start, vel);
@@ -103,7 +103,7 @@ p=9,5 v=-3,-3"
         {
             GetVariable(nameof(_TilesWide), 101, variables, out int tilesWide);
             GetVariable(nameof(_TilesTall), 103, variables, out int tilesTall);
-            Base.Ray2[] robots = inputs.Select(Parse).ToArray();
+            Base.Ray2[] robots = [.. inputs.Select(Parse)];
 
             int[] quadrants = [0, 0, 0, 0, 0];
             if (!findEasterEgg)

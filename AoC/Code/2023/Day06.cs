@@ -74,8 +74,8 @@ Distance:  9  40  200"
             }
             else
             {
-                times = Util.Number.SplitL(inputs[0], ' ').ToList();
-                distances = Util.Number.SplitL(inputs[1], ' ').ToList();
+                times = [.. Util.Number.SplitL(inputs[0], ' ')];
+                distances = [.. Util.Number.SplitL(inputs[1], ' ')];
             }
             long answer = 1;
             for (int i = 0; i < times.Count; ++i)

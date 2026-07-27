@@ -199,7 +199,7 @@ namespace AoC._2023
                 }
                 else if (potentials.Count > 1)
                 {
-                    split = potentials.ToHashSet();
+                    split = [.. potentials];
                     break;
                 }
                 else

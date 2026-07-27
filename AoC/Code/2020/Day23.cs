@@ -41,7 +41,7 @@ namespace AoC._2020
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<int> cups = inputs[0].ToCharArray().Select(c => int.Parse(c.ToString())).ToList();
+            List<int> cups = [.. inputs[0].ToCharArray().Select(c => int.Parse(c.ToString()))];
 
             int curCupIdx = 0;
             int offset = 0;
@@ -98,7 +98,7 @@ namespace AoC._2020
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<long> cups = inputs[0].ToCharArray().Select(c => long.Parse(c.ToString())).ToList();
+            List<long> cups = [.. inputs[0].ToCharArray().Select(c => long.Parse(c.ToString()))];
 
             long max = cups.Max();
             for (long i = max + 1; i <= 1000000; ++i)
@@ -106,7 +106,7 @@ namespace AoC._2020
                 cups.Add(i);
             }
 
-            List<Cup> cupList = cups.Select(c => new Cup { Value = c }).ToList();
+            List<Cup> cupList = [.. cups.Select(c => new Cup { Value = c })];
             Dictionary<long, Cup> valueToCup = [];
             for (int i = 0; i < cupList.Count; ++i)
             {

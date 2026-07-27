@@ -42,7 +42,7 @@ namespace AoC._2021
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool advancedFuel)
         {
-            List<int> positions = inputs.First().Split(',').Select(int.Parse).ToList();
+            List<int> positions = [.. inputs.First().Split(',').Select(int.Parse)];
             double avg = positions.Average();
             int low = (int)avg;
             int high = low + 1;

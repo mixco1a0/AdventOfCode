@@ -163,9 +163,9 @@ broadcaster -> a, b, c
 
         private void ParseInput(List<string> inputs, out List<Module> modules)
         {
-            modules = inputs.Select(Module.Parse).ToList();
+            modules = [.. inputs.Select(Module.Parse)];
             IEnumerable<string> moduleIds = modules.Select(m => m.Id);
-            List<string> noneModules = modules.SelectMany(m => m.Targets).Where(t => !moduleIds.Contains(t)).ToList();
+            List<string> noneModules = [.. modules.SelectMany(m => m.Targets).Where(t => !moduleIds.Contains(t))];
             foreach (string noneModule in noneModules)
             {
                 modules.Add(new Module(noneModule));

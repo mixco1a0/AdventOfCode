@@ -97,7 +97,7 @@ Blueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsid
         {
             public static Blueprint Parse(string input)
             {
-                int[] split = input.Split(": ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Where(s => int.TryParse(s, out int i)).Select(int.Parse).ToArray();
+                int[] split = [.. input.Split(": ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Where(s => int.TryParse(s, out int i)).Select(int.Parse)];
                 BasicBot ore = new(split[1]);
                 BasicBot clay = new(split[2]);
                 ObsidianBot obsidian = new(split[3], split[4]);
@@ -280,11 +280,11 @@ Blueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsid
             List<Blueprint> blueprints = null;
             if (runAllBlueprints)
             {
-                blueprints = inputs.Select(Blueprint.Parse).ToList();
+                blueprints = [.. inputs.Select(Blueprint.Parse)];
             }
             else
             {
-                blueprints = inputs.Select(Blueprint.Parse).Take(3).ToList();
+                blueprints = [.. inputs.Select(Blueprint.Parse).Take(3)];
             }
 
             Dictionary<int, int> maxGeodes = [];

@@ -67,7 +67,7 @@ namespace AoC._2023
             private static int s_id = 0;
             public static Brick Parse(string input)
             {
-                int[] split = Util.Number.Split(input, ",~").ToArray();
+                int[] split = [.. Util.Number.Split(input, ",~")];
                 Axis axis = Axis.None;
                 if (split[0] != split[3])
                 {
@@ -214,7 +214,7 @@ namespace AoC._2023
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool disintegrateBlocks)
         {
-            List<Brick> originalBricks = inputs.Select(Brick.Parse).ToList();
+            List<Brick> originalBricks = [.. inputs.Select(Brick.Parse)];
             originalBricks.Sort((a, b) => { return a.Start.Z.CompareTo(b.Start.Z); });
             SettleBricks(originalBricks, out Dictionary<int, List<BrickSpace>> brickOccupiedSpaces, out List<Brick> settledBricks, out Dictionary<int, HashSet<int>> supports);
 
@@ -250,7 +250,7 @@ namespace AoC._2023
             int settleCount = 0;
             foreach (int supportBrick in supportBricks)
             {
-                List<Brick> leftOvers = settledBricks.Where(b => b.Id != supportBrick).ToList();
+                List<Brick> leftOvers = [.. settledBricks.Where(b => b.Id != supportBrick)];
                 settleCount += SettleBricks(leftOvers, out Dictionary<int, List<BrickSpace>> bos, out List<Brick> sb, out Dictionary<int, HashSet<int>> s);
             }
 

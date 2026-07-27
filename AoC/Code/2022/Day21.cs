@@ -269,7 +269,7 @@ hmdt: 32"
                 return ProcessMonkeys(inputs);
             }
 
-            List<Monkey> allMonkeys = inputs.Select(Monkey.Parse).Where(m => m.Id != "humn").ToList();
+            List<Monkey> allMonkeys = [.. inputs.Select(Monkey.Parse).Where(m => m.Id != "humn")];
 
             // debug to verify answer
             bool debugAnswer = false;

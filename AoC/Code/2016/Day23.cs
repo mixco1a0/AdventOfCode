@@ -150,7 +150,7 @@ dec a"
 
         private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, Dictionary<char, int> registers)
         {
-            List<Instruction> instructions = inputs.Select(Instruction.Parse).ToList();
+            List<Instruction> instructions = [.. inputs.Select(Instruction.Parse)];
             for (int i = 0; i < instructions.Count && i >= 0;)
             {
                 Instruction cur = instructions[i];

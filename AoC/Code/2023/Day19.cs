@@ -192,10 +192,10 @@ hdj{m>838:A,pv}
         private void ParseInput(List<string> inputs, out List<Workflow> workflows, out List<PartRating> partRatings)
         {
             IEnumerable<string> rawWorkflows = inputs.Where(i => !string.IsNullOrWhiteSpace(i) && char.IsAsciiLetter(i[0]));
-            workflows = rawWorkflows.Select(Workflow.Parse).ToList();
+            workflows = [.. rawWorkflows.Select(Workflow.Parse)];
 
             IEnumerable<string> rawPartRatings = inputs.Where(i => !string.IsNullOrWhiteSpace(i) && i[0] == '{');
-            partRatings = rawPartRatings.Select(PartRating.Parse).ToList();
+            partRatings = [.. rawPartRatings.Select(PartRating.Parse)];
         }
 
         private long GetDistinctCombinations(List<Workflow> workflows)

@@ -147,7 +147,7 @@ namespace AoC._2022
         private void PerformStepOne(ref HashSet<Elf> elves, out HashSet<Elf> stationaryElves, out Dictionary<Position2, bool> potentialMoves)
         {
             // round 1, generate dictionary of potential moved locations
-            HashSet<Position2> curElfPositions = elves.Select(e => e.Pos).ToHashSet();
+            HashSet<Position2> curElfPositions = [.. elves.Select(e => e.Pos)];
             stationaryElves = [];
             potentialMoves = [];
             foreach (Elf elf in elves)

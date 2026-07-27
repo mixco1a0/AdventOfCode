@@ -656,7 +656,7 @@ namespace AoC._2021
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool totalSum)
         {
-            Number[] numbers = inputs.Select(Number.Parse).ToArray();
+            Number[] numbers = [.. inputs.Select(Number.Parse)];
 
             // parsing and reducing validation
             int validationTest;

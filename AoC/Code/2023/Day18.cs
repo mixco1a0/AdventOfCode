@@ -120,11 +120,11 @@ U 2 (#7a21e3)"
             List<Instruction> instructions;
             if (useHex)
             {
-                instructions = inputs.Select(Instruction.ParseHex).ToList();
+                instructions = [.. inputs.Select(Instruction.ParseHex)];
             }
             else
             {
-                instructions = inputs.Select(Instruction.Parse).ToList();
+                instructions = [.. inputs.Select(Instruction.Parse)];
             }
 
             positions = [];

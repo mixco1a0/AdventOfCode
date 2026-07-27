@@ -141,7 +141,7 @@ namespace AoC._2021
             }
             if (checkBasin)
             {
-                int[] biggest = basins.OrderBy(b => b).TakeLast(3).ToArray();
+                int[] biggest = [.. basins.OrderBy(b => b).TakeLast(3)];
                 return (biggest[0] * biggest[1] * biggest[2]).ToString();
             }
             return lowPoints.Sum().ToString();

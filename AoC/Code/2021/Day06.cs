@@ -41,15 +41,15 @@ namespace AoC._2021
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, int days)
         {
-            List<long> fishUncrompressed = inputs.First().Split(',').Select(long.Parse).ToList();
-            long[] fish = Enumerable.Repeat((long)0, 9).ToArray();
+            List<long> fishUncrompressed = [.. inputs.First().Split(',').Select(long.Parse)];
+            long[] fish = [.. Enumerable.Repeat((long)0, 9)];
             foreach (long f in fishUncrompressed)
             {
                 ++fish[f];
             }
             for (long i = 0; i < days; ++i)
             {
-                long[] nextFish = Enumerable.Repeat((long)0, 9).ToArray();
+                long[] nextFish = [.. Enumerable.Repeat((long)0, 9)];
                 Dictionary<long, long> nextState = [];
                 for (int f = 0; f < 9; ++f)
                 {

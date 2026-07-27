@@ -97,7 +97,7 @@ XXX = (XXX, XXX)"
             public Map(List<string> inputs, Action<string> printFunc)
             {
                 Instructions = inputs.First();
-                Networks = inputs.Skip(2).Select(Network.Parse).ToList();
+                Networks = [.. inputs.Skip(2).Select(Network.Parse)];
                 MappedNetworks = Networks.ToDictionary(n => n.Id, n => n);
                 InitialWalks = [];
                 PrintFunc = printFunc;

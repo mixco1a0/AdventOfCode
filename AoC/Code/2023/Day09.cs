@@ -114,7 +114,7 @@ namespace AoC._2023
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool isNext)
         {
-            List<Oasis> allOasis = inputs.Select(Oasis.Parse).ToList();
+            List<Oasis> allOasis = [.. inputs.Select(Oasis.Parse)];
             foreach (Oasis oasis in allOasis)
             {
                 if (isNext)

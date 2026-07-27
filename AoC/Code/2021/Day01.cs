@@ -59,7 +59,7 @@ namespace AoC._2021
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, int windowSize)
         {
-            int[] depths = inputs.Select(int.Parse).ToArray();
+            int[] depths = [.. inputs.Select(int.Parse)];
             int increases = 0;
             int prevSum = depths.Take(windowSize).Sum();
             for (int i = 1; i <= depths.Count() - windowSize; ++i)

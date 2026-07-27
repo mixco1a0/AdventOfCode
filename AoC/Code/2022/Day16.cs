@@ -269,7 +269,7 @@ Valve JJ has flow rate=21; tunnel leads to valve II"
 
             public long GetPotentialPressure(Dictionary<int, Room> rooms, Dictionary<int, Dictionary<int, RoomPath>> roomPaths)
             {
-                List<int> potentialRooms = rooms.Where(r => r.Value.Rate != 0 && !Used.Contains(r.Key)).Select(r => r.Key).ToList();
+                List<int> potentialRooms = [.. rooms.Where(r => r.Value.Rate != 0 && !Used.Contains(r.Key)).Select(r => r.Key)];
                 long potentialPressure = 0;
                 for (int i = 0; i < RoomIds.Length; ++i)
                 {
@@ -306,7 +306,7 @@ Valve JJ has flow rate=21; tunnel leads to valve II"
             }
 
             long maxPressure = long.MinValue;
-            TravelPlan initialPlan = new(Enumerable.Range(0, explorerCount).Select(i => initialRoomId).ToArray(), maxTime, rooms);
+            TravelPlan initialPlan = new([.. Enumerable.Range(0, explorerCount).Select(i => initialRoomId)], maxTime, rooms);
             PriorityQueue<TravelPlan, long> roomTraversal = new(Comparer<long>.Create((a, b) => (int)(b - a)));
             roomTraversal.Enqueue(initialPlan, maxTime);
             while (roomTraversal.Count > 0)

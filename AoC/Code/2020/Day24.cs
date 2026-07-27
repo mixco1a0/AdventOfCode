@@ -145,7 +145,7 @@ wseweeenwnesenwwwswnew"
                 coords.Add(FlipCoords(input));
             }
             // coords.ForEach(c => DebugWriteLine(c.ToString()));
-            coords = coords.OrderBy(_ => _.ToString()).ToList();
+            coords = [.. coords.OrderBy(_ => _.ToString())];
             Dictionary<string, bool> colors = [];
             foreach (Coords cur in coords)
             {
@@ -170,7 +170,7 @@ wseweeenwnesenwwwswnew"
                 coords.Add(FlipCoords(input));
             }
             // coords.ForEach(c => DebugWriteLine(c.ToString()));
-            coords = coords.OrderBy(_ => _.ToString()).ToList();
+            coords = [.. coords.OrderBy(_ => _.ToString())];
             HashSet<KeyValuePair<int, int>> tiles = [];
             foreach (Coords cur in coords)
             {

@@ -87,7 +87,7 @@ namespace AoC._2023
                 int curRow = 0;
                 foreach (string line in rawSchematic)
                 {
-                    List<Parser> split = line.ToList().Select((value, index) => new Parser(value, index)).Where(p => p.Character != '.').ToList();
+                    List<Parser> split = [.. line.ToList().Select((value, index) => new Parser(value, index)).Where(p => p.Character != '.')];
 
                     int prevNumIndex = 0;
                     Base.Range curRange = new();

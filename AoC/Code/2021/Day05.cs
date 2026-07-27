@@ -63,7 +63,7 @@ namespace AoC._2021
         {
             public static Base.Segment Parse(string input)
             {
-                int[] vals = input.Split(", ->".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray();
+                int[] vals = [.. input.Split(", ->".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(int.Parse)];
                 Base.Vec2 a = new(vals[0], vals[1]);
                 Base.Vec2 b = new(vals[2], vals[3]);
                 return new Base.Segment(a, b);
@@ -88,7 +88,7 @@ namespace AoC._2021
 
         private void PrintGrid(Dictionary<Base.Vec2, int> grid)
         {
-            HashSet<Base.Vec2> coords = grid.Keys.ToHashSet();
+            HashSet<Base.Vec2> coords = [.. grid.Keys];
             int maxX = coords.Select(c => c.X).Max();
             int maxY = coords.Select(c => c.Y).Max();
             for (int y = 0; y <= maxY; ++y)
@@ -129,7 +129,7 @@ namespace AoC._2021
                 }
             };
 
-            Base.Segment[] segments = inputs.Select(SegmentExtension.Parse).ToArray();
+            Base.Segment[] segments = [.. inputs.Select(SegmentExtension.Parse)];
             foreach (Base.Segment segment in segments)
             {
                 if (segment.A.X == segment.B.X)

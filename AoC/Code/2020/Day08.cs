@@ -108,7 +108,7 @@ acc +6"
         {
             int idx;
             List<KeyValuePair<int, Op>> opsRun;
-            List<Op> operations = inputs.Select(input => new Op { Operation = input[0..3], Arg = int.Parse(input[4..]) }).ToList();
+            List<Op> operations = [.. inputs.Select(input => new Op { Operation = input[0..3], Arg = int.Parse(input[4..]) })];
             return GetAcc(operations, out idx, out opsRun);
         }
 
@@ -116,7 +116,7 @@ acc +6"
         {
             int idx;
             List<KeyValuePair<int, Op>> opsRun;
-            List<Op> operations = inputs.Select(input => new Op { Operation = input[0..3], Arg = int.Parse(input[4..]) }).ToList();
+            List<Op> operations = [.. inputs.Select(input => new Op { Operation = input[0..3], Arg = int.Parse(input[4..]) })];
 
             string acc = GetAcc(operations, out idx, out opsRun);
             if (idx < operations.Count())

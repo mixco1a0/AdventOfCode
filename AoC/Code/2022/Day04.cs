@@ -61,7 +61,7 @@ namespace AoC._2022
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool fullyContainCheck)
         {
-            List<Base.Range[]> ranges = inputs.Select(Parse).ToList();
+            List<Base.Range[]> ranges = [.. inputs.Select(Parse)];
             if (fullyContainCheck)
             {
                 return ranges.Where(r => r[0].HasInc(r[1]) || r[1].HasInc(r[0])).Count().ToString();

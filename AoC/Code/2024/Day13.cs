@@ -87,7 +87,7 @@ Prize: X=18641, Y=10279"
                     continue;
                 }
 
-                long[] split = Util.String.Split(input, "ButtonABPrize:+=, ").Where(i => long.TryParse(i, out _)).Select(long.Parse).ToArray();
+                long[] split = [.. Util.String.Split(input, "ButtonABPrize:+=, ").Where(i => long.TryParse(i, out _)).Select(long.Parse)];
                 Base.Vec2L cur = new(split[0], split[1]);
                 switch (mt)
                 {

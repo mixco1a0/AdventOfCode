@@ -146,7 +146,7 @@ namespace AoC._2023
 
             public Graph(Dictionary<string, HashSet<string>> components)
             {
-                Nodes = components.Keys.Select(k => Node.New(k, 1)).ToHashSet();
+                Nodes = [.. components.Keys.Select(k => Node.New(k, 1))];
                 // DebugIdToName = components.Keys.ToDictionary(k => k.GetHashCode(), k => k);
                 Dictionary<int, Node> allNodes = Nodes.ToDictionary(n => n.Id, _ => _);
                 List<Edge> edges = [];
@@ -159,7 +159,7 @@ namespace AoC._2023
                         edges.Add(Edge.New(first, last, 1));
                     }
                 }
-                Edges = edges.Distinct().ToList();
+                Edges = [.. edges.Distinct()];
             }
 
             // public void PrintState(Action<string> logFunc)
@@ -207,7 +207,7 @@ namespace AoC._2023
                 //     logFunc($"Removing ({DebugIdToName[toRemove.First.Id]}) and ({DebugIdToName[toRemove.Last.Id]})");
                 // }
 
-                List<Edge> toUpdate = Edges.Where(e => e.Shared(toRemove)).ToList();
+                List<Edge> toUpdate = [.. Edges.Where(e => e.Shared(toRemove))];
                 Edges.RemoveAll(e => toUpdate.Contains(e));
                 Nodes.Remove(toRemove.First);
                 Nodes.Remove(toRemove.Last);

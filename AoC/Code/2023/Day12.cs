@@ -81,7 +81,7 @@ namespace AoC._2023
 
                 Pattern pattern = new();
                 pattern.Springs = split[0];
-                pattern.Records = Util.Number.Split(split[1], ',').ToArray();
+                pattern.Records = [.. Util.Number.Split(split[1], ',')];
                 return pattern;
             }
 
@@ -204,7 +204,7 @@ namespace AoC._2023
             {
                 string[] split = Util.String.Split(input, " ");
                 string foldedSprings = split[0];
-                int[] foldedRecords = Util.Number.Split(split[1], ',').ToArray();
+                int[] foldedRecords = [.. Util.Number.Split(split[1], ',')];
 
                 StringBuilder sb = new();
                 List<int> fullRecords = [];
@@ -218,7 +218,7 @@ namespace AoC._2023
 
                 Pattern pattern = new();
                 pattern.Springs = sb.ToString();
-                pattern.Records = fullRecords.ToArray();
+                pattern.Records = [.. fullRecords];
                 return pattern;
             }
 
@@ -237,12 +237,12 @@ namespace AoC._2023
         {
             if (isFolded)
             {
-                List<Pattern> patterns = inputs.Select(Pattern.FoldedParse).ToList();
+                List<Pattern> patterns = [.. inputs.Select(Pattern.FoldedParse)];
                 return patterns.Select(p => p.Solve()).Sum().ToString();
             }
             else
             {
-                List<Pattern> patterns = inputs.Select(Pattern.Parse).ToList();
+                List<Pattern> patterns = [.. inputs.Select(Pattern.Parse)];
                 return patterns.Select(p => p.Solve()).Sum().ToString();
             }
         }

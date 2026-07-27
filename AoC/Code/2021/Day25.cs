@@ -134,13 +134,13 @@ v.v..>>v.v
                     }
                 }
             }
-            newRegion = sbs.Select(sb => sb.ToString()).ToArray();
+            newRegion = [.. sbs.Select(sb => sb.ToString())];
             return processed;
         }
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables)
         {
-            string[] region = inputs.ToArray();
+            string[] region = [.. inputs];
             int maxX = region.First().Length;
             int maxY = region.Length;
             int steps = 0;

@@ -259,7 +259,7 @@ Tile 3079:
 @"                  # 
 #    ##    ##    ###
  #  #  #  #  #  #";
-        static string[] monsterParts = monster.Split("\n\r".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(p => p.Replace(' ', '.')).ToArray();
+        static string[] monsterParts = [.. monster.Split("\n\r".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(p => p.Replace(' ', '.'))];
         static int monsterWidth = monsterParts[0].Length;
 
         class Tile
@@ -781,7 +781,7 @@ Tile 3079:
                 ++monsterCount;
                 imageSearch = string.Join("", grid);
                 Match match = regex.Match(imageSearch, curMonsterIdx);
-                List<int> replaceIndices = monsterRegex.Select((c, i) => new { Letter = c, Index = i }).Where(pair => pair.Letter == '#').Select(pair => pair.Index).ToList();
+                List<int> replaceIndices = [.. monsterRegex.Select((c, i) => new { Letter = c, Index = i }).Where(pair => pair.Letter == '#').Select(pair => pair.Index)];
                 foreach (int replaceIdx in replaceIndices)
                 {
                     monsterPrint = monsterPrint.Remove(match.Index + replaceIdx, 1).Insert(match.Index + replaceIdx, "O");
@@ -790,9 +790,9 @@ Tile 3079:
             } while (regex.IsMatch(imageSearch, curMonsterIdx));
             
             int k = 0;
-            modifiedGrid = string.Join("", monsterPrint.Replace('#', ','))
+            modifiedGrid = [.. string.Join("", monsterPrint.Replace('#', ','))
                                  .ToLookup(c => Math.Floor((decimal)(k++ / grid.First().Count())))
-                                 .Select(e => new string(e.ToArray())).ToList();
+                                 .Select(e => new string([.. e]))];
 
             return monsterCount;
         }

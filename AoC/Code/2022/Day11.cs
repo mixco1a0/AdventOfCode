@@ -115,7 +115,7 @@ Monkey 3:
             {
                 Monkey monkey = new();
                 monkey.Id = int.Parse(input[0].Split(" :".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Last());
-                monkey.Items = input[1].Split(" ,".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Where(s => long.TryParse(s, out long l)).Select(long.Parse).ToList();
+                monkey.Items = [.. input[1].Split(" ,".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Where(s => long.TryParse(s, out long l)).Select(long.Parse)];
                 monkey.Op = input[2].Contains('*') ? EOp.Mult : EOp.Add;
                 monkey.UseOld = input[2].Split(" +*".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Last() == "old";
                 if (!monkey.UseOld)
@@ -183,7 +183,7 @@ Monkey 3:
                 }
             }
             monkeys.Add(Monkey.Parse(curMonkey));
-            return monkeys.ToArray();
+            return [.. monkeys];
         }
 
         public void DoRound(ref Monkey[] monkeys, bool relief)
@@ -213,7 +213,7 @@ Monkey 3:
             {
                 DoRound(ref monkeys, relief);
             }
-            List<long> ic = monkeys.Select(m => m.InspectionCount).OrderByDescending(mic => mic).Take(2).ToList();
+            List<long> ic = [.. monkeys.Select(m => m.InspectionCount).OrderByDescending(mic => mic).Take(2)];
             return (ic[0] * ic[1]).ToString();
         }
 

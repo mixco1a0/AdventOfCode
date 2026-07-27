@@ -171,7 +171,7 @@ namespace AoC._2022
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<Number> numbers = inputs.Select(i => new Number(i)).ToList();
+            List<Number> numbers = [.. inputs.Select(i => new Number(i))];
             Number fuel = new(numbers.Sum(n => n.Decimal));
             return fuel.Snafu;
         }

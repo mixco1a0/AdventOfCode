@@ -213,7 +213,7 @@ aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba"
                 string[] ruleSplit = RawRules.Split('|', StringSplitOptions.RemoveEmptyEntries);
                 foreach (String curSplit in ruleSplit)
                 {
-                    List<string> ids = curSplit.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
+                    List<string> ids = [.. curSplit.Split(' ', StringSplitOptions.RemoveEmptyEntries)];
                     int intTest;
                     if (!int.TryParse(ids.ElementAt(0), out intTest))
                     {
@@ -221,7 +221,7 @@ aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba"
                         continue;
                     }
 
-                    ids = ids.Select(i => GetNodeName(i)).ToList();
+                    ids = [.. ids.Select(i => GetNodeName(i))];
 
                     SubRules.Add([]);
                     SubRules.Last().AddRange(ids);

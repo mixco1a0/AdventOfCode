@@ -135,7 +135,7 @@ namespace AoC._2020
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<long> numbers = inputs.Select(long.Parse).OrderBy(_ => _).ToList();
+            List<long> numbers = [.. inputs.Select(long.Parse).OrderBy(_ => _)];
 
             int oneJoltDiff = 0, threeJoltDiff = 0;
             long prevNumber = 0;
@@ -170,7 +170,7 @@ namespace AoC._2020
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<long> numbers = inputs.Select(long.Parse).OrderByDescending(_ => _).ToList();
+            List<long> numbers = [.. inputs.Select(long.Parse).OrderByDescending(_ => _)];
             numbers.Add(0);
 
             Dictionary<long, long> sums = [];

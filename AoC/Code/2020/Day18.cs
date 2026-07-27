@@ -173,7 +173,7 @@ namespace AoC._2020
                 return PerformPrecedence(equation);
             }
 
-            long[] vals = equation.Split('*').Select(long.Parse).ToArray();
+            long[] vals = [.. equation.Split('*').Select(long.Parse)];
             long mult = vals[0];
             for (int i = 1; i < vals.Length; ++i)
             {

@@ -62,7 +62,7 @@ namespace AoC._2024
             public static Equation Parse(string input)
             {
                 IEnumerable<long> values = Util.String.Split(input, ": ").Select(long.Parse);
-                return new Equation(values.First(), values.Skip(1).ToList());
+                return new Equation(values.First(), [.. values.Skip(1)]);
             }
 
             public bool CanUseOps(bool useThreeOps)
@@ -104,7 +104,7 @@ namespace AoC._2024
 
         private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool useThreeOps)
         {
-            List<Equation> equations = inputs.Select(Equation.Parse).ToList();
+            List<Equation> equations = [.. inputs.Select(Equation.Parse)];
             long sum = 0;
             foreach (Equation equation in equations)
             {

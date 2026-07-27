@@ -64,7 +64,7 @@ move 1 from 1 to 2"
             static public MoveInstruction Parse(string input)
             {
                 string[] split = input.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                int[] ints = split.Where(s => int.TryParse(s, out int i)).Select(int.Parse).ToArray();
+                int[] ints = [.. split.Where(s => int.TryParse(s, out int i)).Select(int.Parse)];
                 return new MoveInstruction(ints[0], ints[1], ints[2]);
             }
         };

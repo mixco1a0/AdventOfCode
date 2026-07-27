@@ -100,7 +100,7 @@ namespace AoC._2021
                 Numbers = [];
                 for (int i = 0; i < Size; ++i)
                 {
-                    int[] row = rawBoard[i].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray();
+                    int[] row = [.. rawBoard[i].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse)];
                     for (int j = 0; j < Size; ++j)
                     {
                         Numbers.Add(row[j], new Base.Vec2(j, i));
@@ -173,7 +173,7 @@ namespace AoC._2021
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool getBest)
         {
-            int[] callOrder = inputs.First().Split(',', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray();
+            int[] callOrder = [.. inputs.First().Split(',', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse)];
 
             List<BingoBoard> boards = [];
             List<string> curBoard = [];

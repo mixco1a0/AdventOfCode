@@ -164,7 +164,7 @@ namespace AoC._2016
             Regex regex = new(pattern, RegexOptions.IgnoreCase);
             int minLen = 10;
 
-            List<Instruction> instructions = inputs.Select(Instruction.Parse).ToList();
+            List<Instruction> instructions = [.. inputs.Select(Instruction.Parse)];
 
             for (int a = 1; ; ++a)
             {

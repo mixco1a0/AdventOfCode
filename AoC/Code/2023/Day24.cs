@@ -57,7 +57,7 @@ namespace AoC._2023
 
         private static string Count2DIntersections(List<Ray3L> hailstones, long minRange, long maxRange)
         {
-            List<Ray2L> h2d = hailstones.Select(v3 => v3.DropZ()).ToList();
+            List<Ray2L> h2d = [.. hailstones.Select(v3 => v3.DropZ())];
             // Log("Hailstones:");
             // h2d.ForEach(l => Log(l.ToString()));
             long count = 0;
@@ -170,7 +170,7 @@ namespace AoC._2023
         {
             GetVariable(nameof(_MinRange), 200_000_000_000_000, variables, out long minRange);
             GetVariable(nameof(_MaxRange), 400_000_000_000_000, variables, out long maxRange);
-            List<Ray3L> hailstones = inputs.Select(Ray3L.ParseVel).ToList();
+            List<Ray3L> hailstones = [.. inputs.Select(Ray3L.ParseVel)];
             if (count2DIntersections)
             {
                 return Count2DIntersections(hailstones, minRange, maxRange);

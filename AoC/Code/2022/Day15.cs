@@ -90,7 +90,7 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3"
 
             public static Sensor Parse(string input)
             {
-                int[] split = input.Split(" =,:".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Where(s => int.TryParse(s, out int i)).Select(int.Parse).ToArray();
+                int[] split = [.. input.Split(" =,:".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Where(s => int.TryParse(s, out int i)).Select(int.Parse)];
                 Sensor sensor = new();
                 sensor.Pos.X = split[0];
                 sensor.Pos.Y = split[1];
@@ -114,7 +114,7 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3"
 
                 blockedRanges.Add(new Base.RangeL(sensor.Pos.X - (manhattan - distToRow), sensor.Pos.X + (manhattan - distToRow)));
             }
-            return blockedRanges.OrderBy(r => r.Min).ToList();
+            return [.. blockedRanges.OrderBy(r => r.Min)];
         }
 
         private List<Base.RangeL> CompressRanges(List<Base.RangeL> blockedRanges, int minX, int maxX)
@@ -153,7 +153,7 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3"
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool findBeacon)
         {
-            List<Sensor> sensors = inputs.Select(Sensor.Parse).ToList();
+            List<Sensor> sensors = [.. inputs.Select(Sensor.Parse)];
             if (!findBeacon)
             {
                 GetVariable(nameof(_Row), 2000000, variables, out int row);

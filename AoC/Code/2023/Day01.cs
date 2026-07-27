@@ -115,11 +115,11 @@ zoneight234
             List<Calibration> calibrations;
             if (intOnly)
             {
-                calibrations = inputs.Select(Calibration.Parse).ToList();
+                calibrations = [.. inputs.Select(Calibration.Parse)];
             }
             else
             {
-                calibrations = inputs.Select(Calibration.ComplexParse).ToList();
+                calibrations = [.. inputs.Select(Calibration.ComplexParse)];
             }
             return calibrations.Select(c => c.Digits).Sum().ToString();
         }

@@ -200,7 +200,7 @@ noop"
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, HashSet<int> interestingSignals)
         {
-            List<Instruction> instructions = inputs.Select(Instruction.Parse).ToList();
+            List<Instruction> instructions = [.. inputs.Select(Instruction.Parse)];
             int crtX = 0;
             int crtY = 0;
             char[][] crt = new char[6][];
@@ -232,7 +232,7 @@ noop"
                         ++crtY;
                         if (crtY >= crt.Length)
                         {
-                            string[] glyph = crt.Select(row => string.Join("", row)).ToArray();
+                            string[] glyph = [.. crt.Select(row => string.Join("", row))];
                             return Util.GlyphConverter.Process(glyph, Util.GlyphConverter.EType._5x6);
                         }
                     }

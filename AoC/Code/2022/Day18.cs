@@ -88,7 +88,7 @@ namespace AoC._2022
         {
             public static Position3 Parse(string input)
             {
-                int[] split = input.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray();
+                int[] split = [.. input.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(int.Parse)];
                 return new Position3(split[0], split[1], split[2]);
             }
 
@@ -110,7 +110,7 @@ namespace AoC._2022
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool removeAirPockets)
         {
-            List<Position3> pos = inputs.Select(Position3.Parse).ToList();
+            List<Position3> pos = [.. inputs.Select(Position3.Parse)];
 
             List<Position3> unique = [];
             foreach (Position3 p in pos)
@@ -131,9 +131,9 @@ namespace AoC._2022
             int pocketCount = 0;
             foreach (Position3 u in unique)
             {
-                List<Position3> xs = pos.Where(p => p.Y == u.Y && p.Z == u.Z).ToList();
-                List<Position3> ys = pos.Where(p => p.X == u.X && p.Z == u.Z).ToList();
-                List<Position3> zs = pos.Where(p => p.X == u.X && p.Y == u.Y).ToList();
+                List<Position3> xs = [.. pos.Where(p => p.Y == u.Y && p.Z == u.Z)];
+                List<Position3> ys = [.. pos.Where(p => p.X == u.X && p.Z == u.Z)];
+                List<Position3> zs = [.. pos.Where(p => p.X == u.X && p.Y == u.Y)];
                 if (!xs.Any() || !ys.Any() || !zs.Any())
                 {
                     continue;

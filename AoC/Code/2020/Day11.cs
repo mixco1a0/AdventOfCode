@@ -77,7 +77,7 @@ L.LLLLL.LL"
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<List<char>> seats = inputs.Select(a => a.ToCharArray().ToList()).ToList();
+            List<List<char>> seats = [.. inputs.Select(a => a.ToCharArray().ToList())];
             while (Util.Grid2.Process(ref seats, GetLocationState)) ;
             return string.Join("", seats.Select(c => string.Join("", c))).Replace(".", "").Replace("L", "").Count().ToString();
         }
@@ -179,7 +179,7 @@ L.LLLLL.LL"
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<List<char>> seats = inputs.Select(a => a.ToCharArray().ToList()).ToList();
+            List<List<char>> seats = [.. inputs.Select(a => a.ToCharArray().ToList())];
             while (Util.Grid2.Process(ref seats, GetLocationStateStringent)) ;
             return string.Join("", seats.Select(c => string.Join("", c))).Replace(".", "").Replace("L", "").Count().ToString();
         }

@@ -67,7 +67,7 @@ nearby tickets:
                         continue;
                     }
 
-                    int[] split = input.Split(',').Select(int.Parse).ToArray();
+                    int[] split = [.. input.Split(',').Select(int.Parse)];
                     for (int i = 0; i < split.Length; ++i)
                     {
                         if (ranges.Where(range => range.HasInc(split[i])).Count() <= 0)
@@ -113,11 +113,11 @@ nearby tickets:
                     if (!myTicket)
                     {
                         myTicket = true;
-                        myTicketValues = input.Split(',').Select(int.Parse).ToList();
+                        myTicketValues = [.. input.Split(',').Select(int.Parse)];
                         continue;
                     }
 
-                    int[] split = input.Split(',').Select(int.Parse).ToArray();
+                    int[] split = [.. input.Split(',').Select(int.Parse)];
                     bool valid = true;
                     for (int i = 0; i < split.Length && valid; ++i)
                     {
@@ -129,7 +129,7 @@ nearby tickets:
 
                     if (valid)
                     {
-                        validTickets.Add(input.Split(',').Select(int.Parse).ToList());
+                        validTickets.Add([.. input.Split(',').Select(int.Parse)]);
                     }
                 }
             }
@@ -151,7 +151,7 @@ nearby tickets:
                         }
                         else
                         {
-                            possibilities[i] = possibilities[i].Intersect(inRange.Select(info => info.Name)).ToList();
+                            possibilities[i] = [.. possibilities[i].Intersect(inRange.Select(info => info.Name))];
                         }
                     }
 

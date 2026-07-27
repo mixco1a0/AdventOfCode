@@ -170,7 +170,7 @@ Player 2:
 
                 if (p1.Cards.Count() >= p1Card && p2.Cards.Count() >= p2Card)
                 {
-                    if (SubGame(1, p1.Cards.Select(_ => _).Take(p1Card).ToList(), p2.Cards.Select(_ => _).Take(p2Card).ToList()))
+                    if (SubGame(1, [.. p1.Cards.Select(_ => _).Take(p1Card)], [.. p2.Cards.Select(_ => _).Take(p2Card)]))
                     {
                         p1.Cards.Add(p1Card);
                         p1.Cards.Add(p2Card);
@@ -224,7 +224,7 @@ Player 2:
 
                 if (p1Cards.Count() >= p1Card && p2Cards.Count() >= p2Card)
                 {
-                    if (SubGame(level + 1, p1Cards.Select(_ => _).Take(p1Card).ToList(), p2Cards.Select(_ => _).Take(p2Card).ToList()))
+                    if (SubGame(level + 1, [.. p1Cards.Select(_ => _).Take(p1Card)], [.. p2Cards.Select(_ => _).Take(p2Card)]))
                     {
                         p1Cards.Add(p1Card);
                         p1Cards.Add(p2Card);

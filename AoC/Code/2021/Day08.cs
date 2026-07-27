@@ -101,15 +101,15 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
             {
                 Signal signal = new();
                 string[] split = input.Split('|', StringSplitOptions.RemoveEmptyEntries);
-                signal.Patterns = split[0].Split(' ', StringSplitOptions.RemoveEmptyEntries).OrderBy(s => s.Length).ToList();
-                signal.Output = split[1].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(s => string.Concat(s.OrderBy(c => c))).ToList();
+                signal.Patterns = [.. split[0].Split(' ', StringSplitOptions.RemoveEmptyEntries).OrderBy(s => s.Length)];
+                signal.Output = [.. split[1].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(s => string.Concat(s.OrderBy(c => c)))];
                 return signal;
             }
         }
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool decode)
         {
-            List<Signal> signals = inputs.Select(Signal.Parse).ToList();
+            List<Signal> signals = [.. inputs.Select(Signal.Parse)];
             HashSet<int> uniqueValues = [2, 4, 3, 7];
             int sum = 0;
             foreach (Signal signal in signals)

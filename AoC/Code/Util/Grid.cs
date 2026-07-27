@@ -464,7 +464,7 @@ namespace AoC.Util
         {
             bool complete = true;
 
-            List<int> index = indexRanges.Select(r => r.Min).ToList();
+            List<int> index = [.. indexRanges.Select(r => r.Min)];
             Dictionary<string, char> newGrid = [];
             while (true)
             {
@@ -502,8 +502,8 @@ namespace AoC.Util
         {
             int borderMatch = 0;
             string indexKey = GetDynamicIndexKey(index);
-            List<Base.Range> indexRanges = index.Select(i => new Base.Range(i - 1, i + 1)).ToList();
-            List<int> borderIndex = indexRanges.Select(r => r.Min).ToList();
+            List<Base.Range> indexRanges = [.. index.Select(i => new Base.Range(i - 1, i + 1))];
+            List<int> borderIndex = [.. indexRanges.Select(r => r.Min)];
             while (true)
             {
                 for (int i = 0; i < indexRanges.Count && borderIndex[i] > indexRanges[i].Max;)

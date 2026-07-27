@@ -721,7 +721,7 @@ namespace AoC.Base
                 return null;
             }
 
-            int[] split = Util.String.Split(input, ',').Select(int.Parse).ToArray();
+            int[] split = [.. Util.String.Split(input, ',').Select(int.Parse)];
             return new(split[0], split[1], split[2]);
         }
 

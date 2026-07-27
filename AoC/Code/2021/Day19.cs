@@ -449,7 +449,7 @@ namespace AoC._2021
             public void ResetBeaconDistances()
             {
                 Beacon first = Beacons.First();
-                m_beaconDistances = first.Local.ToOthers.Select(pair => Math.Abs(first.Local.Pos.X - pair.Value.X) + Math.Abs(first.Local.Pos.Y - pair.Value.Y) + Math.Abs(first.Local.Pos.Z - pair.Value.Z)).Select(p => (int)p).OrderDescending().ToList();
+                m_beaconDistances = [.. first.Local.ToOthers.Select(pair => Math.Abs(first.Local.Pos.X - pair.Value.X) + Math.Abs(first.Local.Pos.Y - pair.Value.Y) + Math.Abs(first.Local.Pos.Z - pair.Value.Z)).Select(p => (int)p).OrderDescending()];
                 //m_beaconDistances = Beacons.First().Local.ToOthers.Select(pair => Math.Sqrt(Math.Pow(pair.Value.X, 2) + Math.Pow(pair.Value.Y, 2) + Math.Pow(pair.Value.Z, 2))).OrderDescending().ToList();
             }
 
@@ -564,7 +564,7 @@ namespace AoC._2021
                 }
                 else if (!string.IsNullOrEmpty(input))
                 {
-                    float[] vec3 = input.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(float.Parse).ToArray();
+                    float[] vec3 = [.. input.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(float.Parse)];
                     localBeacons[++curLocalBeaconId] = new Vector3(vec3);
                 }
                 else
@@ -696,7 +696,7 @@ namespace AoC._2021
             public void ResetBeaconDistances()
             {
                 Beacon first = Beacons.First();
-                m_beaconDistances = first.Local.ToOthers.Select(pair => Math.Abs(first.Local.Pos.X - pair.Value.X) + Math.Abs(first.Local.Pos.Y - pair.Value.Y) + Math.Abs(first.Local.Pos.Z - pair.Value.Z)).Select(p => (int)p).OrderDescending().ToList();
+                m_beaconDistances = [.. first.Local.ToOthers.Select(pair => Math.Abs(first.Local.Pos.X - pair.Value.X) + Math.Abs(first.Local.Pos.Y - pair.Value.Y) + Math.Abs(first.Local.Pos.Z - pair.Value.Z)).Select(p => (int)p).OrderDescending()];
                 // m_beaconDistances = Beacons.First().Local.ToOthers.Select(pair => Math.Sqrt(Math.Pow(pair.Value.X, 2) + Math.Pow(pair.Value.Y, 2) + Math.Pow(pair.Value.Z, 2))).OrderDescending().ToList();
             }
 
@@ -746,15 +746,15 @@ namespace AoC._2021
                                 {
                                     potentialIds.Add(potentialMatch.Global.Id);
                                     IEnumerable<int> matchingIds = potentialMatch.Global.ToOthers.Where(to => matchingVectors.Contains(to.Value)).Select(to => to.Key);
-                                    connectedIds = connectedIds.Union(matchingIds).ToHashSet();
+                                    connectedIds = [.. connectedIds.Union(matchingIds)];
                                     IEnumerable<RotationIndex> rotations = allOrientations.Where(ao => matchingVectors.Contains(ao.Value)).Select(ao => ao.Key);
                                     if (matchingRotations.Any())
                                     {
-                                        matchingRotations = matchingRotations.Intersect(rotations).ToHashSet();
+                                        matchingRotations = [.. matchingRotations.Intersect(rotations)];
                                     }
                                     else
                                     {
-                                        matchingRotations = rotations.ToHashSet();
+                                        matchingRotations = [.. rotations];
                                     }
                                 }
                             }

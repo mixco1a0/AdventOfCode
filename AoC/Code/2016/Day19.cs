@@ -42,7 +42,7 @@ namespace AoC._2016
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
             int elfCount = int.Parse(inputs.First());
-            List<int> elves = Enumerable.Range(1, elfCount).ToList();
+            List<int> elves = [.. Enumerable.Range(1, elfCount)];
             while (elves.Count > 1)
             {
                 bool removeFront = elves.Count % 2 != 0;

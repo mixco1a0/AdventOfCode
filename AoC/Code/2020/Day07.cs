@@ -76,13 +76,13 @@ dark violet bags contain no other bags."
                 string[] cur = input.Split("contain");
                 string id = cur[0].Replace("bags", "").Replace(" ", "");
                 string bags = cur[1].Replace("bags", "").Replace("bag", "").Replace(" ", "").Replace(".", "");
-                List<string> bagList = bags.Split(",").ToList();
+                List<string> bagList = [.. bags.Split(",")];
                 if (bagList[0] == "noother")
                 {
                     continue;
                 }
 
-                bagsToInput[id] = bagList.Select(color => color[1..]).ToList();
+                bagsToInput[id] = [.. bagList.Select(color => color[1..])];
             }
 
             List<string> usedBags = [];
@@ -126,7 +126,7 @@ dark violet bags contain no other bags."
                 string[] cur = input.Split("contain");
                 string id = cur[0].Replace("bags", "").Replace(" ", "");
                 string bags = cur[1].Replace("bags", "").Replace("bag", "").Replace(" ", "").Replace(".", "");
-                List<string> bagList = bags.Split(",").ToList();
+                List<string> bagList = [.. bags.Split(",")];
                 if (bagList[0] == "noother")
                 {
                     bagsToInput[id] = [];
@@ -134,8 +134,8 @@ dark violet bags contain no other bags."
                 }
                 else
                 {
-                    bagsToInput[id] = bagList.Select(color => color[1..]).ToList();
-                    bagsToCount[id] = bagList.Select(color => int.Parse(color[0..1])).ToList();
+                    bagsToInput[id] = [.. bagList.Select(color => color[1..])];
+                    bagsToCount[id] = [.. bagList.Select(color => int.Parse(color[0..1]))];
                 }
             }
 

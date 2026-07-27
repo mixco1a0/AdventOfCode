@@ -109,15 +109,15 @@ namespace AoC._2022
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, int mixCount, long decryptionKey)
         {
-            List<long> file = inputs.Select(long.Parse).ToList();
-            List<string> fileWithIds = inputs.Select((i, index) => string.Format("{0}[{1}]", long.Parse(i) * decryptionKey, index)).ToList();
+            List<long> file = [.. inputs.Select(long.Parse)];
+            List<string> fileWithIds = [.. inputs.Select((i, index) => string.Format("{0}[{1}]", long.Parse(i) * decryptionKey, index))];
             List<string> mixing = new(fileWithIds);
             string zeroKey = string.Empty;
             for (int mc = 0; mc < mixCount; ++mc)
             {
                 foreach (string m in mixing)
                 {
-                    long[] split = m.Split("[]".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(long.Parse).ToArray();
+                    long[] split = [.. m.Split("[]".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(long.Parse)];
                     if (split[0] == 0)
                     {
                         zeroKey = m;

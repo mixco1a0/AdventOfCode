@@ -106,12 +106,12 @@ b"
                 var cur = input.ToCharArray().Select(c => c.ToString());
                 if (newGroup)
                 {
-                    sharedInput = cur.ToList();
+                    sharedInput = [.. cur];
                     newGroup = false;
                 }
                 else
                 {
-                    sharedInput = sharedInput.Intersect(cur).ToList();
+                    sharedInput = [.. sharedInput.Intersect(cur)];
                 }
 
             }

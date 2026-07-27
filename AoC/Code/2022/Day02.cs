@@ -58,7 +58,7 @@ C Z"
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool input)
         {
-            List<Strategy> guide = inputs.Select(Strategy.Parse).ToList();
+            List<Strategy> guide = [.. inputs.Select(Strategy.Parse)];
 
             int score = 0;
             foreach (Strategy strat in guide)

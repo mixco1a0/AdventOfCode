@@ -71,7 +71,7 @@ fold along x=5"
                     return null;
                 }
 
-                int[] split = input.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray();
+                int[] split = [.. input.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse)];
                 return new Base.Vec2(split[0], split[1]);
             }
         }
@@ -86,7 +86,7 @@ fold along x=5"
 
             public static Instruction Parse(string input)
             {
-                string[] split = input.Split(" =".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).ToArray();
+                string[] split = [.. input.Split(" =".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)];
                 return new Instruction(split[2][0] == 'x', int.Parse(split[3]));
             }
         }
@@ -119,7 +119,7 @@ fold along x=5"
                     }
                 }
             }
-            return folded.Distinct().ToArray();
+            return [.. folded.Distinct()];
         }
 
         private string[] GetGlyph(Base.Vec2[] points)
@@ -143,13 +143,13 @@ fold along x=5"
                 }
                 glyph.Add(sb.ToString());
             }
-            return glyph.ToArray();
+            return [.. glyph];
         }
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool oneFold)
         {
-            Base.Vec2[] points = inputs.Select(Pos2Parse.Parse).Where(p => p != null).ToArray();
-            Instruction[] instructions = inputs.Where(i => i.Contains("fold")).Select(Instruction.Parse).ToArray();
+            Base.Vec2[] points = [.. inputs.Select(Pos2Parse.Parse).Where(p => p != null)];
+            Instruction[] instructions = [.. inputs.Where(i => i.Contains("fold")).Select(Instruction.Parse)];
             foreach (Instruction instruction in instructions)
             {
                 points = Fold(instruction, points);

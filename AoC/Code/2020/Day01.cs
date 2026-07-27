@@ -50,7 +50,7 @@ namespace AoC._2020
         }
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            HashSet<int> numbers = inputs.Select(int.Parse).ToHashSet();
+            HashSet<int> numbers = [.. inputs.Select(int.Parse)];
             return numbers.Where(n => numbers.Contains(2020 - n))
                             .Select(n => (2020 - n) * n)
                             .First().ToString();
@@ -58,7 +58,7 @@ namespace AoC._2020
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<int> numList = inputs.Select(int.Parse).OrderBy(_ => _).ToList();
+            List<int> numList = [.. inputs.Select(int.Parse).OrderBy(_ => _)];
             for (int i = 0; i < inputs.Count; ++i)
             {
                 int numI = numList[i];

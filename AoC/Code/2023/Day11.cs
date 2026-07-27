@@ -107,7 +107,7 @@ namespace AoC._2023
                 ++i;
             }
             Util.Grid2.Rotate(false, ref expandedX);
-            return expandedX.Select(e => e.ToCharArray()).ToArray();
+            return [.. expandedX.Select(e => e.ToCharArray())];
         }
 
         private record Galaxy(Base.Vec2 Pos, int Id);
@@ -126,7 +126,7 @@ namespace AoC._2023
                     }
                 }
             }
-            return galaxies.ToArray();
+            return [.. galaxies];
         }
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, int expansionMultiplier)

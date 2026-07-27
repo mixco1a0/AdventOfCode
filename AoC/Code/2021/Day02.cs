@@ -60,7 +60,7 @@ forward 2"
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool useAim)
         {
-            Instruction[] instructions = inputs.Select(Instruction.Parse).ToArray();
+            Instruction[] instructions = [.. inputs.Select(Instruction.Parse)];
             int horizontal = 0, depthOrAim = 0, depth = 0;
             foreach (Instruction i in instructions)
             {

@@ -119,8 +119,8 @@ namespace AoC._2022
                 string cycleCheck = cycleDetection[yCheck];
                 if (cycleDetection.Any(c => c.Key < ys.Min() - 1 && c.Value == cycleCheck))
                 {
-                    List<long> matches = cycleDetection.Where(p => p.Value == cycleCheck && p.Key < yCheck && Math.Abs(p.Key - yCheck) > 4)
-                                                       .Select(p => p.Key).OrderByDescending(_ => _).ToList();
+                    List<long> matches = [.. cycleDetection.Where(p => p.Value == cycleCheck && p.Key < yCheck && Math.Abs(p.Key - yCheck) > 4)
+                                                       .Select(p => p.Key).OrderByDescending(_ => _)];
                     if (matches.Any())
                     {
                         foreach (long m in matches)
@@ -270,7 +270,7 @@ namespace AoC._2022
                     long preHighest = info.HighestY;
                     info.HighestY = Math.Max(info.HighestY, newRockPos.Max(r => r.Y));
 
-                    long[] ys = newRockPos.Select(p => p.Y).Distinct().ToArray();
+                    long[] ys = [.. newRockPos.Select(p => p.Y).Distinct()];
                     StringBuilder sb = new();
                     foreach (long y in ys)
                     {

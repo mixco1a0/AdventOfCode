@@ -171,8 +171,8 @@ L7JLJL-JLJLJL--JLJ.L"
 
         private void GetGrid(List<string> inputs, out char[][] grid, out char[][] gridSimple, out int startX, out int startY)
         {
-            grid = inputs.Select(i => i.ToCharArray()).ToArray();
-            gridSimple = inputs.Select(i => i.ToCharArray()).ToArray();
+            grid = [.. inputs.Select(i => i.ToCharArray())];
+            gridSimple = [.. inputs.Select(i => i.ToCharArray())];
             startX = 0;
             startY = 0;
             for (int y = 0; y < grid.Length; ++y)
@@ -252,7 +252,7 @@ L7JLJL-JLJLJL--JLJ.L"
                 expanded.Add(row2.ToString());
                 expanded.Add(row3.ToString());
             }
-            return expanded.Select(s => s.ToCharArray()).ToArray();
+            return [.. expanded.Select(s => s.ToCharArray())];
         }
 
         private void FloodFill(ref char[][] gridExpanded)
@@ -305,7 +305,7 @@ L7JLJL-JLJLJL--JLJ.L"
 
         private char[][] Shrink(char[][] source)
         {
-            List<string> source2 = source.Select(s => string.Join("", s)).ToList();
+            List<string> source2 = [.. source.Select(s => string.Join("", s))];
             List<string> shrunk = [];
             for (int i = 0; i < source2.Count; ++i)
             {
@@ -314,7 +314,7 @@ L7JLJL-JLJLJL--JLJ.L"
                     shrunk.Add(string.Join("", source2[i].Select((c, index) => new { c, index }).Where(obj => obj.index % 3 == 1).Select(obj => obj.c)));
                 }
             }
-            return shrunk.Select(s => s.ToCharArray()).ToArray();
+            return [.. shrunk.Select(s => s.ToCharArray())];
         }
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool findEnd)

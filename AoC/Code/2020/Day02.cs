@@ -67,7 +67,7 @@ namespace AoC._2020
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<PasswordInput> passwordInputs = inputs.Select(PasswordInput.Parse).ToList();
+            List<PasswordInput> passwordInputs = [.. inputs.Select(PasswordInput.Parse)];
             int validPasswords = 0;
             for (int i = 0; i < passwordInputs.Count; ++i)
             {
@@ -85,7 +85,7 @@ namespace AoC._2020
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<PasswordInput> passwordInputs = inputs.Select(PasswordInput.Parse).ToList();
+            List<PasswordInput> passwordInputs = [.. inputs.Select(PasswordInput.Parse)];
             int validPasswords = 0;
             for (int i = 0; i < passwordInputs.Count; ++i)
             {

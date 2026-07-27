@@ -60,7 +60,7 @@ namespace AoC._2020
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<int> numbers = inputs[0].Split(",").Select(int.Parse).ToList();
+            List<int> numbers = [.. inputs[0].Split(",").Select(int.Parse)];
             Dictionary<long, TurnInfo> turns = [];
             long index = 1;
             long prevNumber = 0;
@@ -94,7 +94,7 @@ namespace AoC._2020
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<int> numbers = inputs[0].Split(",").Select(int.Parse).ToList();
+            List<int> numbers = [.. inputs[0].Split(",").Select(int.Parse)];
             Dictionary<long, TurnInfo> turns = [];
             long index = 1;
             long prevNumber = 0;

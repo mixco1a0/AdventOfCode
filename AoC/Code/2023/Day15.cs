@@ -104,7 +104,7 @@ namespace AoC._2023
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool hashOnly)
         {
-            List<Sequence> sequences = Util.String.Split(inputs.First(), ',').Select(Sequence.Parse).ToList();
+            List<Sequence> sequences = [.. Util.String.Split(inputs.First(), ',').Select(Sequence.Parse)];
             if (hashOnly)
             {
                 return sequences.Select(s => s.RawHash()).Sum().ToString();

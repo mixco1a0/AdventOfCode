@@ -263,7 +263,7 @@ QQQJA 483"
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool useJokers)
         {
             Hand.UseJokers = useJokers;
-            List<Hand> hands = inputs.Select(Hand.Parse).ToList();
+            List<Hand> hands = [.. inputs.Select(Hand.Parse)];
             hands.Sort();
             return hands.Select((card, index) => card.Bid * (long)(index + 1)).Sum().ToString();
         }

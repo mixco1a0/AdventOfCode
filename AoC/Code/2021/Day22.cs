@@ -184,7 +184,7 @@ off x=-93533..-4276,y=-16170..68771,z=-104985..-24507"
 
             public static Instruction Parse(string input)
             {
-                int[] split = input.Split("=.,".ToCharArray()).Where(s => int.TryParse(s, out int result)).Select(int.Parse).ToArray();
+                int[] split = [.. input.Split("=.,".ToCharArray()).Where(s => int.TryParse(s, out int result)).Select(int.Parse)];
                 return new Instruction(input[1] == 'n', split[0], split[1], split[2], split[3], split[4], split[5]);
             }
 
@@ -267,7 +267,7 @@ off x=-93533..-4276,y=-16170..68771,z=-104985..-24507"
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool initializationProcedure)
         {
-            List<Instruction> instructions = inputs.Select(Instruction.Parse).ToList();
+            List<Instruction> instructions = [.. inputs.Select(Instruction.Parse)];
 
             if (initializationProcedure)
             {

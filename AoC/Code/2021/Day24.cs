@@ -342,7 +342,7 @@ mod w 2"
 
             Queue<int> registerInput = new();
 
-            List<Instruction> instructions = inputs.Select(Instruction.Parse).ToList();
+            List<Instruction> instructions = [.. inputs.Select(Instruction.Parse)];
             if (fullRegisterInput.Contains('_'))
             {
                 StringBuilder sb = new(fullRegisterInput);

@@ -55,7 +55,7 @@ namespace AoC._2024
                 for (int i = 0; i < mc.Count; ++i)
                 {
                     string match = mc[i].Value;
-                    int[] values = Util.String.Split(mc[i].Value, "mul(,)").Select(int.Parse).ToArray();
+                    int[] values = [.. Util.String.Split(mc[i].Value, "mul(,)").Select(int.Parse)];
                     sum += values[0] * values[1];
                 }
             }
@@ -72,9 +72,9 @@ namespace AoC._2024
                 Regex dontRegex = new(DontRegex);
 
                 MatchCollection mulMC = mulRegex.Matches(input);
-                List<int> mulIndices = mulMC.Select(m => m.Index).ToList();
-                List<int> doIndices = doRegex.Matches(input).Select(m => m.Index).ToList();
-                List<int> dontIndices = dontRegex.Matches(input).Select(m => m.Index).ToList();
+                List<int> mulIndices = [.. mulMC.Select(m => m.Index)];
+                List<int> doIndices = [.. doRegex.Matches(input).Select(m => m.Index)];
+                List<int> dontIndices = [.. dontRegex.Matches(input).Select(m => m.Index)];
 
                 int doIndex = 0;
                 int dontIndex = int.MaxValue;
@@ -139,7 +139,7 @@ namespace AoC._2024
                     {
                         // Log(capture.Value);
                         string match = capture.Value;
-                        int[] values = Util.String.Split(capture.Value, "mul(,)").Select(int.Parse).ToArray();
+                        int[] values = [.. Util.String.Split(capture.Value, "mul(,)").Select(int.Parse)];
                         sum += values[0] * values[1];
                     }
                 }

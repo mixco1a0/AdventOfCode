@@ -193,7 +193,7 @@ The fourth floor contains nothing relevant."
 
                 // only check one pair of matching generator to microchip
                 List<Possibility> pairedPossibilities = [];
-                List<string> shared = floor.Generators.Intersect(floor.Microchips).ToList();
+                List<string> shared = [.. floor.Generators.Intersect(floor.Microchips)];
                 shared.Sort();
                 if (shared.Count > 0)
                 {

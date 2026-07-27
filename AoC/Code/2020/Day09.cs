@@ -91,10 +91,10 @@ namespace AoC._2020
 
         private string GetWeakness(List<string> inputs, int preamble)
         {
-            List<long> numbers = inputs.Select(num => long.Parse(num)).ToList();
+            List<long> numbers = [.. inputs.Select(num => long.Parse(num))];
             for (int i = preamble; i < numbers.Count(); ++i)
             {
-                if (!FindSum(numbers.Skip(i - preamble).Take(preamble).ToList(), numbers[i]))
+                if (!FindSum([.. numbers.Skip(i - preamble).Take(preamble)], numbers[i]))
                 {
                     return numbers[i].ToString();
                 }
@@ -128,7 +128,7 @@ namespace AoC._2020
 
             long weakness = long.Parse(GetWeakness(inputs, preamble));
 
-            List<long> numbers = inputs.Select(num => long.Parse(num)).ToList();
+            List<long> numbers = [.. inputs.Select(num => long.Parse(num))];
             for (int i = 0; i < numbers.Count(); ++i)
             {
                 long runningTotal = numbers[i];
@@ -137,7 +137,7 @@ namespace AoC._2020
                     runningTotal += numbers[j];
                     if (runningTotal == weakness)
                     {
-                        List<long> subset = numbers.Skip(i).Take(j - i + 1).ToList();
+                        List<long> subset = [.. numbers.Skip(i).Take(j - i + 1)];
                         subset.Sort();
                         return (subset.First() + subset.Last()).ToString();
                     }

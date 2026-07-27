@@ -166,7 +166,7 @@ U 20"
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, int nodeCount)
         {
-            Instruction[] instructions = inputs.Select(Instruction.Parse).ToArray();
+            Instruction[] instructions = [.. inputs.Select(Instruction.Parse)];
             Base.Vec2[] rope = new Base.Vec2[nodeCount];
             for (int r = 0; r < rope.Length; ++r)
             {

@@ -89,15 +89,15 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11"
                 ScratchCard sc = new();
                 string[] split = Util.String.Split(input, ":|");
                 sc.Id = int.Parse(Util.String.Split(split[0], ' ').Last());
-                sc.Win = Util.Number.Split(split[1], ' ').ToList();
-                sc.Have = Util.Number.Split(split[2], ' ').ToList();
+                sc.Win = [.. Util.Number.Split(split[1], ' ')];
+                sc.Have = [.. Util.Number.Split(split[2], ' ')];
                 return sc;
             }
         }
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool useRealRules)
         {
-            List<ScratchCard> cards = inputs.Select(ScratchCard.Parse).ToList();
+            List<ScratchCard> cards = [.. inputs.Select(ScratchCard.Parse)];
             if (useRealRules)
             {
                 List<ScratchCard> scoringCards = [];

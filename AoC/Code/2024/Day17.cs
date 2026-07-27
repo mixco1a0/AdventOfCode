@@ -125,7 +125,7 @@ Program: 0,1,5,4,3,0"
                 m_b = B;
                 C = Util.String.Split(inputs[2], "RegisterC: ").Select(ulong.Parse).First();
                 m_c = C;
-                Program = Util.String.Split(inputs[4], "Program:, ").Select(ulong.Parse).ToArray();
+                Program = [.. Util.String.Split(inputs[4], "Program:, ").Select(ulong.Parse)];
                 InstructionPointer = 0;
                 Output = [];
             }
@@ -217,7 +217,7 @@ Program: 0,1,5,4,3,0"
             }
 
             List<ulong> validAs = [0];
-            ulong[] reversed = computer.Program.Reverse().ToArray();
+            ulong[] reversed = [.. computer.Program.Reverse()];
             for (int i = 0; i < reversed.Length; ++i)
             {
                 List<ulong> newValidAs = [];
