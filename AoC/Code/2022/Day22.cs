@@ -10,25 +10,23 @@ namespace AoC._2022
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "6032",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "6032",
+                    RawInput =
 @"        ...#
         .#..
         #...
@@ -56,12 +54,12 @@ namespace AoC._2022
 6|T:4.R,L:5.R,R:1.R,B:2.L
 
 10R5L5R10L4R5L5"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "5031",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "5031",
+                    RawInput =
 @"        ...#
         .#..
         #...
@@ -89,7 +87,8 @@ namespace AoC._2022
 6|T:4.R,L:5.R,R:1.R,B:2.L
 
 10R5L5R10L4R5L5"
-            });
+                },
+            ];
 //             testData.Add(new Core.TestDatum
 //             {
 //                 TestPart = Core.Part.Two,
@@ -182,18 +181,14 @@ namespace AoC._2022
 
             public static EDirection GetDirection(char c)
             {
-                switch (c)
+                return c switch
                 {
-                    case 'T':
-                        return EDirection.Top;
-                    case 'L':
-                        return EDirection.Left;
-                    case 'R':
-                        return EDirection.Right;
-                    case 'B':
-                        return EDirection.Bottom;
-                }
-                return EDirection.Count;
+                    'T' => EDirection.Top,
+                    'L' => EDirection.Left,
+                    'R' => EDirection.Right,
+                    'B' => EDirection.Bottom,
+                    _ => EDirection.Count,
+                };
             }
         }
 
@@ -226,7 +221,7 @@ namespace AoC._2022
             FaceY = int.Parse(splitSide[1]);
 
             // cube face ids
-            List<List<int>> locations = new List<List<int>>();
+            List<List<int>> locations = [];
             int index = 0;
             for (int i = MaxY + 2; i < inputs.Count; ++i)
             {
@@ -235,7 +230,7 @@ namespace AoC._2022
                     break;
                 }
 
-                locations.Add(new List<int>());
+                locations.Add([]);
                 string[] split = inputs[i].Split(',', StringSplitOptions.RemoveEmptyEntries);
                 for (int j = 0; j < split.Length; ++j)
                 {
@@ -245,7 +240,7 @@ namespace AoC._2022
             }
 
             // cube face translations
-            faceConfigs = new Dictionary<int, FaceConfig>();
+            faceConfigs = [];
             for (int i = 1; i <= 6; ++i)
             {
                 int curX = -1;
@@ -263,7 +258,7 @@ namespace AoC._2022
                     }
                 }
 
-                FaceConfig curConfig = new FaceConfig(i, curX, curY);
+                FaceConfig curConfig = new(i, curX, curY);
                 curConfig.MinX = curX * FaceX;
                 curConfig.MaxX = (curX + 1) * FaceX - 1;
                 curConfig.MinY = curY * FaceY;
@@ -288,7 +283,7 @@ namespace AoC._2022
             //     SolveFace(i, ref faceConfigs, locations);
             // }
 
-            instructions = new List<string>();
+            instructions = [];
             string completeInstruction = inputs.Last();
             string[] numbers = completeInstruction.Split("LR".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             string[] directions = completeInstruction.Split("0123456789".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
@@ -770,13 +765,13 @@ namespace AoC._2022
                 }
             }
 
-            GridState gridState = new GridState(faceConfigs);
+            GridState gridState = new(faceConfigs);
             int testX = inputs.First().IndexOfAny(new char[] { '.', '#' });
             gridState.Face = 1;
             printGrid[gridState.RealX, gridState.RealY] = WalkChar;
             //Util.Grid.PrintGrid(printGrid, Core.Log.ELevel.Debug);
             instructions.Reverse();
-            Stack<string> instructionSet = new Stack<string>(instructions);
+            Stack<string> instructionSet = new(instructions);
             while (instructionSet.Count > 0)
             {
                 string instruction = instructionSet.Pop();

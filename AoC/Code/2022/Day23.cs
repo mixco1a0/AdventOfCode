@@ -12,25 +12,23 @@ namespace AoC._2022
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "110",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "110",
+                    RawInput =
 @"....#..
 ..###.#
 #...#.#
@@ -38,12 +36,12 @@ namespace AoC._2022
 #.###..
 ##.#.##
 .#..#.."
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "20",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "20",
+                    RawInput =
 @"....#..
 ..###.#
 #...#.#
@@ -51,7 +49,8 @@ namespace AoC._2022
 #.###..
 ##.#.##
 .#..#.."
-            });
+                },
+            ];
             return testData;
         }
 
@@ -72,16 +71,16 @@ namespace AoC._2022
         }
         private static readonly Position2[] AllNeighborOffsets = new Position2[]
         {
-            new Position2(-1, -1), new Position2(0, -1), new Position2(1, -1),
-            new Position2(-1, 0),   /*    cur pos     */ new Position2(1, 0),
-            new Position2(-1, 1),  new Position2(0, 1),  new Position2(1, 1)
+            new(-1, -1), new(0, -1), new(1, -1),
+            new(-1, 0),   /*    cur pos     */ new(1, 0),
+            new(-1, 1),  new(0, 1),  new(1, 1)
         };
-        private static readonly Dictionary<char, Position2[]> NeighborOffsets = new Dictionary<char, Position2[]>
+        private static readonly Dictionary<char, Position2[]> NeighborOffsets = new()
         {
-            {NorthChar, new Position2[] { new Position2(-1, -1), new Position2(0, -1), new Position2(1, -1) }},
-            {SouthChar, new Position2[] { new Position2(-1, 1), new Position2(0, 1), new Position2(1, 1) }},
-            {WestChar, new Position2[] { new Position2(-1, 1), new Position2(-1, 0), new Position2(-1, -1) }},
-            {EastChar, new Position2[] { new Position2(1, 1), new Position2(1, 0), new Position2(1, -1) }}
+            {NorthChar, new Position2[] { new(-1, -1), new(0, -1), new(1, -1) }},
+            {SouthChar, new Position2[] { new(-1, 1), new(0, 1), new(1, 1) }},
+            {WestChar, new Position2[] { new(-1, 1), new(-1, 0), new(-1, -1) }},
+            {EastChar, new Position2[] { new(1, 1), new(1, 0), new(1, -1) }}
         };
 
         private class Elf
@@ -132,7 +131,7 @@ namespace AoC._2022
 
         private void Parse(List<string> inputs, out HashSet<Elf> elves)
         {
-            elves = new HashSet<Elf>();
+            elves = [];
             for (int y = 0; y < inputs.Count; ++y)
             {
                 for (int x = 0; x < inputs[y].Length; ++x)
@@ -149,8 +148,8 @@ namespace AoC._2022
         {
             // round 1, generate dictionary of potential moved locations
             HashSet<Position2> curElfPositions = elves.Select(e => e.Pos).ToHashSet();
-            stationaryElves = new HashSet<Elf>();
-            potentialMoves = new Dictionary<Position2, bool>();
+            stationaryElves = [];
+            potentialMoves = [];
             foreach (Elf elf in elves)
             {
                 bool elfCanMove = false;
@@ -237,7 +236,7 @@ namespace AoC._2022
             int minY = ys.Min() - 1;
             int maxY = ys.Max() + 1;
 
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             Log("Elves:");
             for (int y = minY; y <= maxY; ++y)
             {
@@ -245,7 +244,7 @@ namespace AoC._2022
                 sb.Append($"{y,4}| ");
                 for (int x = minX; x <= maxX; ++x)
                 {
-                    Position2 curPos = new Position2(x, y);
+                    Position2 curPos = new(x, y);
                     if (pos.Contains(curPos))
                     {
                         sb.Append(elves.First(e => e.Pos == curPos).Id);

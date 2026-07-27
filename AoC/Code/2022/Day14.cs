@@ -11,36 +11,35 @@ namespace AoC._2022
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "24",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "24",
+                    RawInput =
 @"498,4 -> 498,6 -> 496,6
 503,4 -> 502,4 -> 502,9 -> 494,9"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "93",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "93",
+                    RawInput =
 @"498,4 -> 498,6 -> 496,6
 503,4 -> 502,4 -> 502,9 -> 494,9"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -51,7 +50,7 @@ namespace AoC._2022
         private Queue<Base.Vec2> Parse(string input)
         {
             int[] split = input.Split(", ->".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray();
-            Queue<Base.Vec2> positions = new Queue<Base.Vec2>();
+            Queue<Base.Vec2> positions = new();
             for (int i = 0; i < split.Length - 1; i += 2)
             {
                 positions.Enqueue(new Base.Vec2(split[i], split[i + 1]));
@@ -69,7 +68,7 @@ namespace AoC._2022
 
         void AddRock(ref Dictionary<Base.Vec2, char> cave, int x, int y)
         {
-            Base.Vec2 rock = new Base.Vec2(x, y);
+            Base.Vec2 rock = new(x, y);
             if (!cave.ContainsKey(rock))
             {
                 cave[rock] = RockVal;
@@ -78,7 +77,7 @@ namespace AoC._2022
 
         void GenerateCave(List<string> inputs, out Dictionary<Base.Vec2, char> cave, out int minX, out int maxX, out int minY, out int maxY)
         {
-            cave = new Dictionary<Base.Vec2, char>();
+            cave = [];
             minX = int.MaxValue;
             maxX = int.MinValue;
             minY = int.MaxValue;
@@ -135,7 +134,7 @@ namespace AoC._2022
 
         void PrintCave(Dictionary<Base.Vec2, char> cave, int minX, int maxX, int minY, int maxY, bool endlessVoid)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             Core.Log.WriteLine(Core.Log.ELevel.Debug, "");
             for (int y = minY; y <= maxY + 1; ++y)
             {
@@ -143,7 +142,7 @@ namespace AoC._2022
                 sb.Append($"{y,4}| ");
                 for (int x = minX - 1; x <= maxX + 1; ++x)
                 {
-                    Base.Vec2 cur = new Base.Vec2(x, y);
+                    Base.Vec2 cur = new(x, y);
                     if (cave.ContainsKey(cur))
                     {
                         sb.Append(cave[cur]);
@@ -180,7 +179,7 @@ namespace AoC._2022
             Core.Log.WriteLine(Core.Log.ELevel.Debug, "");
         }
 
-        static readonly Base.Vec2[] Movement = new Base.Vec2[] { new Base.Vec2(0, 1), new Base.Vec2(-1, 1), new Base.Vec2(1, 1) };
+        static readonly Base.Vec2[] Movement = new Base.Vec2[] { new(0, 1), new(-1, 1), new(1, 1) };
         private bool DropSand(ref Dictionary<Base.Vec2, char> cave, int maxY, bool endlessVoid, out Base.Vec2 sand)
         {
             sand = new Base.Vec2(500, 0);

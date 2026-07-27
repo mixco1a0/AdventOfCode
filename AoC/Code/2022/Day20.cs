@@ -10,35 +10,33 @@ namespace AoC._2022
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "0",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "0",
+                    RawInput =
 @"0
 1
 1
 8"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "1",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "1",
+                    RawInput =
 @"0
 2
 -4
@@ -48,12 +46,12 @@ namespace AoC._2022
 17
 -1
 -19"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "6",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "6",
+                    RawInput =
 @"1
 2
 3
@@ -63,12 +61,12 @@ namespace AoC._2022
 2
 3
 0"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "12",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "12",
+                    RawInput =
 @"0
 2
 -4
@@ -78,12 +76,12 @@ namespace AoC._2022
 7
 -1
 -3"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "3",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "3",
+                    RawInput =
 @"1
 2
 -3
@@ -91,12 +89,12 @@ namespace AoC._2022
 -2
 0
 4"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "1623178306",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "1623178306",
+                    RawInput =
 @"1
 2
 -3
@@ -104,7 +102,8 @@ namespace AoC._2022
 -2
 0
 4"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -112,7 +111,7 @@ namespace AoC._2022
         {
             List<long> file = inputs.Select(long.Parse).ToList();
             List<string> fileWithIds = inputs.Select((i, index) => string.Format("{0}[{1}]", long.Parse(i) * decryptionKey, index)).ToList();
-            List<string> mixing = new List<string>(fileWithIds);
+            List<string> mixing = new(fileWithIds);
             string zeroKey = string.Empty;
             for (int mc = 0; mc < mixCount; ++mc)
             {

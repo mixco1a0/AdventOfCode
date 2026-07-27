@@ -10,25 +10,23 @@ namespace AoC._2022
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "95437",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "95437",
+                    RawInput =
 @"$ cd /
 $ ls
 dir a
@@ -52,12 +50,12 @@ $ ls
 8033020 d.log
 5626152 d.ext
 7214296 k"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "24933642",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "24933642",
+                    RawInput =
 @"$ cd /
 $ ls
 dir a
@@ -81,7 +79,8 @@ $ ls
 8033020 d.log
 5626152 d.ext
 7214296 k"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -120,8 +119,8 @@ $ ls
             {
                 Name = name;
                 Parent = null;
-                Children = new List<FilePath>();
-                Files = new List<File>();
+                Children = [];
+                Files = [];
             }
 
             public long GetSize()
@@ -172,7 +171,7 @@ $ ls
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool deleteFiles)
         {
-            FilePath root = new FilePath("/");
+            FilePath root = new("/");
             FilePath cur = root;
             foreach (string input in inputs)
             {
@@ -212,13 +211,13 @@ $ ls
 
             if (!deleteFiles)
             {
-                List<long> validSizes = new List<long>();
+                List<long> validSizes = [];
                 SumDirectories(root, ref validSizes);
                 return validSizes.Sum().ToString();
             }
             else
             {
-                List<FilePath> validDeletes = new List<FilePath>();
+                List<FilePath> validDeletes = [];
                 const long totalSpace = 70000000;
                 FindDelete(root, totalSpace - root.GetSize(), ref validDeletes);
                 return validDeletes.Min(f => f.GetSize()).ToString();

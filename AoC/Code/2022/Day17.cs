@@ -11,34 +11,33 @@ namespace AoC._2022
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "3068",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "3068",
+                    RawInput =
 @">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "1514285714288",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "1514285714288",
+                    RawInput =
 @">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -52,25 +51,25 @@ namespace AoC._2022
 
         static readonly List<LPos2>[] RockShapes =
         {
-            new List<LPos2>() { new LPos2(0, 0), new LPos2(1, 0), new LPos2(2, 0), new LPos2(3, 0) },
-            new List<LPos2>() { new LPos2(1, 0), new LPos2(0, 1), new LPos2(1, 1), new LPos2(2, 1), new LPos2(1, 2) },
-            new List<LPos2>() { new LPos2(2, 0), new LPos2(2, 1), new LPos2(2, 2), new LPos2(0, 0), new LPos2(1, 0) },
-            new List<LPos2>() { new LPos2(0, 0), new LPos2(0, 1), new LPos2(0, 2), new LPos2(0, 3) },
-            new List<LPos2>() { new LPos2(0, 0), new LPos2(1, 0), new LPos2(0, 1), new LPos2(1, 1) },
+            [new LPos2(0, 0), new LPos2(1, 0), new LPos2(2, 0), new LPos2(3, 0)],
+            [new LPos2(1, 0), new LPos2(0, 1), new LPos2(1, 1), new LPos2(2, 1), new LPos2(1, 2)],
+            [new LPos2(2, 0), new LPos2(2, 1), new LPos2(2, 2), new LPos2(0, 0), new LPos2(1, 0)],
+            [new LPos2(0, 0), new LPos2(0, 1), new LPos2(0, 2), new LPos2(0, 3)],
+            [new LPos2(0, 0), new LPos2(1, 0), new LPos2(0, 1), new LPos2(1, 1)],
         };
         private int MinX { get { return 0; } }
         private int MaxX { get { return 7; } }
 
         private void PrintRocks(Dictionary<LPos2, char> usedRocks, List<LPos2> rock, long minY, long maxY)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             for (long y = maxY; y > 0 && y >= minY; --y)
             {
                 sb.Clear();
                 sb.Append(string.Format("{0, 3} - ", y));
                 for (int x = MinX - 1; x <= MaxX; ++x)
                 {
-                    LPos2 pos = new LPos2(x, y);
+                    LPos2 pos = new(x, y);
                     if (x < MinX || x >= MaxX)
                     {
                         sb.Append('|');
@@ -95,7 +94,7 @@ namespace AoC._2022
 
         private bool CanMove(HashSet<LPos2> usedPoints, ref List<LPos2> rock, LPos2 movement)
         {
-            List<LPos2> movedRock = new List<LPos2>();
+            List<LPos2> movedRock = [];
             for (int i = 0; i < rock.Count; ++i)
             {
                 movedRock.Add(rock[i] + movement);
@@ -200,7 +199,7 @@ namespace AoC._2022
                 CycleLen = 0;
                 CycleRockCount = 0;
                 CycleCount = 0;
-                CycleVerification = new List<long>();
+                CycleVerification = [];
             }
 
             public long Length()
@@ -222,11 +221,11 @@ namespace AoC._2022
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, long maxRockCount)
         {
             char[] jets = inputs[0].ToCharArray();
-            HashSet<LPos2> usedPoints = new HashSet<LPos2>();
-            Dictionary<LPos2, char> usedRocks = new Dictionary<LPos2, char>();
-            Dictionary<long, string> cycleDetection = new Dictionary<long, string>();
-            Info info = new Info();
-            List<LPos2> newRockPos = new List<LPos2>();
+            HashSet<LPos2> usedPoints = [];
+            Dictionary<LPos2, char> usedRocks = [];
+            Dictionary<long, string> cycleDetection = [];
+            Info info = new();
+            List<LPos2> newRockPos = [];
             long minCycleCheck = 5;
             for (int i = 0; i < jets.Length; i = (i + 1) % jets.Length)
             {
@@ -245,7 +244,7 @@ namespace AoC._2022
                     {
                         return info.Length().ToString();
                     }
-                    newRockPos = new List<LPos2>();
+                    newRockPos = [];
                     long newHighestY = info.HighestY;
                     foreach (LPos2 node in RockShapes[info.RockIdx])
                     {
@@ -272,13 +271,13 @@ namespace AoC._2022
                     info.HighestY = Math.Max(info.HighestY, newRockPos.Max(r => r.Y));
 
                     long[] ys = newRockPos.Select(p => p.Y).Distinct().ToArray();
-                    StringBuilder sb = new StringBuilder();
+                    StringBuilder sb = new();
                     foreach (long y in ys)
                     {
                         sb.Clear();
                         for (int x = MinX; x < MaxX; ++x)
                         {
-                            LPos2 pos = new LPos2(x, y);
+                            LPos2 pos = new(x, y);
                             if (usedRocks.ContainsKey(pos))
                             {
                                 sb.Append(usedRocks[pos]);

@@ -10,25 +10,23 @@ namespace AoC._2022
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "152",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "152",
+                    RawInput =
 @"root: pppw + sjmn
 dbpl: 5
 cczh: sllz + lgvd
@@ -44,13 +42,13 @@ pppw: cczh / lfqf
 lgvd: ljgn * ptdq
 drzm: hmdt - zczc
 hmdt: 32"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Variables = new Dictionary<string, string> { { nameof(_Humn), "301" } },
-                Output = "301",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Variables = new Dictionary<string, string> { { nameof(_Humn), "301" } },
+                    Output = "301",
+                    RawInput =
 @"root: pppw + sjmn
 dbpl: 5
 cczh: sllz + lgvd
@@ -66,7 +64,8 @@ pppw: cczh / lfqf
 lgvd: ljgn * ptdq
 drzm: hmdt - zczc
 hmdt: 32"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -100,7 +99,7 @@ hmdt: 32"
             public static Monkey Parse(string input)
             {
                 string[] split = input.Split(" :".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                Monkey m = new Monkey();
+                Monkey m = new();
                 m.Id = split[0];
                 if (long.TryParse(split[1], out long val))
                 {
@@ -120,18 +119,14 @@ hmdt: 32"
             {
                 long a = values[Others[0]];
                 long b = values[Others[1]];
-                switch (Op)
+                return Op switch
                 {
-                    case EOp.Add:
-                        return a + b;
-                    case EOp.Sub:
-                        return a - b;
-                    case EOp.Mult:
-                        return a * b;
-                    case EOp.Div:
-                        return a / b;
-                }
-                return 0;
+                    EOp.Add => a + b,
+                    EOp.Sub => a - b,
+                    EOp.Mult => a * b,
+                    EOp.Div => a / b,
+                    _ => 0,
+                };
             }
 
             public override string ToString()
@@ -143,8 +138,8 @@ hmdt: 32"
 
         private string ProcessMonkeys(List<string> inputs)
         {
-            Queue<Monkey> monkeys = new Queue<Monkey>(inputs.Select(Monkey.Parse));
-            Dictionary<string, long> values = new Dictionary<string, long>();
+            Queue<Monkey> monkeys = new(inputs.Select(Monkey.Parse));
+            Dictionary<string, long> values = [];
             while (monkeys.Count > 0)
             {
                 Monkey monkey = monkeys.Dequeue();
@@ -238,8 +233,8 @@ hmdt: 32"
         private void KindaProcessMonkeys(List<Monkey> allMonkeys)
         {
             Monkey root = allMonkeys.Find(m => m.Id == "root");
-            Queue<Monkey> monkeys = new Queue<Monkey>(allMonkeys);
-            Dictionary<string, long> values = new Dictionary<string, long>();
+            Queue<Monkey> monkeys = new(allMonkeys);
+            Dictionary<string, long> values = [];
             while (monkeys.Count > 0)
             {
                 Monkey monkey = monkeys.Dequeue();
@@ -288,8 +283,8 @@ hmdt: 32"
 
             Monkey root = allMonkeys.Find(m => m.Id == "root");
             root.Op = EOp.Equals;
-            Queue<Monkey> monkeys = new Queue<Monkey>(allMonkeys);
-            Dictionary<string, long> values = new Dictionary<string, long>();
+            Queue<Monkey> monkeys = new(allMonkeys);
+            Dictionary<string, long> values = [];
 
             string monkeyCycle = string.Empty;
             while (monkeys.Count > 0)
@@ -322,7 +317,7 @@ hmdt: 32"
                 monkeys.Enqueue(monkey);
             }
 
-            List<Monkey> leftOverMonkeys = new List<Monkey>(monkeys);
+            List<Monkey> leftOverMonkeys = new(monkeys);
             ReverseMonkeys(ref values, ref leftOverMonkeys, root);
 
             return values["humn"].ToString();

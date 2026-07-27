@@ -13,25 +13,23 @@ namespace AoC._2022
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "CMZ",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "CMZ",
+                    RawInput =
 @"    [D]    
 [N] [C]    
 [Z] [M] [P]
@@ -41,12 +39,12 @@ move 1 from 2 to 1
 move 3 from 1 to 3
 move 2 from 2 to 1
 move 1 from 1 to 2"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "MCD",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "MCD",
+                    RawInput =
 @"    [D]    
 [N] [C]    
 [Z] [M] [P]
@@ -56,7 +54,8 @@ move 1 from 2 to 1
 move 3 from 1 to 3
 move 2 from 2 to 1
 move 1 from 1 to 2"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -72,8 +71,8 @@ move 1 from 1 to 2"
 
         private void ParseShip(ref List<string> inputs, out Dictionary<int, Stack<char>> ship)
         {
-            Dictionary<int, int> key = new Dictionary<int, int>();
-            List<Dictionary<int, char>> stacks = new List<Dictionary<int, char>>();
+            Dictionary<int, int> key = [];
+            List<Dictionary<int, char>> stacks = [];
             for (int i = 0; i < inputs.Count; ++i)
             {
                 string input = inputs[i];
@@ -88,7 +87,7 @@ move 1 from 1 to 2"
                 stacks.Add(crates);
             }
 
-            ship = new Dictionary<int, Stack<char>>();
+            ship = [];
             foreach (var pair in key)
             {
                 ship[pair.Value] = new Stack<char>();
@@ -119,7 +118,7 @@ move 1 from 1 to 2"
                 MoveInstruction mi = MoveInstruction.Parse(input);
                 if (isCrateMover9001)
                 {
-                    StringBuilder moving = new StringBuilder();
+                    StringBuilder moving = new();
                     for (int j = 0; j < mi.Count; ++j)
                     {
                         moving.Append(ship[mi.From].Pop());
@@ -138,7 +137,7 @@ move 1 from 1 to 2"
                 }
             }
 
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             foreach (var pair in ship)
             {
                 sb.Append(pair.Value.Peek());

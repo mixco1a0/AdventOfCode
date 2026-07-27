@@ -10,33 +10,31 @@ namespace AoC._2022
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "10",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "10",
+                    RawInput =
 @"1,1,1
 2,1,1"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "64",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "64",
+                    RawInput =
 @"2,2,2
 1,2,2
 3,2,2
@@ -50,24 +48,24 @@ namespace AoC._2022
 3,2,5
 2,1,5
 2,3,5"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "30",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "30",
+                    RawInput =
 @"1,2,2
 3,2,2
 2,1,2
 2,3,2
 2,2,1
 2,2,3"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "58",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "58",
+                    RawInput =
 @"2,2,2
 1,2,2
 3,2,2
@@ -81,7 +79,8 @@ namespace AoC._2022
 3,2,5
 2,1,5
 2,3,5"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -99,21 +98,21 @@ namespace AoC._2022
             }
         }
 
-        private readonly List<Position3> Movement = new List<Position3>()
-        {
+        private readonly List<Position3> Movement =
+        [
             new Position3(1, 0, 0),
             new Position3(0, 1, 0),
             new Position3(0, 0, 1),
             new Position3(-1, 0, 0),
             new Position3(0, -1, 0),
             new Position3(0, 0, -1),
-        };
+        ];
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool removeAirPockets)
         {
             List<Position3> pos = inputs.Select(Position3.Parse).ToList();
 
-            List<Position3> unique = new List<Position3>();
+            List<Position3> unique = [];
             foreach (Position3 p in pos)
             {
                 foreach (Position3 m in Movement)

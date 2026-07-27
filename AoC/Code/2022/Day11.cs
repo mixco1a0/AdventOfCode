@@ -10,25 +10,23 @@ namespace AoC._2022
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "10605",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "10605",
+                    RawInput =
 @"Monkey 0:
   Starting items: 79, 98
   Operation: new = old * 19
@@ -56,12 +54,12 @@ Monkey 3:
   Test: divisible by 17
     If true: throw to monkey 0
     If false: throw to monkey 1"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "2713310158",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "2713310158",
+                    RawInput =
 @"Monkey 0:
   Starting items: 79, 98
   Operation: new = old * 19
@@ -89,7 +87,8 @@ Monkey 3:
   Test: divisible by 17
     If true: throw to monkey 0
     If false: throw to monkey 1"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -114,7 +113,7 @@ Monkey 3:
 
             public static Monkey Parse(List<string> input)
             {
-                Monkey monkey = new Monkey();
+                Monkey monkey = new();
                 monkey.Id = int.Parse(input[0].Split(" :".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Last());
                 monkey.Items = input[1].Split(" ,".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Where(s => long.TryParse(s, out long l)).Select(long.Parse).ToList();
                 monkey.Op = input[2].Contains('*') ? EOp.Mult : EOp.Add;
@@ -169,8 +168,8 @@ Monkey 3:
 
         public Monkey[] GetMonkeys(List<string> inputs)
         {
-            List<Monkey> monkeys = new List<Monkey>();
-            List<string> curMonkey = new List<string>();
+            List<Monkey> monkeys = [];
+            List<string> curMonkey = [];
             foreach (string input in inputs)
             {
                 if (string.IsNullOrWhiteSpace(input))
