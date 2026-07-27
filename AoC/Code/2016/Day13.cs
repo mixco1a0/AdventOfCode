@@ -9,35 +9,34 @@ namespace AoC._2016
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Variables = new Dictionary<string, string>() { { "targetX", "7" }, { "targetY", "4" } },
-                Output = "11",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Variables = new Dictionary<string, string>() { { "targetX", "7" }, { "targetY", "4" } },
+                    Output = "11",
+                    RawInput =
 @"10"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
 
@@ -63,7 +62,7 @@ namespace AoC._2016
 
         private uint WalkPath(Queue<PointWalk> points, Base.Vec2 target, uint magicNumber, int maxDistance)
         {
-            HashSet<ulong> visited = new HashSet<ulong>();
+            HashSet<ulong> visited = [];
             uint walkingPoints = 0;
             while (points.Count > 0)
             {

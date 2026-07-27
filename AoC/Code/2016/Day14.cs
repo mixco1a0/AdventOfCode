@@ -12,44 +12,43 @@ namespace AoC._2016
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v0"; // v2 is very slow
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v0",// v2 is very slow ~20s
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "22728",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "22728",
+                    RawInput =
 @"abc"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "22551",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "22551",
+                    RawInput =
 @"abc"
-            });
+                },
+            ];
             return testData;
         }
 
-        private char InvalidChar = '-';
+        private readonly char InvalidChar = '-';
 
         private record HashCheck(char Match, long Start, long End, string Raw) { }
 
         private char FindMatches(string hash, int minLen, int minExtendedLen, out HashSet<char> extendedMatches)
         {
-            extendedMatches = new HashSet<char>();
+            extendedMatches = [];
             char firstMatch = InvalidChar;
             char cur = InvalidChar;
             int curMatchLen = 1;
@@ -94,51 +93,48 @@ namespace AoC._2016
         {
             const int MaxKeys = 64;
             string input = inputs.First();
-            List<HashCheck> verifiedKeys = new List<HashCheck>();
-            List<HashCheck> pendingKeys = new List<HashCheck>();
-            using (MD5 md5 = MD5.Create())
+            List<HashCheck> verifiedKeys = [];
+            List<HashCheck> pendingKeys = [];
+            for (long i = 0; verifiedKeys.Count < MaxKeys || pendingKeys.Count > 0; ++i)
             {
-                for (long i = 0; verifiedKeys.Count < MaxKeys || pendingKeys.Count > 0; ++i)
+                StringBuilder sb = new(input);
+                sb.Append(i);
+                string encoded = sb.ToString();
+                for (int s = 0; s < stretchCount + 1; ++s)
                 {
-                    StringBuilder sb = new StringBuilder(input);
-                    sb.Append(i);
-                    string encoded = sb.ToString();
-                    for (int s = 0; s < stretchCount + 1; ++s)
-                    {
-                        byte[] inputBytes = Encoding.ASCII.GetBytes(encoded);
-                        byte[] hashBytes = md5.ComputeHash(inputBytes);
-                        encoded = BitConverter.ToString(hashBytes).Replace("-", string.Empty).ToLower();
-                    }
+                    byte[] inputBytes = Encoding.ASCII.GetBytes(encoded);
+                    byte[] hashBytes = MD5.HashData(inputBytes);
+                    encoded = Convert.ToHexStringLower(hashBytes);
+                }
 
-                    char curMatch = FindMatches(encoded, 3, 5, out HashSet<char> extendedMatches);
-                    if (extendedMatches.Any())
+                char curMatch = FindMatches(encoded, 3, 5, out HashSet<char> extendedMatches);
+                if (extendedMatches.Count != 0)
+                {
+                    // check for 5 in a row before adding the new one
+                    for (int j = 0; j < pendingKeys.Count;)
                     {
-                        // check for 5 in a row before adding the new one
-                        for (int j = 0; j < pendingKeys.Count;)
+                        HashCheck cur = pendingKeys[j];
+                        if (extendedMatches.Contains(cur.Match))
                         {
-                            HashCheck cur = pendingKeys[j];
-                            if (extendedMatches.Contains(cur.Match))
-                            {
-                                verifiedKeys.Add(new HashCheck(cur.Match, cur.Start, i, cur.Raw));
-                                // Log(Core.Log.ELevel.Spam, $"\'{cur.Match}\' @ {cur.Raw} [Idx {cur.Start,5}] [{encoded}]");
-                                pendingKeys.RemoveAt(j);
-                            }
-                            else
-                            {
-                                ++j;
-                            }
+                            verifiedKeys.Add(new HashCheck(cur.Match, cur.Start, i, cur.Raw));
+                            // Log(Core.Log.ELevel.Spam, $"\'{cur.Match}\' @ {cur.Raw} [Idx {cur.Start,5}] [{encoded}]");
+                            pendingKeys.RemoveAt(j);
+                        }
+                        else
+                        {
+                            ++j;
                         }
                     }
-
-                    // add new keys as long as max verified hasn't been hit
-                    if (verifiedKeys.Count < MaxKeys && curMatch != InvalidChar)
-                    {
-                        pendingKeys.Add(new HashCheck(curMatch, i, i + 1000, encoded));
-                    }
-
-                    // remove stale keys
-                    pendingKeys.RemoveAll(p => p.End <= i);
                 }
+
+                // add new keys as long as max verified hasn't been hit
+                if (verifiedKeys.Count < MaxKeys && curMatch != InvalidChar)
+                {
+                    pendingKeys.Add(new HashCheck(curMatch, i, i + 1000, encoded));
+                }
+
+                // remove stale keys
+                pendingKeys.RemoveAll(p => p.End <= i);
             }
             verifiedKeys.Sort((a, b) => a.Start > b.Start ? 1 : -1);
             // if (stretchCount > 0)
