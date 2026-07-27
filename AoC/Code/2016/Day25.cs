@@ -12,34 +12,33 @@ namespace AoC._2016
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "",
+                    RawInput =
 @""
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
 
@@ -57,7 +56,7 @@ namespace AoC._2016
             OutRegister
         }
 
-        static char InvalidRegister = '-';
+        static readonly char InvalidRegister = '-';
 
         private record Instruction(InstructionType Type, char Register, char SourceRegister, int Value, int SourceValue)
         {
@@ -95,15 +94,15 @@ namespace AoC._2016
             static public Instruction Parse(string input)
             {
                 InstructionType type = InstructionType.Invalid;
-                string[] split = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                IEnumerable<int> intVals = split.Where(s => { int sint; return int.TryParse(s, out sint); }).Select(int.Parse);
+                string[] split = Util.String.Split(input, ' ');
+                IEnumerable<int> intVals = Util.Number.Split(input, ' ');
                 char register = InvalidRegister;
                 int value = 0;
                 char sourceRegister = InvalidRegister;
                 int sourceValue = 0;
                 if (split[0] == "cpy")
                 {
-                    type = (intVals.Count() > 0 ? InstructionType.CopyValue : InstructionType.CopyRegister);
+                    type = (intVals.Any() ? InstructionType.CopyValue : InstructionType.CopyRegister);
                     register = split.Last()[0];
                     if (type == InstructionType.CopyValue)
                     {
@@ -159,10 +158,10 @@ namespace AoC._2016
             }
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, Dictionary<char, int> registers)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, Dictionary<char, int> registers)
         {
             string pattern = "^(0)(?!\\1)(1)(?:\\1\\2)*\\1?$";
-            Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
+            Regex regex = new(pattern, RegexOptions.IgnoreCase);
             int minLen = 10;
 
             List<Instruction> instructions = inputs.Select(Instruction.Parse).ToList();
@@ -172,7 +171,7 @@ namespace AoC._2016
                 registers.Clear();
                 registers['a'] = a;
 
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
                 for (int i = 0; i < instructions.Count && i >= 0;)
                 {
                     Instruction cur = instructions[i];
@@ -230,7 +229,7 @@ namespace AoC._2016
                             break;
                     }
 
-                    if (sb.Length > 1 && !regex.Match(sb.ToString()).Success)
+                    if (sb.Length > 1 && !regex.IsMatch(sb.ToString()))
                     {
                         break;
                     }

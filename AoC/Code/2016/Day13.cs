@@ -24,7 +24,7 @@ namespace AoC._2016
                 new Core.TestDatum
                 {
                     TestPart = Core.Part.One,
-                    Variables = new Dictionary<string, string>() { { "targetX", "7" }, { "targetY", "4" } },
+                    Variables = new Dictionary<string, string>() { { nameof(_TargetX), "7" }, { nameof(_TargetY), "4" } },
                     Output = "11",
                     RawInput =
 @"10"
@@ -40,18 +40,23 @@ namespace AoC._2016
             return testData;
         }
 
-        private ulong GetId(int x, int y)
+#pragma warning disable IDE1006 // Naming Styles
+        private static string _TargetX { get; }
+        private static string _TargetY { get; }
+#pragma warning restore IDE1006 // Naming Styles
+
+        private static ulong GetId(int x, int y)
         {
             ulong id = (uint)y;
-            id = id << 32;
+            id <<= 32;
             return id | (ulong)(uint)x;
         }
 
-        private bool IsOpen(uint x, uint y, uint magicNumber)
+        private static bool IsOpen(uint x, uint y, uint magicNumber)
         {
             uint isWall = (x * x) + (3 * x) + (2 * x * y) + y + (y * y) + magicNumber;
             int bits = 0;
-            for (uint i = 0, bit = 1; i < 32; ++i, bit = bit << 1)
+            for (uint i = 0, bit = 1; i < 32; ++i, bit <<= 1)
             {
                 bits += ((isWall & bit) == 0 ? 0 : 1);
             }
@@ -60,7 +65,7 @@ namespace AoC._2016
 
         private record PointWalk(Base.Vec2 Point, uint Distance) { }
 
-        private uint WalkPath(Queue<PointWalk> points, Base.Vec2 target, uint magicNumber, int maxDistance)
+        private static uint WalkPath(Queue<PointWalk> points, Base.Vec2 target, uint magicNumber, int maxDistance)
         {
             HashSet<ulong> visited = [];
             uint walkingPoints = 0;
@@ -116,18 +121,11 @@ namespace AoC._2016
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool findMaxLocations)
         {
-            int targetX = 31, targetY = 39;
-            if (variables != null && variables.ContainsKey(nameof(targetX)))
-            {
-                targetX = int.Parse(variables[nameof(targetX)]);
-            }
-            if (variables != null && variables.ContainsKey(nameof(targetY)))
-            {
-                targetY = int.Parse(variables[nameof(targetY)]);
-            }
+            GetVariable(nameof(_TargetX), 31, variables, out int targetX);
+            GetVariable(nameof(_TargetY), 39, variables, out int targetY);
 
             uint magicNumber = uint.Parse(inputs.First());
-            Queue<PointWalk> points = new Queue<PointWalk>();
+            Queue<PointWalk> points = new();
             points.Enqueue(new PointWalk(new Base.Vec2(1, 1), 0));
             return WalkPath(points, new Base.Vec2(targetX, targetY), magicNumber, findMaxLocations ? 50 : 0).ToString();
         }

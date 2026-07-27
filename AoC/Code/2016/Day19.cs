@@ -9,34 +9,33 @@ namespace AoC._2016
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "3",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "3",
+                    RawInput =
 @"5"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "2",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "2",
+                    RawInput =
 @"5"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -47,7 +46,7 @@ namespace AoC._2016
             while (elves.Count > 1)
             {
                 bool removeFront = elves.Count % 2 != 0;
-                elves = elves.Select((e, i) => new { e, i }).Where(p => p.i % 2 == 0).Select(p => p.e).ToList();
+                elves = [.. elves.Select((e, i) => new { e, i }).Where(p => p.i % 2 == 0).Select(p => p.e)];
                 if (elves.Count > 1 && removeFront)
                 {
                     elves.RemoveAt(0);
@@ -56,17 +55,11 @@ namespace AoC._2016
             return elves.First().ToString();
         }
 
-        private class Elf
+        private class Elf(int id, Day19.Elf next, Day19.Elf prev)
         {
-            public Elf(int id, Elf next, Elf prev)
-            {
-                Id = id;
-                Next = next;
-                Prev = prev;
-            }
-            public Elf Next { get; set; }
-            public Elf Prev { get; set; }
-            public int Id { get; set; }
+            public Elf Next { get; set; } = next;
+            public Elf Prev { get; set; } = prev;
+            public int Id { get; set; } = id;
             public override string ToString()
             {
                 return $"{Prev.Id} <= {Id} => {Next.Id}";
@@ -76,7 +69,7 @@ namespace AoC._2016
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
             int elfCount = int.Parse(inputs.First());
-            List<Elf> elves = Enumerable.Range(1, elfCount).Select(e => new Elf(e, null, null)).ToList();
+            List<Elf> elves = [.. Enumerable.Range(1, elfCount).Select(e => new Elf(e, null, null))];
             elves[0].Prev = elves.Last();
             elves.Last().Next = elves[0];
             for (int e = 0; e < elves.Count; ++e)

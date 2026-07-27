@@ -11,32 +11,30 @@ namespace AoC._2016
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "",
+                    RawInput =
 @""
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "7",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "7",
+                    RawInput =
 @"root@ebhq-gridcenter# df -h
 Filesystem            Size  Used  Avail  Use%
 /dev/grid/node-x0-y0   10T    8T     2T   80%
@@ -48,7 +46,8 @@ Filesystem            Size  Used  Avail  Use%
 /dev/grid/node-x2-y0   10T    6T     4T   60%
 /dev/grid/node-x2-y1    9T    8T     1T   88%
 /dev/grid/node-x2-y2    9T    6T     3T   66%"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -110,12 +109,12 @@ Filesystem            Size  Used  Avail  Use%
 
             static public Node Parse(string input)
             {
-                Node node = new Node();
+                Node node = new();
 
-                string[] split = input.Split(" T".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                node.Name = split[0].Substring(split[0].LastIndexOf('/') + 1);
+                string[] split = Util.String.Split(input, " T");
+                node.Name = split[0][(split[0].LastIndexOf('/') + 1)..];
 
-                string[] coordSplit = split[0].Split("-xy".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).TakeLast(2).ToArray();
+                string[] coordSplit = [.. Util.String.Split(split[0], "-xy").TakeLast(2)];
                 node.Coords = new Base.Vec2(int.Parse(coordSplit[0]), int.Parse(coordSplit[1]));
                 node.Size = uint.Parse(split[1]);
                 node.Used = uint.Parse(split[2]);
@@ -125,9 +124,9 @@ Filesystem            Size  Used  Avail  Use%
             }
         }
 
-        private int GetViablePairs(Node curNode, IEnumerable<Node> nodes)
+        private static int GetViablePairs(Node curNode, IEnumerable<Node> nodes)
         {
-            if (nodes.Count() == 0)
+            if (!nodes.Any())
             {
                 return 0;
             }
@@ -147,6 +146,14 @@ Filesystem            Size  Used  Avail  Use%
             }
             return viablePairCount;
         }
+        
+        static public Base.Vec2[] NextCoords =
+        [
+            Util.Grid2.Map.Neighbor[Util.Grid2.Dir.North],
+            Util.Grid2.Map.Neighbor[Util.Grid2.Dir.West],
+            Util.Grid2.Map.Neighbor[Util.Grid2.Dir.South],
+            Util.Grid2.Map.Neighbor[Util.Grid2.Dir.East]
+        ];
 
         private record NodeStep(Node Node, uint Steps)
         {
@@ -159,12 +166,12 @@ Filesystem            Size  Used  Avail  Use%
 
         private record NodeStepHistory(Node Node, uint Steps, Queue<Node> History) { }
 
-        private void GetFullPathToTarget(Node[][] nodeGrid, int maxX, int maxY, Node start, Node target, out Queue<Node> optimizedPath)
+        private static void GetFullPathToTarget(Node[][] nodeGrid, int maxX, int maxY, Node start, Node target, out Queue<Node> optimizedPath)
         {
             optimizedPath = null;
 
-            HashSet<string> visitedNodes = new HashSet<string>();
-            Queue<NodeStepHistory> pathCheck = new Queue<NodeStepHistory>();
+            HashSet<string> visitedNodes = [];
+            Queue<NodeStepHistory> pathCheck = new();
             pathCheck.Enqueue(new NodeStepHistory(start, 0, new Queue<Node>()));
             while (pathCheck.Count > 0)
             {
@@ -176,9 +183,8 @@ Filesystem            Size  Used  Avail  Use%
                     pathCheck.Clear();
                     continue;
                 }
-
-                Base.Vec2[] nextCoords = new Base.Vec2[] { new Base.Vec2(0, -1), new Base.Vec2(-1, 0), new Base.Vec2(0, 1), new Base.Vec2(1, 0) };
-                foreach (Base.Vec2 next in nextCoords)
+                
+                foreach (Base.Vec2 next in NextCoords)
                 {
                     Base.Vec2 nextNodeCoords = nsh.Node.Coords + next;
                     if (nextNodeCoords.X >= 0 && nextNodeCoords.X <= maxX && nextNodeCoords.Y >= 0 && nextNodeCoords.Y <= maxY)
@@ -188,7 +194,7 @@ Filesystem            Size  Used  Avail  Use%
                         {
                             visitedNodes.Add(nextNode.Name);
 
-                            NodeStepHistory nextNodeStepHistory = new NodeStepHistory(nextNode, nsh.Steps + 1, new Queue<Node>());
+                            NodeStepHistory nextNodeStepHistory = new(nextNode, nsh.Steps + 1, new Queue<Node>());
                             foreach (Node history in nsh.History)
                             {
                                 nextNodeStepHistory.History.Enqueue(history);
@@ -207,10 +213,10 @@ Filesystem            Size  Used  Avail  Use%
             }
         }
 
-        private uint PathToTarget(Node[][] nodeGrid, int maxX, int maxY, Node start, Node target, Node blocked)
+        private static uint PathToTarget(Node[][] nodeGrid, int maxX, int maxY, Node start, Node target, Node blocked)
         {
-            HashSet<string> visitedNodes = new HashSet<string>();
-            Queue<NodeStep> pathCheck = new Queue<NodeStep>();
+            HashSet<string> visitedNodes = [];
+            Queue<NodeStep> pathCheck = new();
             pathCheck.Enqueue(new NodeStep(start, 0));
             while (pathCheck.Count > 0)
             {
@@ -220,8 +226,7 @@ Filesystem            Size  Used  Avail  Use%
                     return ns.Steps;
                 }
 
-                Base.Vec2[] nextCoords = new Base.Vec2[] { new Base.Vec2(0, -1), new Base.Vec2(-1, 0), new Base.Vec2(0, 1), new Base.Vec2(1, 0) };
-                foreach (Base.Vec2 next in nextCoords)
+                foreach (Base.Vec2 next in NextCoords)
                 {
                     Base.Vec2 nextNodeCoords = ns.Node.Coords + next;
                     if (nextNodeCoords.X >= 0 && nextNodeCoords.X <= maxX && nextNodeCoords.Y >= 0 && nextNodeCoords.Y <= maxY)
@@ -231,7 +236,7 @@ Filesystem            Size  Used  Avail  Use%
                         {
                             visitedNodes.Add(nextNode.Name);
 
-                            NodeStep nextNodeStep = new NodeStep(nextNode, ns.Steps + 1);
+                            NodeStep nextNodeStep = new(nextNode, ns.Steps + 1);
                             pathCheck.Enqueue(nextNodeStep);
                         }
                     }
@@ -259,7 +264,7 @@ Filesystem            Size  Used  Avail  Use%
             uint colIdx = 1;
             foreach (Node[] cols in nodeGrid)
             {
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
                 sb.AppendFormat("{0,2}| ", colIdx++);
                 foreach (Node row in cols)
                 {
@@ -293,7 +298,7 @@ Filesystem            Size  Used  Avail  Use%
             }
         }
 
-        private string SolveGrid(IEnumerable<Node> nodes)
+        private static string SolveGrid(IEnumerable<Node> nodes)
         {
             // set up the grid
             int maxX = nodes.Select(n => n.Coords.X).Max();
@@ -308,8 +313,7 @@ Filesystem            Size  Used  Avail  Use%
                 nodeGrid[node.Coords.Y][node.Coords.X] = node;
             }
 
-            Queue<Node> optimizedPath;
-            GetFullPathToTarget(nodeGrid, maxX, maxY, nodeGrid[0][maxX], nodeGrid[0][0], out optimizedPath);
+            GetFullPathToTarget(nodeGrid, maxX, maxY, nodeGrid[0][maxX], nodeGrid[0][0], out Queue<Node> optimizedPath);
 
             uint optimizedSteps = 0;
             Node emptyNode = nodes.Where(n => n.Used == 0).First();
@@ -332,7 +336,7 @@ Filesystem            Size  Used  Avail  Use%
             return optimizedSteps.ToString();
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool accessData)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool accessData)
         {
             IEnumerable<Node> nodes = inputs.Skip(2).Select(Node.Parse);
             if (accessData)

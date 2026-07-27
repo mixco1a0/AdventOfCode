@@ -45,8 +45,7 @@ Disc #2 has 2 positions; at time=0, it is at position 1."
         {
             static public Disk Parse(string input)
             {
-                string[] split = input.Split(" #=,.".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                int[] values = [.. split.Where(s => { return int.TryParse(s, out int i); }).Select(int.Parse)];
+                int[] values = [.. Util.Number.Split(input, " #=,.")];
                 return new Disk(values[0], values[3], values[1]);
             }
             public int GetPosition(int time)

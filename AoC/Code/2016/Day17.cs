@@ -12,62 +12,61 @@ namespace AoC._2016
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "DDRRRD",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "DDRRRD",
+                    RawInput =
 @"ihgpwlah"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "DDUDRLRRUDRD",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "DDUDRLRRUDRD",
+                    RawInput =
 @"kglvqrro"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "DRURDRUDDLLDLUURRDULRLDUUDDDRR",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "DRURDRUDDLLDLUURRDULRLDUUDDDRR",
+                    RawInput =
 @"ulqzkmiv"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "370",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "370",
+                    RawInput =
 @"ihgpwlah"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "492",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "492",
+                    RawInput =
 @"kglvqrro"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "830",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "830",
+                    RawInput =
 @"ulqzkmiv"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -77,33 +76,36 @@ namespace AoC._2016
             {
                 // get md5
                 string hash = string.Empty;
-                using (MD5 md5 = MD5.Create())
-                {
-                    byte[] inputBytes = Encoding.ASCII.GetBytes(input);
-                    byte[] hashBytes = md5.ComputeHash(inputBytes);
-                    hash = BitConverter.ToString(hashBytes).Replace("-", string.Empty).ToLower();
-                }
+                byte[] inputBytes = Encoding.ASCII.GetBytes(input);
+                byte[] hashBytes = MD5.HashData(inputBytes);
+                hash = Convert.ToHexStringLower(hashBytes);
 
                 // set door status
                 bool[] open = new bool[4];
                 for (int i = 0; i < 4; ++i)
                 {
-                    open[i] = !(hash[i] == 'a' || Char.IsDigit(hash[i]));
+                    open[i] = !(hash[i] == 'a' || char.IsDigit(hash[i]));
                 }
                 return new DoorStatus(open);
             }
 
-            static public Base.Vec2[] Directions = new Base.Vec2[4] { new Base.Vec2(0, -1), new Base.Vec2(0, 1), new Base.Vec2(-1, 0), new Base.Vec2(1, 0) };
+            static public Base.Vec2[] Directions =
+            [
+                Util.Grid2.Map.Neighbor[Util.Grid2.Dir.North],
+                Util.Grid2.Map.Neighbor[Util.Grid2.Dir.South],
+                Util.Grid2.Map.Neighbor[Util.Grid2.Dir.West],
+                Util.Grid2.Map.Neighbor[Util.Grid2.Dir.East]
+            ];
 
-            static public char[] Letters = new char[4] { 'U', 'D', 'L', 'R' };
+            static public char[] Letters = ['U', 'D', 'L', 'R'];
         }
 
         private record WalkStatus(string Path, Base.Vec2 Coords) { }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool findLongestPath)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool findLongestPath)
         {
-            Queue<WalkStatus> pendingWalks = new Queue<WalkStatus>();
-            pendingWalks.Enqueue(new WalkStatus(inputs.First(), new Base.Vec2(0, 0)));
+            Queue<WalkStatus> pendingWalks = new();
+            pendingWalks.Enqueue(new WalkStatus(inputs.First(), new()));
             int longestPath = 0;
             while (pendingWalks.Count > 0)
             {
@@ -117,12 +119,12 @@ namespace AoC._2016
                     }
                     else
                     {
-                        return ws.Path.Substring(inputs.First().Length);
+                        return ws.Path[inputs.First().Length..];
                     }
                 }
 
                 DoorStatus ds = DoorStatus.Parse(ws.Path);
-                for (int i = 0; i < ds.Status.Count(); ++i)
+                for (int i = 0; i < ds.Status.Length; ++i)
                 {
                     if (ds.Status[i])
                     {

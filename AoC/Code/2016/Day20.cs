@@ -10,55 +10,57 @@ namespace AoC._2016
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "3",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "3",
+                    RawInput =
 @"5-8
 0-2
 4-7
 4-5"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Variables = new Dictionary<string, string>() { { "minValid", "0" }, { "maxValid", "9" } },
-                Output = "1",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Variables = new Dictionary<string, string>() { { nameof(_MinValid), "0" }, { nameof(_MaxValid), "9" } },
+                    Output = "1",
+                    RawInput =
 @"5-8
 0-2
 5-9
 4-5"
-            });
+                },
+            ];
             return testData;
         }
+					
+#pragma warning disable IDE1006 // Naming Styles
+        private static string _MinValid { get; }
+        private static string _MaxValid { get; }
+#pragma warning restore IDE1006 // Naming Styles
 
         private record MinMax(long Min, long Max) { }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool findFirst)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool findFirst)
         {
-            long minValid;
-            GetVariable(nameof(minValid), 0, variables, out minValid);
-            long maxValid;
-            GetVariable(nameof(maxValid), (long)uint.MaxValue, variables, out maxValid);
+            GetVariable(nameof(_MinValid), 0, variables, out long minValid);
+            GetVariable(nameof(_MaxValid), (long)uint.MaxValue, variables, out long maxValid);
 
-            List<MinMax> minMax = inputs.Select(i => { string[] split = i.Split('-', StringSplitOptions.RemoveEmptyEntries); return new MinMax(long.Parse(split[0]), long.Parse(split[1])); }).ToList();
-            minMax = minMax.OrderByDescending(m => m.Max).OrderBy(m => m.Min).ToList();
+            List<MinMax> minMax = [.. inputs.Select(i => { long[] split = [.. Util.Number.SplitL(i, '-')]; return new MinMax(split[0], split[1]); })];
+            minMax = [.. minMax.OrderByDescending(m => m.Max).OrderBy(m => m.Min)];
             long curMin = minValid;
             long totalAllowed = 0;
             foreach (MinMax mm in minMax)
