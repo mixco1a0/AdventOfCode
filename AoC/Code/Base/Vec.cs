@@ -557,7 +557,8 @@ namespace AoC.Base
         public double X { get; set; }
         public double Y { get; set; }
 
-        public static readonly Vec2D Zero = new();
+        protected static readonly Vec2D _zero = new();
+        public static Vec2D Zero { get => _zero; }
 
         public Vec2D()
         {
@@ -584,10 +585,11 @@ namespace AoC.Base
                 return null;
             }
 
-            double[] split = [.. Util.String.Split(input, ',').Select(double.Parse)];
-            return new(split[0], split[1]);
+            IEnumerable<double> split = Util.Number.SplitD(input, ',');
+            return new(split.ElementAt(0), split.ElementAt(1));
         }
 
+        #region Interfaces
         public static Vec2D operator +(Vec2D a, Vec2D b)
         {
             return new(a.X + b.X, a.Y + b.Y);
@@ -603,13 +605,23 @@ namespace AoC.Base
             return new(a.X * mult, a.Y * mult);
         }
 
-        public static Vec2D operator /(Vec2D a, double mult)
+        public static Vec2D operator /(Vec2D a, double div)
         {
-            if (mult == 0.0d)
+            if (div == 0.0d)
             {
                 return new Vec2D();
             }
-            return new(a.X / mult, a.Y / mult);
+            return new(a.X / div, a.Y / div);
+        }
+
+        public static Vec2D operator %(Vec2D a, double mod)
+        {
+            if (mod == 0.0d)
+            {
+                return new();
+            }
+
+            return new(Util.Number.Mod(a.X, mod), Util.Number.Mod(a.Y, mod));
         }
 
         public double Manhattan(Vec2D other)
@@ -617,7 +629,6 @@ namespace AoC.Base
             return double.Abs(X - other.X) + double.Abs(Y - other.Y);
         }
 
-        #region Interfaces
         public bool Equals(Vec2D other)
         {
             return X == other.X && Y == other.Y;

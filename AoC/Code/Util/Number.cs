@@ -218,5 +218,39 @@ namespace AoC.Util
             string[] split = String.Split(input, seperator);
             return split.Where(s => float.TryParse(s, out float result)).Select(float.Parse);
         }
+        /// <summary>
+        /// Return the positive modulo using provided values
+        /// </summary>
+        /// <param name="dividend">value to be modded</param>
+        /// <param name="divisor">the number value needs to be modded by</param>
+        /// <returns></returns>
+        public static double Mod(double dividend, double divisor)
+        {
+            return (dividend % divisor + divisor) % divisor;
+        }
+                
+        /// <summary>
+        /// Call split on a string and then parse it into doubles
+        /// </summary>
+        /// <param name="input">string of separated doubles</param>
+        /// <param name="seperator">characters used as seperator</param>
+        /// <returns></returns>
+        public static IEnumerable<double> SplitD(string input, string seperators)
+        {
+            string[] split = String.Split(input, seperators);
+            return split.Where(s => double.TryParse(s, out double result)).Select(double.Parse);
+        }
+                
+        /// <summary>
+        /// Call split on a string and then parse it into doubles
+        /// </summary>
+        /// <param name="input">string of separated doubles</param>
+        /// <param name="seperator">character used as seperator</param>
+        /// <returns></returns>
+        public static IEnumerable<double> SplitD(string input, char seperator)
+        {
+            string[] split = String.Split(input, seperator);
+            return split.Where(s => double.TryParse(s, out double result)).Select(double.Parse);
+        }
     }
 }
