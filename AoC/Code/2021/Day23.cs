@@ -11,49 +11,48 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "12521",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "12521",
+                    RawInput =
 @"#############
 #...........#
 ###B#C#B#D###
   #A#D#C#A#
   #########"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "44169",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "44169",
+                    RawInput =
 @"#############
 #...........#
 ###B#C#B#D###
   #A#D#C#A#
   #########"
-            });
+                },
+            ];
             return testData;
         }
 
-        private static readonly Dictionary<char, int> AmphipodEnergy = new Dictionary<char, int>() { { 'A', 1 }, { 'B', 10 }, { 'C', 100 }, { 'D', 1000 } };
-        private static readonly Dictionary<int, char> RoomToAmphipod = new Dictionary<int, char>() { { 0, 'A' }, { 1, 'B' }, { 2, 'C' }, { 3, 'D' } };
+        private static readonly Dictionary<char, int> AmphipodEnergy = new() { { 'A', 1 }, { 'B', 10 }, { 'C', 100 }, { 'D', 1000 } };
+        private static readonly Dictionary<int, char> RoomToAmphipod = new() { { 0, 'A' }, { 1, 'B' }, { 2, 'C' }, { 3, 'D' } };
         private static readonly Dictionary<char, int> AmphipodToRoom = RoomToAmphipod.ToDictionary(atr => atr.Value, atr => atr.Key);
-        private static readonly Dictionary<int, int> RoomToHall = new Dictionary<int, int>() { { 0, 2 }, { 1, 4 }, { 2, 6 }, { 3, 8 } };
+        private static readonly Dictionary<int, int> RoomToHall = new() { { 0, 2 }, { 1, 4 }, { 2, 6 }, { 3, 8 } };
 
         private class BurrowState
         {
@@ -106,7 +105,7 @@ namespace AoC._2021
 
             public static BurrowState Parse(List<string> roomSlices)
             {
-                BurrowState bs = new BurrowState(roomSlices.Count);
+                BurrowState bs = new(roomSlices.Count);
                 for (int i = 0; i < roomSlices.Count; ++i)
                 {
                     char[] roomSlice = roomSlices[i].Split("# ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(s => s[0]).ToArray();
@@ -161,7 +160,7 @@ namespace AoC._2021
 
             private List<BurrowState> GetNextHallwayStates()
             {
-                List<BurrowState> nextStates = new List<BurrowState>();
+                List<BurrowState> nextStates = [];
                 if (Hallway.Any(h => h != Empty))
                 {
                     Dictionary<int, char> hallwayPairs = Hallway.Select((h, i) => new { idx = i, val = h }).Where(hi => hi.val != Empty).ToDictionary(hi => hi.idx, hi => hi.val);
@@ -193,7 +192,7 @@ namespace AoC._2021
 
                             if (pathClear)
                             {
-                                BurrowState sendToRoom = new BurrowState(this);
+                                BurrowState sendToRoom = new(this);
                                 end += roomSlot + 1;
                                 sendToRoom.Rooms[roomIdx][roomSlot] = amphipod;
                                 sendToRoom.Hallway[hallIdx] = Empty;
@@ -208,7 +207,7 @@ namespace AoC._2021
 
             private List<BurrowState> GetNextRoomStates()
             {
-                List<BurrowState> nextStates = new List<BurrowState>();
+                List<BurrowState> nextStates = [];
                 // send someone in to the hallway
                 for (int i = 0; i < Rooms.Length; ++i)
                 {
@@ -220,7 +219,7 @@ namespace AoC._2021
                         char amphipod = Rooms[i][roomSlot];
 
                         // send the amphipod into the hall first
-                        BurrowState sendToHall = new BurrowState(this);
+                        BurrowState sendToHall = new(this);
                         sendToHall.Rooms[i][roomSlot] = Empty;
                         sendToHall.Hallway[RoomToHall[i]] = amphipod;
                         sendToHall.Energy += AmphipodEnergy[amphipod] * (1 + roomSlot);
@@ -240,7 +239,7 @@ namespace AoC._2021
                                         continue;
                                     }
 
-                                    BurrowState nextLeft = new BurrowState(sendToHall);
+                                    BurrowState nextLeft = new(sendToHall);
                                     nextLeft.Hallway[h] = amphipod;
                                     nextLeft.Hallway[baseHallway] = Empty;
                                     nextLeft.Energy += AmphipodEnergy[amphipod] * ++moveCount;
@@ -286,7 +285,7 @@ namespace AoC._2021
             private string GenerateId(bool simple)
             {
                 // generate a ulong instead of a string
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
                 if (simple)
                 {
                     sb.Append(Hallway);
@@ -330,7 +329,7 @@ namespace AoC._2021
             public string Print(Action<string> printFunc)
             {
                 printFunc("#############");
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
                 sb.Append('#');
                 sb.Append(string.Join("", Hallway));
                 sb.Append("#");
@@ -359,14 +358,11 @@ namespace AoC._2021
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, List<string> additionalInput)
         {
-            List<string> fullInput = new List<string>();
-            fullInput.Add(inputs[2]);
-            fullInput.AddRange(additionalInput);
-            fullInput.Add(inputs[3]);
+            List<string> fullInput = [inputs[2], .. additionalInput, inputs[3]];
 
-            PriorityQueue<BurrowState, int> burrowStates = new PriorityQueue<BurrowState, int>();
+            PriorityQueue<BurrowState, int> burrowStates = new();
             burrowStates.Enqueue(BurrowState.Parse(fullInput), 0);
-            HashSet<string> visited = new HashSet<string>();
+            HashSet<string> visited = [];
             while (burrowStates.Count > 0)
             {
                 BurrowState bs = burrowStates.Dequeue();
@@ -396,9 +392,9 @@ namespace AoC._2021
         }
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
-            => SharedSolution(inputs, variables, new List<string>());
+            => SharedSolution(inputs, variables, []);
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
-            => SharedSolution(inputs, variables, new List<string>() { "  #D#C#B#A#  ", "  #D#B#A#C#  " });
+            => SharedSolution(inputs, variables, ["  #D#C#B#A#  ", "  #D#B#A#C#  "]);
     }
 }

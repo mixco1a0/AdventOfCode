@@ -10,25 +10,23 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "10",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "10",
+                    RawInput =
 @"start-A
 start-b
 A-c
@@ -36,12 +34,12 @@ A-b
 b-d
 A-end
 b-end"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "19",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "19",
+                    RawInput =
 @"dc-end
 HN-start
 start-kj
@@ -52,12 +50,12 @@ HN-end
 kj-sa
 kj-HN
 kj-dc"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "226",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "226",
+                    RawInput =
 @"fs-end
 he-DX
 fs-he
@@ -76,12 +74,12 @@ he-WI
 zg-he
 pj-fs
 start-RW"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "36",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "36",
+                    RawInput =
 @"start-A
 start-b
 A-c
@@ -89,12 +87,12 @@ A-b
 b-d
 A-end
 b-end"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "103",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "103",
+                    RawInput =
 @"dc-end
 HN-start
 start-kj
@@ -105,12 +103,12 @@ HN-end
 kj-sa
 kj-HN
 kj-dc"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "3509",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "3509",
+                    RawInput =
 @"fs-end
 he-DX
 fs-he
@@ -129,7 +127,8 @@ he-WI
 zg-he
 pj-fs
 start-RW"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -143,7 +142,7 @@ start-RW"
             {
                 ID = id;
                 Name = name;
-                Connections = new List<Cave>();
+                Connections = [];
             }
 
             public override string ToString()
@@ -168,8 +167,8 @@ start-RW"
             {
                 Start = null;
                 End = null;
-                Caves = new List<Cave>();
-                CaveIds = new Dictionary<string, int>();
+                Caves = [];
+                CaveIds = [];
                 Extended = extended;
                 m_smallCaveId = -1;
                 m_largeCaveId = 1;
@@ -238,7 +237,7 @@ start-RW"
 
             public void Traverse(ref int pathCount)
             {
-                Stack<int> visited = new Stack<int>();
+                Stack<int> visited = new();
                 TraverseInternal(Start, ref visited, ref pathCount);
             }
 
@@ -281,7 +280,7 @@ start-RW"
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool extended)
         {
             int pathCount = 0;
-            CaveSystem caveSystem = new CaveSystem(extended);
+            CaveSystem caveSystem = new(extended);
             foreach (string input in inputs)
             {
                 string[] split = input.Split('-', StringSplitOptions.RemoveEmptyEntries).ToArray();

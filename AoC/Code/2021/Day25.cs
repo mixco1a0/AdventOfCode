@@ -12,25 +12,23 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Part.One:
-                    return "v1";
-                case Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Part.One => "v1",
+                Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<TestDatum> GetTestData()
         {
-            List<TestDatum> testData = new List<TestDatum>();
-            testData.Add(new TestDatum
-            {
-                TestPart = Part.One,
-                Output = "58",
-                RawInput =
+            List<TestDatum> testData =
+            [
+                new TestDatum
+                {
+                    TestPart = Part.One,
+                    Output = "58",
+                    RawInput =
 @"v...>>.vv>
 .vv>>.vv..
 >>.>v>...v
@@ -40,14 +38,15 @@ v>v.vv.v..
 .vv..>.>v.
 v.v..>>v.v
 ....v..v.>"
-            });
-            testData.Add(new TestDatum
-            {
-                TestPart = Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new TestDatum
+                {
+                    TestPart = Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
 
@@ -58,11 +57,11 @@ v.v..>>v.v
         private bool ProcessEast(string[] region, int maxX, int maxY, out string[] newRegion)
         {
             bool processed = false;
-            string emptyLine = new string(Empty, maxX);
+            string emptyLine = new(Empty, maxX);
             newRegion = new string[maxY];
             for (int y = 0; y < maxY; ++y)
             {
-                StringBuilder sb = new StringBuilder(emptyLine);
+                StringBuilder sb = new(emptyLine);
                 for (int x = 0; x < maxX; ++x)
                 {
                     char oldValue = region[y][x];
@@ -98,7 +97,7 @@ v.v..>>v.v
         {
             bool processed = false;
             newRegion = new string[maxY];
-            string emptyLine = new string(Empty, maxX);
+            string emptyLine = new(Empty, maxX);
             StringBuilder[] sbs = new StringBuilder[maxY];
             for (int y = 0; y < maxY; ++y)
             {

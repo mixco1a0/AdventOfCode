@@ -11,34 +11,32 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "7",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "7",
+                    RawInput =
 @"116
 138
 213"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "40",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "40",
+                    RawInput =
 @"1163751742
 1381373672
 2136511328
@@ -49,12 +47,12 @@ namespace AoC._2021
 3125421639
 1293138521
 2311944581"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "315",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "315",
+                    RawInput =
 @"1163751742
 1381373672
 2136511328
@@ -65,11 +63,12 @@ namespace AoC._2021
 3125421639
 1293138521
 2311944581"
-            });
+                },
+            ];
             return testData;
         }
 
-        static readonly Base.Vec2[] GridMoves = new Base.Vec2[] { new Base.Vec2(0, 1), new Base.Vec2(1, 0), new Base.Vec2(-1, 0), new Base.Vec2(0, -1) };
+        static readonly Base.Vec2[] GridMoves = new Base.Vec2[] { new(0, 1), new(1, 0), new(-1, 0), new(0, -1) };
 
         private class Node
         {
@@ -146,7 +145,7 @@ namespace AoC._2021
         {
             for (int y = 0; y < maxY; ++y)
             {
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
                 sb.Append($"{y,3} | ");
                 for (int x = 0; x < maxX; ++x)
                 {
@@ -159,9 +158,9 @@ namespace AoC._2021
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool enlargen)
         {
             Node[,] nodes = GetNodes(inputs, enlargen, out int maxX, out int maxY);
-            Base.Vec2 end = new Base.Vec2(maxX - 1, maxY - 1);
+            Base.Vec2 end = new(maxX - 1, maxY - 1);
 
-            PriorityQueue<Base.Vec2, long> gridWalker = new PriorityQueue<Base.Vec2, long>();
+            PriorityQueue<Base.Vec2, long> gridWalker = new();
             gridWalker.Enqueue(new Base.Vec2(0, 0), 0);
             while (gridWalker.Count > 0)
             {

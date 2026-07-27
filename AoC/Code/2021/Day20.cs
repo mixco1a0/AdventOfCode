@@ -11,25 +11,23 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "35",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "35",
+                    RawInput =
 @"..#.#..#####.#.#.#.###.##.....###.##.#..###.####..#####..#....#..#..##..###..######.###...####..#..#####..##..#.#####...##.#.#..#.##..#.#......#.###.######.###.####...#.##.##..#..#..#####.....#.#....###..#.##......#.....#..#..#..##..#...##.######.####.####.#.#...#.......#..#.#.#...####.##.#......#..#...##.#.##..#...##.#.##..###.#......#.#.......#.#.#.####.###.##...#.....####.#..#..#.##.#....##..#.####....##...##..#...#......#.#.......#.......##..####..#...#.#.#...##..#.#..###..#####........#..####......#..#
 
 #..#.
@@ -37,12 +35,12 @@ namespace AoC._2021
 ##..#
 ..#..
 ..###"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "3351",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "3351",
+                    RawInput =
 @"..#.#..#####.#.#.#.###.##.....###.##.#..###.####..#####..#....#..#..##..###..######.###...####..#..#####..##..#.#####...##.#.#..#.##..#.#......#.###.######.###.####...#.##.##..#..#..#####.....#.#....###..#.##......#.....#..#..#..##..#...##.######.####.####.#.#...#.......#..#.#.#...####.##.#......#..#...##.#.##..#...##.#.##..###.#......#.#.......#.#.#.####.###.##...#.....####.#..#..#.##.#....##..#.####....##...##..#...#......#.#.......#.......##..####..#...#.#.#...##..#.#..###..#####........#..####......#..#
 
 #..#.
@@ -50,20 +48,21 @@ namespace AoC._2021
 ##..#
 ..#..
 ..###"
-            });
+                },
+            ];
             return testData;
         }
 
         static readonly char LightPixel = '#';
         static readonly char DarkPixel = '.';
-        static readonly Base.Vec2[] PixelCheck = new Base.Vec2[] { new Base.Vec2(-1, -1), new Base.Vec2(0, -1), new Base.Vec2(1, -1),
-                                                                     new Base.Vec2(-1, 0), new Base.Vec2(0, 0), new Base.Vec2(1, 0),
-                                                                     new Base.Vec2(-1, 1), new Base.Vec2(0, 1), new Base.Vec2(1, 1) };
+        static readonly Base.Vec2[] PixelCheck = new Base.Vec2[] { new(-1, -1), new(0, -1), new(1, -1),
+                                                                     new(-1, 0), new(0, 0), new(1, 0),
+                                                                     new(-1, 1), new(0, 1), new(1, 1) };
 
         private char EnhancePixel(List<string> pixels, string algorithm, int x, int y, char defaultPixel)
         {
-            StringBuilder sb = new StringBuilder();
-            Base.Vec2 curPixel = new Base.Vec2(x, y);
+            StringBuilder sb = new();
+            Base.Vec2 curPixel = new(x, y);
             foreach (Base.Vec2 gridPixel in PixelCheck.Select(p => curPixel + p))
             {
                 if (gridPixel.Y < 0 || gridPixel.Y >= pixels.Count || gridPixel.X < 0 || gridPixel.X >= pixels[y].Length)
@@ -83,8 +82,8 @@ namespace AoC._2021
 
         private string EnhancePixels(List<string> pixels, string algorithm, int y, char defaultPixel)
         {
-            StringBuilder oldPixels = new StringBuilder(pixels[y]);
-            StringBuilder newPixels = new StringBuilder(new string(DarkPixel, oldPixels.Length));
+            StringBuilder oldPixels = new(pixels[y]);
+            StringBuilder newPixels = new(new string(DarkPixel, oldPixels.Length));
             for (int x = 0; x < pixels.First().Length; ++x)
             {
                 newPixels[x] = EnhancePixel(pixels, algorithm, x, y, defaultPixel);
@@ -96,8 +95,7 @@ namespace AoC._2021
         {
             string algorithm = inputs.First();
 
-            List<string> pixels = new List<string>();
-            pixels.AddRange(inputs.Skip(2));
+            List<string> pixels = [.. inputs.Skip(2)];
 
             char[] defaultPixels = new char[2] { DarkPixel, DarkPixel };
             if (algorithm[0] == LightPixel)
@@ -113,7 +111,7 @@ namespace AoC._2021
                 int oldYSize = pixels.Count;
                 for (int y = 0; y < oldYSize; ++y)
                 {
-                    StringBuilder sb = new StringBuilder();
+                    StringBuilder sb = new();
                     sb.Append(defaultPixels[i % 2]);
                     sb.Append(pixels[y]);
                     sb.Append(defaultPixels[i % 2]);
@@ -125,7 +123,7 @@ namespace AoC._2021
                 pixels.Add(new string(defaultPixels[i % 2], newXSize));
 
                 // ehnance
-                List<string> newPixels = new List<string>();
+                List<string> newPixels = [];
                 for (int y = 0; y < newYSize; ++y)
                 {
                     newPixels.Add(EnhancePixels(pixels, algorithm, y, defaultPixels[i % 2]));

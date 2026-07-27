@@ -10,22 +10,19 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-
-            /*
+            List<Core.TestDatum> testData =
+            [
+                /*
                         // These are solely for parsing and reducing validation
                         testData.Add(new TestDatum
                         {
@@ -69,8 +66,8 @@ namespace AoC._2021
                         });
             */
 
-            // These are solely for addition validation
-            /*
+                // These are solely for addition validation
+                /*
                         testData.Add(new TestDatum
                         {
                             TestPart = Part.One,
@@ -183,54 +180,54 @@ namespace AoC._2021
             });
             */
 
-            // These are the real tests
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "143",
-                RawInput =
+                // These are the real tests
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "143",
+                    RawInput =
 @"[[1,2],[[3,4],5]]"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "1384",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "1384",
+                    RawInput =
 @"[[[[0,7],4],[[7,8],[6,0]]],[8,1]]"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "445",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "445",
+                    RawInput =
 @"[[[[1,1],[2,2]],[3,3]],[4,4]]"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "791",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "791",
+                    RawInput =
 @"[[[[3,0],[5,3]],[4,4]],[5,5]]"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "1137",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "1137",
+                    RawInput =
 @"[[[[5,0],[7,4]],[5,5]],[6,6]]"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "3488",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "3488",
+                    RawInput =
 @"[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "4140",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "4140",
+                    RawInput =
 @"[[[0,[5,8]],[[1,7],[9,6]]],[[4,[1,2]],[[1,4],2]]]
 [[[5,[2,8]],4],[5,[[9,9],0]]]
 [6,[[[6,2],[5,6]],[[7,6],[4,7]]]]
@@ -241,12 +238,12 @@ namespace AoC._2021
 [[9,3],[[9,9],[6,[4,9]]]]
 [[2,[[7,7],7]],[[5,8],[[9,3],[0,2]]]]
 [[[[5,2],5],[8,[3,7]]],[[5,[7,5]],[4,4]]]"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "3993",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "3993",
+                    RawInput =
 @"[[[0,[5,8]],[[1,7],[9,6]]],[[4,[1,2]],[[1,4],2]]]
 [[[5,[2,8]],4],[5,[[9,9],0]]]
 [6,[[[6,2],[5,6]],[[7,6],[4,7]]]]
@@ -257,7 +254,8 @@ namespace AoC._2021
 [[9,3],[[9,9],[6,[4,9]]]]
 [[2,[[7,7],7]],[[5,8],[[9,3],[0,2]]]]
 [[[[5,2],5],[8,[3,7]]],[[5,[7,5]],[4,4]]]"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -306,7 +304,7 @@ namespace AoC._2021
                     return num1;
                 }
 
-                Number sum = new Number();
+                Number sum = new();
                 sum.Type = EType.AllNested;
                 sum.Nested[0] = num1;
                 sum.Nested[0].Parent = sum;
@@ -318,7 +316,7 @@ namespace AoC._2021
 
             public static Number Parse(string input)
             {
-                Number num = new Number();
+                Number num = new();
                 num.InternalParse(input, 1);
                 return num;
             }
@@ -443,7 +441,7 @@ namespace AoC._2021
                 {
                     int val1 = value / 2;
                     int val2 = value - val1;
-                    Number num = new Number(this);
+                    Number num = new(this);
                     num.Values[0] = val1;
                     num.Values[1] = val2;
                     num.Type = EType.AllValues;
@@ -620,18 +618,14 @@ namespace AoC._2021
 
             public int Magnitude()
             {
-                switch (Type)
+                return Type switch
                 {
-                    case EType.AllValues:
-                        return 3 * Values[0] + 2 * Values[1];
-                    case EType.FirstValue:
-                        return 3 * Values[0] + 2 * Nested[0].Magnitude();
-                    case EType.FirstNested:
-                        return 3 * Nested[0].Magnitude() + 2 * Values[0];
-                    case EType.AllNested:
-                        return 3 * Nested[0].Magnitude() + 2 * Nested[1].Magnitude();
-                }
-                return 0;
+                    EType.AllValues => 3 * Values[0] + 2 * Values[1],
+                    EType.FirstValue => 3 * Values[0] + 2 * Nested[0].Magnitude(),
+                    EType.FirstNested => 3 * Nested[0].Magnitude() + 2 * Values[0],
+                    EType.AllNested => 3 * Nested[0].Magnitude() + 2 * Nested[1].Magnitude(),
+                    _ => 0,
+                };
             }
 
             public override string ToString()
@@ -675,8 +669,8 @@ namespace AoC._2021
 
             if (totalSum)
             {
-                Number finalSum = new Number();
-                Queue<Number> pendingAdd = new Queue<Number>(numbers);
+                Number finalSum = new();
+                Queue<Number> pendingAdd = new(numbers);
                 while (pendingAdd.Count > 0)
                 {
                     finalSum += pendingAdd.Dequeue();

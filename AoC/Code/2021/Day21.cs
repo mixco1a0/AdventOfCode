@@ -10,36 +10,35 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "739785",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "739785",
+                    RawInput =
 @"Player 1 starting position: 4
 Player 2 starting position: 8"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "444356092776315",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "444356092776315",
+                    RawInput =
 @"Player 1 starting position: 4
 Player 2 starting position: 8"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -68,7 +67,7 @@ Player 2 starting position: 8"
 
             public GameState Copy()
             {
-                GameState copy = new GameState() { MaxScore = MaxScore};
+                GameState copy = new() { MaxScore = MaxScore};
                 copy.P1 = P1;
                 copy.P1Score = P1Score;
                 copy.P2 = P2;
@@ -126,8 +125,8 @@ Player 2 starting position: 8"
             }
         }
 
-        Dictionary<GameState, WinCount> Cache = new Dictionary<GameState, WinCount>();
-        private static readonly Dictionary<int, int> DiracRolls = new Dictionary<int, int>() { { 3, 1 }, { 4, 3 }, { 5, 6 }, { 6, 7 }, { 7, 6 }, { 8, 3 }, { 9, 1 } };
+        Dictionary<GameState, WinCount> Cache = [];
+        private static readonly Dictionary<int, int> DiracRolls = new() { { 3, 1 }, { 4, 3 }, { 5, 6 }, { 6, 7 }, { 7, 6 }, { 8, 3 }, { 9, 1 } };
 
         private WinCount RunRealGame(GameState state)
         {
@@ -145,7 +144,7 @@ Player 2 starting position: 8"
                 return new WinCount() { P1 = 0, P2 = 1 };
             }
 
-            WinCount winCount = new WinCount();
+            WinCount winCount = new();
             foreach (var pair in DiracRolls)
             {
                 GameState nextState = state.Copy();
@@ -197,7 +196,7 @@ Player 2 starting position: 8"
         {
             int p1 = int.Parse($"{inputs.First().Last()}") - 1;
             int p2 = int.Parse($"{inputs.Last().Last()}") - 1;
-            GameState initState = new GameState(maxScore, p1, p2);
+            GameState initState = new(maxScore, p1, p2);
             if (practiceGame)
             {
                 GameState state = RunPracticeGame(initState);

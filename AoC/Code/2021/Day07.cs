@@ -10,34 +10,33 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v4";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v4",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "37",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "37",
+                    RawInput =
 @"16,1,2,0,4,2,7,1,2,14"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "168",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "168",
+                    RawInput =
 @"16,1,2,0,4,2,7,1,2,14"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -51,7 +50,7 @@ namespace AoC._2021
             int max = positions.Max();
             int bestFuel = int.MaxValue;
             Func<int, int, int> basic = (val1, val2) => Math.Abs(val1 - val2);
-            Dictionary<int, int> sumCache = new Dictionary<int, int>();
+            Dictionary<int, int> sumCache = [];
             Func<int, int, int> advanced = (val1, val2) =>
             {
                 int diff = Math.Abs(val1 - val2);
@@ -62,8 +61,8 @@ namespace AoC._2021
                 return sumCache[diff];
             };
             int curFuel = 0;
-            Queue<int> prevLow = new Queue<int>();
-            Queue<int> prevHigh = new Queue<int>();
+            Queue<int> prevLow = new();
+            Queue<int> prevHigh = new();
             while (low >= min || high <= max)
             {
                 if (low >= min)

@@ -11,25 +11,23 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v3";
-                case Core.Part.Two:
-                    return "v3";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v3",
+                Core.Part.Two => "v3",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "5",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "5",
+                    RawInput =
 @"0,9 -> 5,9
 8,0 -> 0,8
 9,4 -> 3,4
@@ -40,12 +38,12 @@ namespace AoC._2021
 3,4 -> 1,4
 0,0 -> 8,8
 5,5 -> 8,2"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "12",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "12",
+                    RawInput =
 @"0,9 -> 5,9
 8,0 -> 0,8
 9,4 -> 3,4
@@ -56,7 +54,8 @@ namespace AoC._2021
 3,4 -> 1,4
 0,0 -> 8,8
 5,5 -> 8,2"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -65,8 +64,8 @@ namespace AoC._2021
             public static Base.Segment Parse(string input)
             {
                 int[] vals = input.Split(", ->".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray();
-                Base.Vec2 a = new Base.Vec2(vals[0], vals[1]);
-                Base.Vec2 b = new Base.Vec2(vals[2], vals[3]);
+                Base.Vec2 a = new(vals[0], vals[1]);
+                Base.Vec2 b = new(vals[2], vals[3]);
                 return new Base.Segment(a, b);
             }
         }
@@ -79,7 +78,7 @@ namespace AoC._2021
             DiagonalDown,
         }
 
-        private Dictionary<Direction, Base.Vec2> Movement = new Dictionary<Direction, Base.Vec2>()
+        private Dictionary<Direction, Base.Vec2> Movement = new()
         {
             { Direction.NegativeX, new Base.Vec2(-1, 0) },
             { Direction.NegativeY, new Base.Vec2(0, -1) },
@@ -94,11 +93,11 @@ namespace AoC._2021
             int maxY = coords.Select(c => c.Y).Max();
             for (int y = 0; y <= maxY; ++y)
             {
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
                 sb.AppendFormat("{0,3} | ", y);
                 for (int x = 0; x <= maxX; ++x)
                 {
-                    Base.Vec2 cur = new Base.Vec2(x, y);
+                    Base.Vec2 cur = new(x, y);
                     if (grid.ContainsKey(cur))
                     {
                         sb.Append($"{grid[cur],1}");
@@ -116,7 +115,7 @@ namespace AoC._2021
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool checkDiagonals)
         {
-            Dictionary<Base.Vec2, int> overlaps = new Dictionary<Base.Vec2, int>();
+            Dictionary<Base.Vec2, int> overlaps = [];
             Action<int, Direction, Base.Vec2> CheckCoords = (count, dir, start) =>
             {
                 for (int i = 0; i <= count; ++i)

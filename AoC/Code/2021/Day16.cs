@@ -11,104 +11,103 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "16",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "16",
+                    RawInput =
 @"8A004A801A8002F478"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "12",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "12",
+                    RawInput =
 @"620080001611562C8802118E34"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "23",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "23",
+                    RawInput =
 @"C0015000016115A2E0802F182340"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "31",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "31",
+                    RawInput =
 @"A0016C880162017C3686B18A3D4780"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "3",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "3",
+                    RawInput =
 @"C200B40A82"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "54",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "54",
+                    RawInput =
 @"04005AC33890"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "7",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "7",
+                    RawInput =
 @"880086C3E88112"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "9",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "9",
+                    RawInput =
 @"CE00C43D881120"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "1",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "1",
+                    RawInput =
 @"D8005AC2A8F0"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "0",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "0",
+                    RawInput =
 @"F600BC2D8F"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "0",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "0",
+                    RawInput =
 @"9C005AC2F8F0"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "1",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "1",
+                    RawInput =
 @"9C0141080250320F1802104A08"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -170,7 +169,7 @@ namespace AoC._2021
             {
                 Version = version;
                 Parent = parent;
-                SubPackets = new List<IPacket>();
+                SubPackets = [];
                 Type = type;
                 if (Parent != null)
                 {
@@ -219,7 +218,7 @@ namespace AoC._2021
             bitsUsed = 0;
 
             bool complete = false;
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             while (!complete)
             {
                 complete = binary.Substring(bitsUsed++, 1) == "0";
@@ -249,7 +248,7 @@ namespace AoC._2021
                 {
                     ParseLiteral(binary.Substring(curPos), out long literal, out int bitsUsed);
                     curPos += bitsUsed;
-                    PacketLiteral packet = new PacketLiteral(packetVersion, parent, literal);
+                    PacketLiteral packet = new(packetVersion, parent, literal);
                     packets.Add(packet);
                     // DebugWriteLine($"{new string('*', packet.Level * 3)}[#{curPackets,2}][v{packetVersion}][{(PacketType)packetTypeId}] {packet.Value}");
                 }
@@ -259,7 +258,7 @@ namespace AoC._2021
                     int bitLabelLength = is15BitRep ? 15 : 11;
                     int packetLabel = Convert.ToInt32(binary.Substring(curPos, bitLabelLength), 2);
                     curPos += bitLabelLength;
-                    PacketOperator packet = new PacketOperator(packetVersion, parent, (PacketType)packetTypeId);
+                    PacketOperator packet = new(packetVersion, parent, (PacketType)packetTypeId);
                     packets.Add(packet);
                     if (is15BitRep)
                     {
@@ -290,7 +289,7 @@ namespace AoC._2021
                 return string.Format("{0,4}", raw).Replace(' ', '0');
             };
             string binary = string.Join("", fullHex.Select(h => ConvertToBinary(h)));
-            List<IPacket> packets = new List<IPacket>();
+            List<IPacket> packets = [];
             // DebugWriteLine($"Converting {fullHex}");
             ParsePackets(binary, null, ref packets, int.MaxValue);
 

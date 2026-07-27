@@ -11,56 +11,55 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Part.One:
-                    return "v2";
-                case Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Part.One => "v2",
+                Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<TestDatum> GetTestData()
         {
-            List<TestDatum> testData = new List<TestDatum>();
-            testData.Add(new TestDatum
-            {
-                TestPart = Part.One,
-                Output = "15",
-                RawInput =
+            List<TestDatum> testData =
+            [
+                new TestDatum
+                {
+                    TestPart = Part.One,
+                    Output = "15",
+                    RawInput =
 @"2199943210
 3987894921
 9856789892
 8767896789
 9899965678"
-            });
-            testData.Add(new TestDatum
-            {
-                TestPart = Part.Two,
-                Output = "1134",
-                RawInput =
+                },
+                new TestDatum
+                {
+                    TestPart = Part.Two,
+                    Output = "1134",
+                    RawInput =
 @"2199943210
 3987894921
 9856789892
 8767896789
 9899965678"
-            });
+                },
+            ];
             return testData;
         }
 
-        private List<Base.Vec2> Movements = new List<Base.Vec2>
-        {
+        private List<Base.Vec2> Movements =
+        [
             new Base.Vec2(-1, 0),
             new Base.Vec2(1, 0),
             new Base.Vec2(0, 1),
             new Base.Vec2(0, -1),
-        };
+        ];
 
         private bool IsLowPoint(int[,] grid, int maxX, int maxY, int x, int y)
         {
-            Base.Vec2 cur = new Base.Vec2(x, y);
+            Base.Vec2 cur = new(x, y);
             foreach (Base.Vec2 movement in Movements)
             {
                 Base.Vec2 neighbor = cur + movement;
@@ -79,8 +78,8 @@ namespace AoC._2021
         private int FindBasin(int[,] grid, int maxX, int maxY, int x, int y)
         {
             int basinSize = 0;
-            HashSet<Base.Vec2> history = new HashSet<Base.Vec2>();
-            Queue<Base.Vec2> toCheck = new Queue<Base.Vec2>();
+            HashSet<Base.Vec2> history = [];
+            Queue<Base.Vec2> toCheck = new();
             toCheck.Enqueue(new Base.Vec2(x, y));
             while (toCheck.Count() > 0)
             {
@@ -121,8 +120,8 @@ namespace AoC._2021
                     grid[x, y] = inputs[y][x] - '0';
                 }
             }
-            List<int> lowPoints = new List<int>();
-            List<int> basins = new List<int>();
+            List<int> lowPoints = [];
+            List<int> basins = [];
             for (int y = 0; y < maxY; ++y)
             {
                 for (int x = 0; x < maxX; ++x)

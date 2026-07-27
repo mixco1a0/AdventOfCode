@@ -11,25 +11,23 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "17",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "17",
+                    RawInput =
 @"6,10
 0,14
 9,10
@@ -51,14 +49,15 @@ namespace AoC._2021
 
 fold along y=7
 fold along x=5"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
 
@@ -94,7 +93,7 @@ fold along x=5"
 
         private Base.Vec2[] Fold(Instruction instruction, Base.Vec2[] points)
         {
-            List<Base.Vec2> folded = new List<Base.Vec2>();
+            List<Base.Vec2> folded = [];
             foreach (Base.Vec2 point in points)
             {
                 if (instruction.XAxis)
@@ -125,12 +124,12 @@ fold along x=5"
 
         private string[] GetGlyph(Base.Vec2[] points)
         {
-            List<string> glyph = new List<string>();
+            List<string> glyph = [];
             int maxX = points.Max(p => p.X);
             int maxY = points.Max(p => p.Y);
             for (int y = 0; y <= maxY; ++y)
             {
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
                 for (int x = 0; x <= maxX; ++x)
                 {
                     if (points.Any(p => p.X == x && p.Y == y))
