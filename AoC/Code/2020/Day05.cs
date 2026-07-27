@@ -9,21 +9,17 @@ namespace AoC._2020
         
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum { TestPart = Core.Part.One, Output = "357", RawInput = "FBFBBFFRLR" });
+            List<Core.TestDatum> testData = [new Core.TestDatum { TestPart = Core.Part.One, Output = "357", RawInput = "FBFBBFFRLR" }];
             return testData;
         }
 
@@ -40,7 +36,7 @@ namespace AoC._2020
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            HashSet<int> ids = new HashSet<int>();
+            HashSet<int> ids = [];
             foreach (string input in inputs)
             {
                 string binary = input.Replace('F', '0').Replace('B', '1').Replace('L', '0').Replace('R', '1');

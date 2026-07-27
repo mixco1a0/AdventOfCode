@@ -9,25 +9,23 @@ namespace AoC._2020
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "10",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "10",
+                    RawInput =
 @"sesenwnenenewseeswwswswwnenewsewsw
 neeenesenwnwwswnenewnwwsewnenwseswesw
 seswneswswsenwwnwse
@@ -48,12 +46,12 @@ nenewswnwewswnenesenwnesewesw
 eneswnwswnwsenenwnwnwwseeswneewsenese
 neswnwewnwnwseenwseesewsenwsweewe
 wseweeenwnesenwwwswnew"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "2208",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "2208",
+                    RawInput =
 @"sesenwnenenewseeswwswswwnenewsewsw
 neeenesenwnwwswnenewnwwsewnenwseswesw
 seswneswswsenwwnwse
@@ -74,7 +72,8 @@ nenewswnwewswnenesenwnesewesw
 eneswnwswnwsenenwnwnwwseeswneewsenese
 neswnwewnwnwseenwseesewsenwsweewe
 wseweeenwnesenwwwswnew"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -96,7 +95,7 @@ wseweeenwnesenwwwswnew"
 
         private Coords FlipCoords(string input)
         {
-            Coords coords = new Coords();
+            Coords coords = new();
             int idx = 1;
             for (int i = 0; i < input.Length; ++i, ++idx)
             {
@@ -140,14 +139,14 @@ wseweeenwnesenwwwswnew"
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<Coords> coords = new List<Coords>();
+            List<Coords> coords = [];
             foreach (string input in inputs)
             {
                 coords.Add(FlipCoords(input));
             }
             // coords.ForEach(c => DebugWriteLine(c.ToString()));
             coords = coords.OrderBy(_ => _.ToString()).ToList();
-            Dictionary<string, bool> colors = new Dictionary<string, bool>();
+            Dictionary<string, bool> colors = [];
             foreach (Coords cur in coords)
             {
                 string key = cur.ToString();
@@ -165,17 +164,17 @@ wseweeenwnesenwwwswnew"
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<Coords> coords = new List<Coords>();
+            List<Coords> coords = [];
             foreach (string input in inputs)
             {
                 coords.Add(FlipCoords(input));
             }
             // coords.ForEach(c => DebugWriteLine(c.ToString()));
             coords = coords.OrderBy(_ => _.ToString()).ToList();
-            HashSet<KeyValuePair<int, int>> tiles = new HashSet<KeyValuePair<int, int>>();
+            HashSet<KeyValuePair<int, int>> tiles = [];
             foreach (Coords cur in coords)
             {
-                KeyValuePair<int, int> key = new KeyValuePair<int, int>(cur.X, cur.Y);
+                KeyValuePair<int, int> key = new(cur.X, cur.Y);
                 if (tiles.Contains(key))
                 {
                     tiles.Remove(key);
@@ -197,8 +196,8 @@ wseweeenwnesenwwwswnew"
 
         private int DaySwap(ref HashSet<KeyValuePair<int, int>> tiles)
         {
-            HashSet<KeyValuePair<int, int>> newState = new HashSet<KeyValuePair<int, int>>();
-            HashSet<KeyValuePair<int, int>> whitesToCheck = new HashSet<KeyValuePair<int, int>>();
+            HashSet<KeyValuePair<int, int>> newState = [];
+            HashSet<KeyValuePair<int, int>> whitesToCheck = [];
             foreach (var tile in tiles)
             {
                 int x = tile.Key;

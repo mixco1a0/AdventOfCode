@@ -10,40 +10,39 @@ namespace AoC._2020
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "5",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "5",
+                    RawInput =
 @"mxmxvkd kfcds sqjhc nhms (contains dairy, fish)
 trh fvjkl sbzzf mxmxvkd (contains dairy)
 sqjhc fvjkl (contains soy)
 sqjhc mxmxvkd sbzzf (contains fish)"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "mxmxvkd,sqjhc,fvjkl",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "mxmxvkd,sqjhc,fvjkl",
+                    RawInput =
 @"mxmxvkd kfcds sqjhc nhms (contains dairy, fish)
 trh fvjkl sbzzf mxmxvkd (contains dairy)
 sqjhc fvjkl (contains soy)
 sqjhc mxmxvkd sbzzf (contains fish)"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -68,9 +67,9 @@ sqjhc mxmxvkd sbzzf (contains fish)"
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<string> ingredients = new List<string>();
-            List<string> allergens = new List<string>();
-            List<Food> foods = new List<Food>();
+            List<string> ingredients = [];
+            List<string> allergens = [];
+            List<Food> foods = [];
             foreach (string input in inputs)
             {
                 string[] split = input.Split("()".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
@@ -84,7 +83,7 @@ sqjhc mxmxvkd sbzzf (contains fish)"
             ingredients = ingredients.Distinct().ToList();
             allergens = allergens.Distinct().ToList();
 
-            List<string> knownBads = new List<string>();
+            List<string> knownBads = [];
             foreach (string allergen in allergens)
             {
                 IEnumerable<Food> tempFoods = foods.Where(f => f.Allergens.Contains(allergen));
@@ -128,9 +127,9 @@ sqjhc mxmxvkd sbzzf (contains fish)"
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<string> ingredients = new List<string>();
-            List<string> allergens = new List<string>();
-            List<Food> foods = new List<Food>();
+            List<string> ingredients = [];
+            List<string> allergens = [];
+            List<Food> foods = [];
             foreach (string input in inputs)
             {
                 string[] split = input.Split("()".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
@@ -144,8 +143,8 @@ sqjhc mxmxvkd sbzzf (contains fish)"
             ingredients = ingredients.Distinct().ToList();
             allergens = allergens.Distinct().ToList();
 
-            List<string> knownBads = new List<string>();
-            Dictionary<string, List<string>> allergenToIngredients = new Dictionary<string, List<string>>();
+            List<string> knownBads = [];
+            Dictionary<string, List<string>> allergenToIngredients = [];
             foreach (string allergen in allergens)
             {
                 IEnumerable<Food> tempFoods = foods.Where(f => f.Allergens.Contains(allergen));
@@ -169,7 +168,7 @@ sqjhc mxmxvkd sbzzf (contains fish)"
                 }
             }
 
-            List<KnownAllergen> knownAllergens = new List<KnownAllergen>();
+            List<KnownAllergen> knownAllergens = [];
             while (true)
             {
                 if (allergenToIngredients.Count == 0)

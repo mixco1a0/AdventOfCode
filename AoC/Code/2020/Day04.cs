@@ -11,25 +11,23 @@ namespace AoC._2020
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "2",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "2",
+                    RawInput =
 @"ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
 byr:1937 iyr:2017 cid:147 hgt:183cm
 
@@ -43,12 +41,12 @@ hgt:179cm
 
 hcl:#cfa07d eyr:2025 pid:166559648
 iyr:2011 ecl:brn hgt:59in"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "0",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "0",
+                    RawInput =
 @"eyr:1972 cid:100
 hcl:#18171d ecl:amb hgt:170 pid:186cm iyr:2018 byr:1926
 
@@ -62,12 +60,12 @@ ecl:brn hgt:182cm pid:021572410 eyr:2020 byr:1992 cid:277
 hgt:59cm ecl:zzz
 eyr:2038 hcl:74454a iyr:2023
 pid:3556412378 byr:2007"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "4",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "4",
+                    RawInput =
 @"pid:087499704 hgt:74in ecl:grn iyr:2012 eyr:2030 byr:1980
 hcl:#623a2f
 
@@ -80,7 +78,8 @@ pid:545766238 ecl:hzl
 eyr:2022
 
 iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -106,7 +105,7 @@ iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"
 
         private bool CheckIsValid(string passportData)
         {
-            List<string> requiredFields = new List<string> { "byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid" };
+            List<string> requiredFields = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"];
             Dictionary<string, string> fields = passportData.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToDictionary(str => str[0..3]);
             foreach (string requiredField in requiredFields)
             {
@@ -125,14 +124,16 @@ iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"
 
         private bool CheckIsValidStringent(string passportData)
         {
-            Dictionary<string, Func<string, bool>> requiredFieldChecks = new Dictionary<string, Func<string, bool>>();
-            requiredFieldChecks["byr"] = val => CheckIsValid(val, 4, 1920, 2002);
-            requiredFieldChecks["iyr"] = val => CheckIsValid(val, 4, 2010, 2020);
-            requiredFieldChecks["eyr"] = val => CheckIsValid(val, 4, 2020, 2030);
-            requiredFieldChecks["hgt"] = CheckIsValidHGT;
-            requiredFieldChecks["hcl"] = CheckIsValidHCL;
-            requiredFieldChecks["ecl"] = CheckIsValidECL;
-            requiredFieldChecks["pid"] = CheckIsValidPID;
+            Dictionary<string, Func<string, bool>> requiredFieldChecks = new()
+            {
+                ["byr"] = val => CheckIsValid(val, 4, 1920, 2002),
+                ["iyr"] = val => CheckIsValid(val, 4, 2010, 2020),
+                ["eyr"] = val => CheckIsValid(val, 4, 2020, 2030),
+                ["hgt"] = CheckIsValidHGT,
+                ["hcl"] = CheckIsValidHCL,
+                ["ecl"] = CheckIsValidECL,
+                ["pid"] = CheckIsValidPID
+            };
 
             Dictionary<string, string> fields = passportData.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToDictionary(str => str.Substring(0, 3), str => str.Substring(4));
             foreach (string requiredField in requiredFieldChecks.Keys)
@@ -162,7 +163,7 @@ iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"
 
         private bool CheckIsValidHGT(string val)
         {
-            Dictionary<string, Base.Range> valids = new Dictionary<string, Base.Range> { { "cm", new Base.Range { Min = 150, Max = 193 } }, { "in", new Base.Range { Min = 59, Max = 76 } } };
+            Dictionary<string, Base.Range> valids = new() { { "cm", new Base.Range { Min = 150, Max = 193 } }, { "in", new Base.Range { Min = 59, Max = 76 } } };
             string height = val[0..^2];
             string unit = val[^2..];
             int heightVal;
@@ -191,7 +192,7 @@ iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"
 
         private bool CheckIsValidECL(string val)
         {
-            HashSet<string> valids = new HashSet<string> { "amb", "blu", "brn", "gry", "grn", "hzl", "oth" };
+            HashSet<string> valids = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"];
             return valids.Contains(val);
         }
 

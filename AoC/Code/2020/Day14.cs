@@ -10,47 +10,46 @@ namespace AoC._2020
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "165",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "165",
+                    RawInput =
 @"mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X
 mem[8] = 11
 mem[7] = 101
 mem[8] = 0"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "208",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "208",
+                    RawInput =
 @"mask = 000000000000000000000000000000X1001X
 mem[42] = 100
 mask = 00000000000000000000000000000000X0XX
 mem[26] = 1"
-            });
+                },
+            ];
             return testData;
         }
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            Dictionary<string, string> memory = new Dictionary<string, string>();
-            List<KeyValuePair<char, int>> masks = new List<KeyValuePair<char, int>>();
+            Dictionary<string, string> memory = [];
+            List<KeyValuePair<char, int>> masks = [];
             foreach (string input in inputs)
             {
                 if (input.Contains("mask"))
@@ -82,8 +81,8 @@ mem[26] = 1"
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            Dictionary<string, long> memory = new Dictionary<string, long>();
-            List<KeyValuePair<char, int>> masks = new List<KeyValuePair<char, int>>();
+            Dictionary<string, long> memory = [];
+            List<KeyValuePair<char, int>> masks = [];
             foreach (string input in inputs)
             {
                 if (input.Contains("mask"))

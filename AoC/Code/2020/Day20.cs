@@ -11,25 +11,23 @@ namespace AoC._2020
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "20899048083289",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "20899048083289",
+                    RawInput =
 @"Tile 2311:
 ..##.#..#.
 ##..#.....
@@ -138,12 +136,12 @@ Tile 3079:
 ..#.......
 ..#.###...
 "
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "273",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "273",
+                    RawInput =
 @"Tile 2311:
 ..##.#..#.
 ##..#.....
@@ -252,7 +250,8 @@ Tile 3079:
 ..#.......
 ..#.###...
 "
-            });
+                },
+            ];
             return testData;
         }
 
@@ -290,8 +289,8 @@ Tile 3079:
                 Right = string.Join("", Raw.Select(c => c.Last()));
                 Bottom = Raw.Last();
                 Left = string.Join("", Raw.Select(c => c[..1]));
-                Actions = new List<string>();
-                BorderCounts = new Dictionary<string, int>();
+                Actions = [];
+                BorderCounts = [];
 
                 if (allSides != null)
                 {
@@ -514,7 +513,7 @@ Tile 3079:
 
             public List<string> Prune()
             {
-                List<string> pruned = new List<string>();
+                List<string> pruned = [];
                 for (int i = 1; i < Raw.Count - 1; ++i)
                 {
                     pruned.Add(Raw[i][1..^1]);
@@ -531,9 +530,9 @@ Tile 3079:
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
             string curId = "";
-            List<string> curRaw = new List<string>();
-            List<string> allSides = new List<string>();
-            List<Tile> tiles = new List<Tile>();
+            List<string> curRaw = [];
+            List<string> allSides = [];
+            List<Tile> tiles = [];
             foreach (string input in inputs)
             {
                 if (input.Contains(":"))
@@ -555,7 +554,7 @@ Tile 3079:
                 }
             }
 
-            List<long> uniqueIds = new List<long>();
+            List<long> uniqueIds = [];
             long mult = 1;
             foreach (Tile tile in tiles)
             {
@@ -580,9 +579,9 @@ Tile 3079:
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
             string curId = "";
-            List<string> curRaw = new List<string>();
-            List<string> allSides = new List<string>();
-            List<Tile> tiles = new List<Tile>();
+            List<string> curRaw = [];
+            List<string> allSides = [];
+            List<Tile> tiles = [];
             foreach (string input in inputs)
             {
                 if (input.Contains(":"))
@@ -663,11 +662,11 @@ Tile 3079:
             }
 
             // // build tileset row by row
-            List<List<Tile>> tileSet = new List<List<Tile>>();
+            List<List<Tile>> tileSet = [];
             do
             {
                 // DebugWriteLine($"Starting New Row");
-                List<Tile> row = new List<Tile>();
+                List<Tile> row = [];
                 BuildRow(startingTile, ref row, ref tiles);
                 tileSet.Add(row);
 
@@ -676,10 +675,10 @@ Tile 3079:
                 startingTile = GetAdjacent(row[0], 'B', tiles);
             } while (startingTile != null);
 
-            List<string> actualImage = new List<string>();
+            List<string> actualImage = [];
             foreach (List<Tile> row in tileSet)
             {
-                List<List<string>> prunedGrids = new List<List<string>>();
+                List<List<string>> prunedGrids = [];
                 foreach (Tile tile in row)
                 {
                     prunedGrids.Add(tile.Prune());
@@ -728,7 +727,7 @@ Tile 3079:
             }
             monsterPartsWithPadding[2] = monsterParts[2];
             string monsterRegex = string.Join("", monsterPartsWithPadding);
-            Regex regex = new Regex(monsterRegex);
+            Regex regex = new(monsterRegex);
 
             int checkCount = 0;
             imageSearch = string.Empty;
@@ -772,7 +771,7 @@ Tile 3079:
             }
             monsterPartsWithPadding[2] = monsterParts[2];
             string monsterRegex = string.Join("", monsterPartsWithPadding);
-            Regex regex = new Regex(monsterRegex);
+            Regex regex = new(monsterRegex);
 
             string imageSearch;
             string monsterPrint = string.Join("", grid);

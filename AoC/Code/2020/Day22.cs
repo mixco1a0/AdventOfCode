@@ -9,25 +9,23 @@ namespace AoC._2020
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "306",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "306",
+                    RawInput =
 @"Player 1:
 9
 2
@@ -41,12 +39,12 @@ Player 2:
 4
 7
 10"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "291",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "291",
+                    RawInput =
 @"Player 1:
 9
 2
@@ -60,7 +58,8 @@ Player 2:
 4
 7
 10"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -79,14 +78,14 @@ Player 2:
 
             public Player()
             {
-                Cards = new List<int>();
+                Cards = [];
                 Winner = false;
             }
         }
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<Player> players = new List<Player>();
+            List<Player> players = [];
             foreach (string input in inputs)
             {
                 if (input.Contains(":"))
@@ -133,7 +132,7 @@ Player 2:
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<Player> players = new List<Player>();
+            List<Player> players = [];
             foreach (string input in inputs)
             {
                 if (input.Contains(":"))
@@ -149,7 +148,7 @@ Player 2:
             Player p1 = players.First();
             Player p2 = players.Last();
 
-            HashSet<string> previousRounds = new HashSet<string>();
+            HashSet<string> previousRounds = [];
 
             while (p1.Cards.Count > 0 && p2.Cards.Count > 0)
             {
@@ -206,7 +205,7 @@ Player 2:
 
         private bool SubGame(int level, List<int> p1Cards, List<int> p2Cards)
         {
-            HashSet<string> previousRounds = new HashSet<string>();
+            HashSet<string> previousRounds = [];
             while (p1Cards.Count > 0 && p2Cards.Count > 0)
             {
                 string roundId = $"{string.Join(",", p1Cards)}|{string.Join(",", p2Cards)}";

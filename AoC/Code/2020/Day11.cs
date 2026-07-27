@@ -10,25 +10,23 @@ namespace AoC._2020
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "37",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "37",
+                    RawInput =
 @"L.LL.LL.LL
 LLLLLLL.LL
 L.L.L..L..
@@ -39,12 +37,12 @@ L.LLLLL.LL
 LLLLLLLLLL
 L.LLLLLL.L
 L.LLLLL.LL"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "26",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "26",
+                    RawInput =
 @"L.LL.LL.LL
 LLLLLLL.LL
 L.L.L..L..
@@ -55,7 +53,8 @@ L.LLLLL.LL
 LLLLLLLLLL
 L.LLLLLL.L
 L.LLLLL.LL"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -68,15 +67,12 @@ L.LLLLL.LL"
 
             int fullCount = Util.Grid2.ProcessIndexBorder(x, y, seats, '#');
 
-            switch (seats[x][y])
+            return seats[x][y] switch
             {
-                case 'L':
-                    return fullCount > 0 ? 'L' : '#';
-                case '#':
-                    return fullCount >= 4 ? 'L' : '#';
-            }
-
-            return '!';
+                'L' => fullCount > 0 ? 'L' : '#',
+                '#' => fullCount >= 4 ? 'L' : '#',
+                _ => '!',
+            };
         }
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
@@ -95,7 +91,7 @@ L.LLLLL.LL"
             }
 
             int fullCount = 0;
-            HashSet<string> checkedLocations = new HashSet<string>();
+            HashSet<string> checkedLocations = [];
             for (int i = x - 1; i <= x + 1; ++i)
             {
                 if (i < 0 || i >= seats.Count)
@@ -141,16 +137,12 @@ L.LLLLL.LL"
             fullCount += GetExtendedViewCount(x, y, seats, checkedLocations, Add, Ign);
             fullCount += GetExtendedViewCount(x, y, seats, checkedLocations, Add, Add);
 
-            switch (seats[x][y])
+            return seats[x][y] switch
             {
-                case 'L':
-                    return fullCount > 0 ? 'L' : '#';
-                case '#':
-                    return fullCount >= 5 ? 'L' : '#';
-            }
-
-
-            return '!';
+                'L' => fullCount > 0 ? 'L' : '#',
+                '#' => fullCount >= 5 ? 'L' : '#',
+                _ => '!',
+            };
         }
 
         private int GetExtendedViewCount(int x, int y, List<List<char>> seats, HashSet<string> checkedLocations, Func<int, int> xFunc, Func<int, int> yFunc)

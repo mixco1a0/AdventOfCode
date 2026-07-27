@@ -9,34 +9,33 @@ namespace AoC._2020
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "67384529",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "67384529",
+                    RawInput =
 @"389125467"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "149245887792",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "149245887792",
+                    RawInput =
 @"389125467"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -50,7 +49,7 @@ namespace AoC._2020
             {
                 // DebugWriteLine($"-- move {i + 1} --");
                 // DebugWriteLine($"cups: {string.Join(",", cups)}");
-                List<int> removedCups = new List<int>(cups.GetRange(curCupIdx + 1, 3));
+                List<int> removedCups = new(cups.GetRange(curCupIdx + 1, 3));
                 // DebugWriteLine($"cups: {string.Join(",", removedCups)}");
                 cups.RemoveRange(curCupIdx + 1, 3);
 
@@ -108,7 +107,7 @@ namespace AoC._2020
             }
 
             List<Cup> cupList = cups.Select(c => new Cup { Value = c }).ToList();
-            Dictionary<long, Cup> valueToCup = new Dictionary<long, Cup>();
+            Dictionary<long, Cup> valueToCup = [];
             for (int i = 0; i < cupList.Count; ++i)
             {
                 cupList[i].Next = cupList[(i + 1) % 1000000];

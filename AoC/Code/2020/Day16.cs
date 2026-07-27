@@ -10,25 +10,23 @@ namespace AoC._2020
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "71",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "71",
+                    RawInput =
 @"class: 1-3 or 5-7
 row: 6-11 or 33-44
 seat: 13-40 or 45-50
@@ -41,13 +39,14 @@ nearby tickets:
 40,4,50
 55,2,20
 38,6,12"
-            });
+                },
+            ];
             return testData;
         }
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<Base.Range> ranges = new List<Base.Range>();
+            List<Base.Range> ranges = [];
             bool myTicket = false;
             int invalids = 0;
             foreach (string input in inputs)
@@ -95,10 +94,10 @@ nearby tickets:
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<TicketInfo> ticketInfo = new List<TicketInfo>();
+            List<TicketInfo> ticketInfo = [];
             bool myTicket = false;
-            List<int> myTicketValues = new List<int>();
-            List<List<int>> validTickets = new List<List<int>>();
+            List<int> myTicketValues = [];
+            List<List<int>> validTickets = [];
             foreach (string input in inputs)
             {
                 if (input.Contains("or"))
@@ -136,10 +135,10 @@ nearby tickets:
             }
 
             // solve each index
-            List<List<string>> possibilities = new List<List<string>>();
+            List<List<string>> possibilities = [];
             for (int i = 0; i < myTicketValues.Count; ++i)
             {
-                possibilities.Add(new List<string>());
+                possibilities.Add([]);
                 foreach (List<int> ticket in validTickets)
                 {
                     int valueToCheck = ticket[i];
@@ -163,7 +162,7 @@ nearby tickets:
                 }
             }
 
-            List<string> removals = new List<string>();
+            List<string> removals = [];
             while (true)
             {
                 foreach (List<string> list in possibilities)
