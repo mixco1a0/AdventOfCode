@@ -4,6 +4,21 @@ using System.Numerics;
 
 namespace AoC.Base
 {
+    public interface IVec2<VecT, T> where VecT : IVec2<VecT, T>
+    {
+        public T X { get; set; }
+        public T Y { get; set; }
+
+        public static VecT Zero { get; }
+
+        public static abstract VecT operator +(VecT a, VecT b);
+        public static abstract VecT operator -(VecT a, VecT b);
+        public static abstract VecT operator *(VecT a, T mult);
+        public static abstract VecT operator /(VecT a, T dev);
+        public static abstract VecT operator %(VecT a, T mod);
+        public abstract T Manhattan(VecT other);
+    }
+
     #region Vec2
     public class Vec2 : IEquatable<Vec2>, IComparable<Vec2>, IComparable
     {
