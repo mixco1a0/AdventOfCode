@@ -74,13 +74,13 @@ namespace AoC.Base
             return new(a.X * mult, a.Y * mult);
         }
 
-        public static Vec2 operator /(Vec2 a, int mult)
+        public static Vec2 operator /(Vec2 a, int div)
         {
-            if (mult == 0)
+            if (div == 0)
             {
                 return new();
             }
-            return new(a.X / mult, a.Y / mult);
+            return new(a.X / div, a.Y / div);
         }
 
         public static Vec2 operator %(Vec2 a, int mod)
@@ -154,12 +154,13 @@ namespace AoC.Base
 
 
     #region Vec2L
-    public class Vec2L : IEquatable<Vec2L>, IComparable<Vec2L>, IComparable
+    public class Vec2L : IVec2<Vec2L, long>, IEquatable<Vec2L>, IComparable<Vec2L>, IComparable
     {
         public long X { get; set; }
         public long Y { get; set; }
 
-        public static readonly Vec2L Zero = new();
+        protected static readonly Vec2L _zero = new();
+        public static Vec2L Zero { get => _zero; }
 
         public Vec2L()
         {
@@ -186,10 +187,11 @@ namespace AoC.Base
                 return null;
             }
 
-            long[] split = [.. Util.String.Split(input, ',').Select(long.Parse)];
-            return new(split[0], split[1]);
+            IEnumerable<long> split = Util.Number.SplitL(input, ',');
+            return new(split.ElementAt(0), split.ElementAt(1));
         }
 
+        #region Interfaces
         public static Vec2L operator +(Vec2L a, Vec2L b)
         {
             return new(a.X + b.X, a.Y + b.Y);
@@ -205,13 +207,23 @@ namespace AoC.Base
             return new(a.X * mult, a.Y * mult);
         }
 
-        public static Vec2L operator /(Vec2L a, long mult)
+        public static Vec2L operator /(Vec2L a, long div)
         {
-            if (mult == 0)
+            if (div == 0)
             {
                 return new();
             }
-            return new(a.X / mult, a.Y / mult);
+            return new(a.X / div, a.Y / div);
+        }
+
+        public static Vec2L operator %(Vec2L a, long mod)
+        {
+            if (mod == 0)
+            {
+                return new();
+            }
+
+            return new(Util.Number.Mod(a.X, mod), Util.Number.Mod(a.Y, mod));
         }
 
         public long Manhattan(Vec2L other)
@@ -219,7 +231,6 @@ namespace AoC.Base
             return Math.Abs(X - other.X) + Math.Abs(Y - other.Y);
         }
 
-        #region Interfaces
         public bool Equals(Vec2L other)
         {
             return X == other.X && Y == other.Y;

@@ -43,6 +43,17 @@ namespace AoC.Util
         }
 
         /// <summary>
+        /// Return the positive modulo using provided values
+        /// </summary>
+        /// <param name="dividend">value to be modded</param>
+        /// <param name="divisor">the number value needs to be modded by</param>
+        /// <returns></returns>
+        public static long Mod(long dividend, long divisor)
+        {
+            return (dividend % divisor + divisor) % divisor;
+        }
+
+        /// <summary>
         /// Call split on a string and then parse it into longs
         /// </summary>
         /// <param name="input">string of separated longs</param>
