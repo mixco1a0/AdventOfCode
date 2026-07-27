@@ -8,6 +8,17 @@ namespace AoC.Util
     public static class Number
     {
         /// <summary>
+        /// Return the positive modulo using provided values
+        /// </summary>
+        /// <param name="dividend">value to be modded</param>
+        /// <param name="divisor">the number value needs to be modded by</param>
+        /// <returns></returns>
+        public static int Mod(int dividend, int divisor)
+        {
+            return (dividend % divisor + divisor) % divisor;
+        }
+
+        /// <summary>
         /// Call split on a string and then parse it into ints
         /// </summary>
         /// <param name="input">string of separated ints</param>

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 
@@ -19,13 +20,14 @@ namespace AoC.Base
         public abstract T Manhattan(VecT other);
     }
 
+
     #region Vec2
-    public class Vec2 : IEquatable<Vec2>, IComparable<Vec2>, IComparable
+    public class Vec2 : IVec2<Vec2, int>, IEquatable<Vec2>, IComparable<Vec2>, IComparable
     {
         public int X { get; set; }
         public int Y { get; set; }
-
-        public static readonly Vec2 Zero = new();
+        protected static readonly Vec2 _zero = new();
+        public static Vec2 Zero { get => _zero; }
 
         public Vec2()
         {
@@ -52,10 +54,11 @@ namespace AoC.Base
                 return null;
             }
 
-            int[] split = [.. Util.String.Split(input, ',').Select(int.Parse)];
-            return new(split[0], split[1]);
+            IEnumerable<int> split = Util.Number.Split(input, ',');
+            return new(split.ElementAt(0), split.ElementAt(1));
         }
 
+        #region Interfaces
         public static Vec2 operator +(Vec2 a, Vec2 b)
         {
             return new(a.X + b.X, a.Y + b.Y);
@@ -87,24 +90,7 @@ namespace AoC.Base
                 return new();
             }
 
-            Vec2 modded = new(a);
-            modded.Mod(mod, mod);
-            return modded;
-        }
-
-        public void Mod(int x, int y)
-        {
-            X %= x;
-            if (X < 0)
-            {
-                X += x;
-            }
-
-            Y %= y;
-            if (Y < 0)
-            {
-                Y += y;
-            }
+            return new(Util.Number.Mod(a.X, mod), Util.Number.Mod(a.Y, mod));
         }
 
         public int Manhattan(Vec2 other)
@@ -112,7 +98,6 @@ namespace AoC.Base
             return Math.Abs(X - other.X) + Math.Abs(Y - other.Y);
         }
 
-        #region Interfaces
         public bool Equals(Vec2 other)
         {
             return X == other.X && Y == other.Y;
