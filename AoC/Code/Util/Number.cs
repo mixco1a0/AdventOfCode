@@ -76,6 +76,17 @@ namespace AoC.Util
             string[] split = String.Split(input, seperator);
             return split.Where(s => long.TryParse(s, out long result)).Select(long.Parse);
         }
+        
+        /// <summary>
+        /// Return the positive modulo using provided values
+        /// </summary>
+        /// <param name="dividend">value to be modded</param>
+        /// <param name="divisor">the number value needs to be modded by</param>
+        /// <returns></returns>
+        public static BigInteger Mod(BigInteger dividend, BigInteger divisor)
+        {
+            return (dividend % divisor + divisor) % divisor;
+        }
 
         /// <summary>
         /// Call split on a string and then parse it into BigIntegers

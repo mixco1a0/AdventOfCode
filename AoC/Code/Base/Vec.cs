@@ -287,12 +287,12 @@ namespace AoC.Base
 
 
     #region Vec2BI
-    public class Vec2BI : IEquatable<Vec2BI>, IComparable<Vec2BI>, IComparable
+    public class Vec2BI : IVec2<Vec2BI, BigInteger>,  IEquatable<Vec2BI>, IComparable<Vec2BI>, IComparable
     {
         public BigInteger X { get; set; }
         public BigInteger Y { get; set; }
-
-        public static readonly Vec2BI Zero = new();
+        protected static readonly Vec2BI _zero = new();
+        public static Vec2BI Zero { get => _zero; }
 
         public Vec2BI()
         {
@@ -319,10 +319,11 @@ namespace AoC.Base
                 return null;
             }
 
-            BigInteger[] split = [.. Util.String.Split(input, ',').Select(BigInteger.Parse)];
-            return new(split[0], split[1]);
+            IEnumerable<BigInteger> split = Util.Number.SplitBI(input, ',');
+            return new(split.ElementAt(0), split.ElementAt(1));
         }
 
+        #region Interfaces
         public static Vec2BI operator +(Vec2BI a, Vec2BI b)
         {
             return new(a.X + b.X, a.Y + b.Y);
@@ -338,13 +339,23 @@ namespace AoC.Base
             return new(a.X * mult, a.Y * mult);
         }
 
-        public static Vec2BI operator /(Vec2BI a, BigInteger mult)
+        public static Vec2BI operator /(Vec2BI a, BigInteger div)
         {
-            if (mult == 0)
+            if (div == 0)
             {
                 return new();
             }
-            return new(a.X / mult, a.Y / mult);
+            return new(a.X / div, a.Y / div);
+        }
+        
+        public static Vec2BI operator %(Vec2BI a, BigInteger mod)
+        {
+            if (mod == 0)
+            {
+                return new();
+            }
+
+            return new(Util.Number.Mod(a.X, mod), Util.Number.Mod(a.Y, mod));
         }
 
         public BigInteger Manhattan(Vec2BI other)
@@ -352,7 +363,6 @@ namespace AoC.Base
             return BigInteger.Abs(X - other.X) + BigInteger.Abs(Y - other.Y);
         }
 
-        #region Interfaces
         public bool Equals(Vec2BI other)
         {
             return X == other.X && Y == other.Y;
