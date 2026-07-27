@@ -161,7 +161,7 @@ namespace AoC._2015
                 {
                     if (player.Mana >= spell.Cost)
                     {
-                        Player nextPlayer = new Player(player);
+                        Player nextPlayer = new(player);
                         if (spell.Effect != null && player.Effects.ContainsKey(spell.Effect.ID))
                         {
                             continue;
