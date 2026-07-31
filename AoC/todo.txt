@@ -1,3 +1,5 @@
+look into iformattable
+
 fix 2019.19 part 1 solution
 
 vec3 -> use the util.number.split functions in all classes
