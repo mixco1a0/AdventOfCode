@@ -259,7 +259,7 @@ Tile 3079:
 @"                  # 
 #    ##    ##    ###
  #  #  #  #  #  #";
-        static string[] monsterParts = [.. monster.Split("\n\r".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(p => p.Replace(' ', '.'))];
+        static string[] monsterParts = [.. Util.String.Split(monster.Replace(' ', '.'), "\n\r")];
         static int monsterWidth = monsterParts[0].Length;
 
         class Tile
@@ -541,7 +541,7 @@ Tile 3079:
                 }
                 else if (string.IsNullOrWhiteSpace(input))
                 {
-                    string id = curId.Split(" :".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Last();
+                    string id = Util.String.Split(curId, " :").Last();
                     tiles.Add(new Tile { ID = id, Raw = curRaw });
                     tiles.Last().Eval(ref allSides);
 
@@ -590,7 +590,7 @@ Tile 3079:
                 }
                 else if (string.IsNullOrWhiteSpace(input))
                 {
-                    string id = curId.Split(" :".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Last();
+                    string id = Util.String.Split(curId, " :").Last();
                     tiles.Add(new Tile { ID = id, Raw = new List<string>(curRaw) });
                     tiles.Last().Eval(ref allSides);
 

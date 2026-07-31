@@ -90,7 +90,7 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3"
 
             public static Sensor Parse(string input)
             {
-                int[] split = [.. input.Split(" =,:".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Where(s => int.TryParse(s, out int i)).Select(int.Parse)];
+                int[] split = [.. Util.Number.Split(input, " =,:")];
                 Sensor sensor = new();
                 sensor.Pos.X = split[0];
                 sensor.Pos.Y = split[1];

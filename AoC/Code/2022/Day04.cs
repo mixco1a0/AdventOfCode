@@ -53,7 +53,7 @@ namespace AoC._2022
         static Base.Range[] Parse(string input)
         {
             Base.Range[] ranges = new Base.Range[2];
-            string[] split = input.Split("-,".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            string[] split = Util.String.Split(input, "-,");
             ranges[0] = new Base.Range(int.Parse(split[0]), int.Parse(split[1]));
             ranges[1] = new Base.Range(int.Parse(split[2]), int.Parse(split[3]));
             return ranges;

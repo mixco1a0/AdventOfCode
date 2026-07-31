@@ -117,7 +117,7 @@ namespace AoC._2022
             {
                 foreach (string m in mixing)
                 {
-                    long[] split = [.. m.Split("[]".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(long.Parse)];
+                    long[] split = [.. Util.Number.SplitL(m, "[]")];
                     if (split[0] == 0)
                     {
                         zeroKey = m;
@@ -163,7 +163,7 @@ namespace AoC._2022
             long[] indices = new long[] { (start + 1000) % mixing.Count, (start + 2000) % mixing.Count, (start + 3000) % mixing.Count };
             foreach (int i in indices)
             {
-                string[] split = fileWithIds[i].Split("[]".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(fileWithIds[i], "[]");
                 sum += long.Parse(split[0]);
             }
             return sum.ToString();

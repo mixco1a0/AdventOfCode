@@ -84,7 +84,7 @@ CN -> C"
             int curSoloId = 0, curPairId = 0;
             foreach (string input in inputs.Skip(2))
             {
-                string[] split = input.Split(" ->".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(input, " ->");
 
                 char soloChar = split[1][0];
                 if (!soloIds.ContainsKey(soloChar))

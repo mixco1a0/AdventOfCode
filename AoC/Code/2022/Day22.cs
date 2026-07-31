@@ -216,7 +216,7 @@ namespace AoC._2022
             // parse out special instructions
             // cube face size
             string sideSize = inputs[MaxY + 1];
-            string[] splitSide = sideSize.Split('x', StringSplitOptions.RemoveEmptyEntries);
+            string[] splitSide = Util.String.Split(sideSize, 'x');
             FaceX = int.Parse(splitSide[0]);
             FaceY = int.Parse(splitSide[1]);
 
@@ -231,7 +231,7 @@ namespace AoC._2022
                 }
 
                 locations.Add([]);
-                string[] split = inputs[i].Split(',', StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(inputs[i], ',');
                 for (int j = 0; j < split.Length; ++j)
                 {
                     locations[index].Add(int.Parse(split[j]));
@@ -265,7 +265,7 @@ namespace AoC._2022
                 curConfig.MaxY = (curY + 1) * FaceY - 1;
 
                 string faceDirections = inputs.Where(input => input.StartsWith($"{i}|")).First();
-                string[] split = faceDirections.Split("|:,.".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(faceDirections, "|:,.");
                 curConfig.DirectionIds[(int)FaceConfig.EDirection.Top] = int.Parse(split[2]);
                 curConfig.TargetSide[(int)FaceConfig.EDirection.Top] = FaceConfig.GetDirection(split[3][0]);
                 curConfig.DirectionIds[(int)FaceConfig.EDirection.Left] = int.Parse(split[5]);
@@ -285,8 +285,8 @@ namespace AoC._2022
 
             instructions = [];
             string completeInstruction = inputs.Last();
-            string[] numbers = completeInstruction.Split("LR".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-            string[] directions = completeInstruction.Split("0123456789".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            string[] numbers = Util.String.Split(completeInstruction, "LR");
+            string[] directions = Util.String.Split(completeInstruction, "0123456789");
             for (int i = 0; i < numbers.Length || i < directions.Length; ++i)
             {
                 if (i < numbers.Length)

@@ -72,7 +72,7 @@ U 20"
         {
             public static Instruction Parse(string input)
             {
-                string[] split = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(input, ' ');
                 return new Instruction(split[0][0], int.Parse(split[1]));
             }
         }

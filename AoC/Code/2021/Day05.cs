@@ -63,7 +63,7 @@ namespace AoC._2021
         {
             public static Base.Segment Parse(string input)
             {
-                int[] vals = [.. input.Split(", ->".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(int.Parse)];
+                int[] vals = [.. Util.Number.Split(input, ", ->")];
                 Base.Vec2 a = new(vals[0], vals[1]);
                 Base.Vec2 b = new(vals[2], vals[3]);
                 return new Base.Segment(a, b);

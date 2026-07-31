@@ -71,7 +71,7 @@ fold along x=5"
                     return null;
                 }
 
-                int[] split = [.. input.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse)];
+                int[] split = [.. Util.Number.Split(input, ',')];
                 return new Base.Vec2(split[0], split[1]);
             }
         }
@@ -86,7 +86,7 @@ fold along x=5"
 
             public static Instruction Parse(string input)
             {
-                string[] split = [.. input.Split(" =".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)];
+                string[] split = [.. Util.String.Split(input, " =")];
                 return new Instruction(split[2][0] == 'x', int.Parse(split[3]));
             }
         }

@@ -140,7 +140,7 @@ namespace AoC._2021
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool getMax)
         {
-            string[] split = [.. inputs.First().Split(" :=.,xy".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).TakeLast(4)];
+            string[] split = [.. Util.String.Split(inputs.First(), " :=.,xy").TakeLast(4)];
             int[] targetArea = [.. split.Select(int.Parse)];
             int max = Solve(targetArea[2], targetArea[3], out List<int> possibleYs);
             if (getMax)

@@ -108,7 +108,7 @@ namespace AoC._2021
                 BurrowState bs = new(roomSlices.Count);
                 for (int i = 0; i < roomSlices.Count; ++i)
                 {
-                    char[] roomSlice = [.. roomSlices[i].Split("# ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(s => s[0])];
+                    char[] roomSlice = [.. Util.String.Split(roomSlices[i], "# ").Select(s => s[0])];
                     for (int j = 0; j < roomSlice.Length; ++j)
                     {
                         bs.Rooms[j][i] = roomSlice[j];

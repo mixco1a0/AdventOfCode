@@ -157,7 +157,7 @@ humidity-to-location map:
 
                     if (mapping == Mapping.Seed)
                     {
-                        Seeds = [.. input.Split(": ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Where(s => long.TryParse(s, out long result)).Select(long.Parse).Select(s => new Base.RangeL(s, s))];
+                        Seeds = [.. Util.Number.SplitL(input, ": ").Select(s => new Base.RangeL(s, s))];
                         if (!simpleParse)
                         {
                             Queue<Base.RangeL> complexList = new(Seeds);
@@ -209,7 +209,7 @@ humidity-to-location map:
 
             private void ParseList(string input, ref List<Base.KeyVal<Base.RangeL, long>> curList)
             {
-                long[] split = [.. input.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(long.Parse)];
+                long[] split = [.. Util.Number.SplitL(input, ' ')];
                 //split[0] = destination
                 //split[1] = source
                 //split[2] = range length

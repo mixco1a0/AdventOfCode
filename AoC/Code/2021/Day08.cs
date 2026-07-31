@@ -100,9 +100,9 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
             public static Signal Parse(string input)
             {
                 Signal signal = new();
-                string[] split = input.Split('|', StringSplitOptions.RemoveEmptyEntries);
-                signal.Patterns = [.. split[0].Split(' ', StringSplitOptions.RemoveEmptyEntries).OrderBy(s => s.Length)];
-                signal.Output = [.. split[1].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(s => string.Concat(s.OrderBy(c => c)))];
+                string[] split = Util.String.Split(input, '|');
+                signal.Patterns = [.. Util.String.Split(split[0], ' ').OrderBy(s => s.Length)];
+                signal.Output = [.. Util.String.Split(split[1], ' ').Select(s => string.Concat(s.OrderBy(c => c)))];
                 return signal;
             }
         }

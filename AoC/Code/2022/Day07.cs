@@ -97,7 +97,7 @@ $ ls
 
             static public File Parse(string input)
             {
-                string[] split = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(input, ' ');
                 return new File() { Name = split[1], Size = long.Parse(split[0]) };
             }
 
@@ -177,7 +177,7 @@ $ ls
             {
                 if (input.StartsWith('$'))
                 {
-                    string[] split = input.Split("$ ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                    string[] split = Util.String.Split(input, "$ ");
                     if (split[0] == "ls")
                     {
                         continue;

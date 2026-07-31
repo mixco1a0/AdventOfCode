@@ -54,13 +54,13 @@ mem[26] = 1"
             {
                 if (input.Contains("mask"))
                 {
-                    List<string> split = [.. input.Split(" =".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)];
+                    List<string> split = [.. Util.String.Split(input, " =")];
 
                     masks = [.. split[1].ToCharArray().Select((digit, index) => new { Digit = digit, Index = index }).Where(pair => pair.Digit != 'X').Select(pair => new KeyValuePair<char, int>(pair.Digit, pair.Index))];
                 }
                 else
                 {
-                    List<string> split = [.. input.Split(" []=".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)];
+                    List<string> split = [.. Util.String.Split(input, " []=")];
                     string val = Convert.ToString(long.Parse(split[2]), 2).ToString().PadLeft(36, '0');
                     char[] chars = val.ToCharArray();
                     foreach (var pair in masks)
@@ -87,13 +87,13 @@ mem[26] = 1"
             {
                 if (input.Contains("mask"))
                 {
-                    List<string> split = [.. input.Split(" =".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)];
+                    List<string> split = [.. Util.String.Split(input, " =")];
 
                     masks = [.. split[1].ToCharArray().Select((digit, index) => new { Digit = digit, Index = index }).Select(pair => new KeyValuePair<char, int>(pair.Digit, pair.Index))];
                 }
                 else
                 {
-                    List<string> split = [.. input.Split(" []=".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)];
+                    List<string> split = [.. Util.String.Split(input, " []=")];
                     char[] memAddress = Convert.ToString(long.Parse(split[1]), 2).ToString().PadLeft(36, '0').ToCharArray();
                     char[] chars = Convert.ToString(long.Parse(split[1]), 2).ToString().PadLeft(36, '0').ToCharArray();
                     foreach (var pair in masks)

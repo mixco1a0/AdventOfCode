@@ -193,7 +193,7 @@ noop"
                 {
                     return new Instruction(true, 0);
                 }
-                string[] split = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(input, ' ');
                 return new Instruction(false, int.Parse(split[1]));
             }
         }

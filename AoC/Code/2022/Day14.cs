@@ -49,7 +49,7 @@ namespace AoC._2022
 
         private Queue<Base.Vec2> Parse(string input)
         {
-            int[] split = [.. input.Split(", ->".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(int.Parse)];
+            int[] split = [.. Util.Number.Split(input, ", ->")];
             Queue<Base.Vec2> positions = new();
             for (int i = 0; i < split.Length - 1; i += 2)
             {

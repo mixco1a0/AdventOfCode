@@ -560,11 +560,11 @@ namespace AoC._2021
             {
                 if (input.Contains("scanner"))
                 {
-                    curScannerId = input.Split(" ", StringSplitOptions.RemoveEmptyEntries).Where(i => int.TryParse(i, out int ii)).Select(int.Parse).First();
+                    curScannerId = Util.Number.Split(input, ' ').First();
                 }
                 else if (!string.IsNullOrEmpty(input))
                 {
-                    float[] vec3 = [.. input.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(float.Parse)];
+                    float[] vec3 = [.. Util.Number.SplitF(input, ',')];
                     localBeacons[++curLocalBeaconId] = new Vector3(vec3);
                 }
                 else

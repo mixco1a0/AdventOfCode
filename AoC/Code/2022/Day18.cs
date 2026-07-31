@@ -88,7 +88,7 @@ namespace AoC._2022
         {
             public static Position3 Parse(string input)
             {
-                int[] split = [.. input.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(int.Parse)];
+                int[] split = [.. Util.Number.Split(input, ",")];
                 return new Position3(split[0], split[1], split[2]);
             }
 

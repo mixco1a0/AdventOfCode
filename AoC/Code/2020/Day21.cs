@@ -55,8 +55,8 @@ sqjhc mxmxvkd sbzzf (contains fish)"
 
             public void Parse()
             {
-                Ingredients = [.. AllIngredients.Split(' ', StringSplitOptions.RemoveEmptyEntries)];
-                Allergens = [.. AllAllergens.Replace("contains", "").Split(" ,".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)];
+                Ingredients = [.. Util.String.Split(AllIngredients, ' ')];
+                Allergens = [.. Util.String.Split(AllAllergens.Replace("contains", ""), " ,")];
             }
 
             public override string ToString()
@@ -72,7 +72,7 @@ sqjhc mxmxvkd sbzzf (contains fish)"
             List<Food> foods = [];
             foreach (string input in inputs)
             {
-                string[] split = input.Split("()".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(input, "()");
                 foods.Add(new Food { AllIngredients = split[0], AllAllergens = split[1] });
                 foods.Last().Parse();
 
@@ -132,7 +132,7 @@ sqjhc mxmxvkd sbzzf (contains fish)"
             List<Food> foods = [];
             foreach (string input in inputs)
             {
-                string[] split = input.Split("()".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(input, "()");
                 foods.Add(new Food { AllIngredients = split[0], AllAllergens = split[1] });
                 foods.Last().Parse();
 

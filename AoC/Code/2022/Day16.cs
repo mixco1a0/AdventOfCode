@@ -90,7 +90,7 @@ Valve JJ has flow rate=21; tunnel leads to valve II"
 
             public static Room Parse(string input)
             {
-                string[] split = input.Split(" =;,".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(input, " =;,");
                 Room room = new();
                 room.Id = ToId(split[1]);
                 room.Rate = long.Parse(split[5]);

@@ -53,7 +53,7 @@ nearby tickets:
             {
                 if (input.Contains("or"))
                 {
-                    string[] split = input.Split("abcdefghijklmnopqrstuvwxyz: ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                    string[] split = Util.String.Split(input, "abcdefghijklmnopqrstuvwxyz: ");
                     string[] lower = split[0].Split('-');
                     string[] higher = split[1].Split('-');
                     ranges.Add(new Base.Range { Min = int.Parse(lower[0]), Max = int.Parse(lower[1]) });
@@ -103,7 +103,7 @@ nearby tickets:
                 if (input.Contains("or"))
                 {
                     string name = input.Split(':').First();
-                    string[] split = input.Split("abcdefghijklmnopqrstuvwxyz: ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                    string[] split = Util.String.Split(input, "abcdefghijklmnopqrstuvwxyz: ");
                     string[] lower = split[0].Split('-');
                     string[] higher = split[1].Split('-');
                     ticketInfo.Add(new TicketInfo { Name = name, Lower = new Base.Range { Min = int.Parse(lower[0]), Max = int.Parse(lower[1]) }, Higher = new Base.Range { Min = int.Parse(higher[0]), Max = int.Parse(higher[1]) } });

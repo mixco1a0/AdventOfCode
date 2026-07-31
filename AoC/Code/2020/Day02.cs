@@ -54,7 +54,7 @@ namespace AoC._2020
 
             public static PasswordInput Parse(string input)
             {
-                string[] split = input.Split("-: ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(input, "-: ");
                 return new PasswordInput
                 {
                     LowValue = int.Parse(split[0]),
@@ -115,7 +115,7 @@ namespace AoC._2020
             int validPasswords = 0;
             foreach(string input in inputs)
             {
-                string[] split = input.Split("-: ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(input, "-: ");
                 if (split.Length != 4)
                 {
                     continue;
@@ -152,7 +152,7 @@ namespace AoC._2020
             int validPasswords = 0;
             foreach(string input in inputs)
             {
-                string[] split = input.Split("-: ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(input, "-: ");
                 if (split.Length != 4)
                 {
                     continue;

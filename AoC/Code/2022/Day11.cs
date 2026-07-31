@@ -114,17 +114,17 @@ Monkey 3:
             public static Monkey Parse(List<string> input)
             {
                 Monkey monkey = new();
-                monkey.Id = int.Parse(input[0].Split(" :".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Last());
-                monkey.Items = [.. input[1].Split(" ,".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Where(s => long.TryParse(s, out long l)).Select(long.Parse)];
+                monkey.Id = Util.Number.Split(input[0], " :").Last();
+                monkey.Items = [.. Util.Number.SplitL(input[1], " :")];
                 monkey.Op = input[2].Contains('*') ? EOp.Mult : EOp.Add;
-                monkey.UseOld = input[2].Split(" +*".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Last() == "old";
+                monkey.UseOld = Util.String.Split(input[2], " +*").Last() == "old";
                 if (!monkey.UseOld)
                 {
-                    monkey.Value = long.Parse(input[2].Split(" +*".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Last());
+                    monkey.Value = Util.Number.SplitL(input[1], " +*").Last();
                 }
-                monkey.Div = long.Parse(input[3].Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Last());
-                monkey.True = int.Parse(input[4].Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Last());
-                monkey.False = int.Parse(input[5].Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Last());
+                monkey.Div = Util.Number.SplitL(input[3], " ").Last();
+                monkey.True = Util.Number.Split(input[4], " ").Last();
+                monkey.False = Util.Number.Split(input[5], " ").Last();
                 monkey.InspectionCount = 0;
                 LCDiv *= monkey.Div;
                 return monkey;

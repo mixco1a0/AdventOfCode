@@ -210,10 +210,10 @@ aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba"
             public void Populate(ref List<Node> nodes, Func<string, string> GetNodeName, Action<string> printFunc)
             {
                 PrintFunc = printFunc;
-                string[] ruleSplit = RawRules.Split('|', StringSplitOptions.RemoveEmptyEntries);
+                string[] ruleSplit = Util.String.Split(RawRules, '|');
                 foreach (String curSplit in ruleSplit)
                 {
-                    List<string> ids = [.. curSplit.Split(' ', StringSplitOptions.RemoveEmptyEntries)];
+                    List<string> ids = [.. Util.String.Split(curSplit, ' ')];
                     int intTest;
                     if (!int.TryParse(ids.ElementAt(0), out intTest))
                     {

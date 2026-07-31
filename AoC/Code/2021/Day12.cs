@@ -283,7 +283,7 @@ start-RW"
             CaveSystem caveSystem = new(extended);
             foreach (string input in inputs)
             {
-                string[] split = [.. input.Split('-', StringSplitOptions.RemoveEmptyEntries)];
+                string[] split = [.. Util.String.Split(input, '-')];
                 caveSystem.AddConnectedCaves(split);
             }
             caveSystem.Caves.ForEach(c => c.Connections.Remove(caveSystem.Start));

@@ -106,7 +106,7 @@ iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"
         private bool CheckIsValid(string passportData)
         {
             List<string> requiredFields = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"];
-            Dictionary<string, string> fields = passportData.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToDictionary(str => str[0..3]);
+            Dictionary<string, string> fields = Util.String.Split(passportData, ' ').ToDictionary(str => str[0..3]);
             foreach (string requiredField in requiredFields)
             {
                 if (!fields.ContainsKey(requiredField))
@@ -135,7 +135,7 @@ iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"
                 ["pid"] = CheckIsValidPID
             };
 
-            Dictionary<string, string> fields = passportData.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToDictionary(str => str.Substring(0, 3), str => str.Substring(4));
+            Dictionary<string, string> fields = Util.String.Split(passportData, ' ').ToDictionary(str => str.Substring(0, 3), str => str.Substring(4));
             foreach (string requiredField in requiredFieldChecks.Keys)
             {
                 if (!fields.ContainsKey(requiredField))

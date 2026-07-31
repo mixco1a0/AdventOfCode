@@ -97,7 +97,7 @@ Blueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsid
         {
             public static Blueprint Parse(string input)
             {
-                int[] split = [.. input.Split(": ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Where(s => int.TryParse(s, out int i)).Select(int.Parse)];
+                int[] split = [.. Util.Number.Split(input, ": ")];
                 BasicBot ore = new(split[1]);
                 BasicBot clay = new(split[2]);
                 ObsidianBot obsidian = new(split[3], split[4]);

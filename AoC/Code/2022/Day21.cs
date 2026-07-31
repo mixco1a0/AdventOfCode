@@ -98,7 +98,7 @@ hmdt: 32"
 
             public static Monkey Parse(string input)
             {
-                string[] split = input.Split(" :".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(input, " :");
                 Monkey m = new();
                 m.Id = split[0];
                 if (long.TryParse(split[1], out long val))

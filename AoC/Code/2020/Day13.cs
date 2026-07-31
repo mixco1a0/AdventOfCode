@@ -61,7 +61,7 @@ namespace AoC._2020
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
             int time = int.Parse(inputs[0]);
-            List<int> buses = [.. inputs[1].Split(new char[] { 'x', ',' }, System.StringSplitOptions.RemoveEmptyEntries).Select(int.Parse)];
+            List<int> buses = [.. Util.Number.Split(inputs[1], "x,")];
             List<int> busWait = [.. buses.Select(bus => time % bus)];
             int waitTime = 0;
             while (true)
@@ -80,7 +80,7 @@ namespace AoC._2020
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<KeyValuePair<int, int>> buses = [.. inputs[1].Split(",", StringSplitOptions.RemoveEmptyEntries).Select((bus, index) => new { Digit = bus, Index = index }).Where(pair => pair.Digit != "x").Select(pair => new KeyValuePair<int, int>(int.Parse(pair.Digit), pair.Index))];
+            List<KeyValuePair<int, int>> buses = [.. Util.String.Split(inputs[1], ',').Select((b, i) => (b, i)).Where(p => p.b != "x").Select(p => new KeyValuePair<int, int>(int.Parse(p.b), p.i))];
 
             long increment = 1;
             long start = 0;
