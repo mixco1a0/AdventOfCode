@@ -10,44 +10,43 @@ namespace AoC._2022
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "15",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "15",
+                    RawInput =
 @"A Y
 B X
 C Z"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "12",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "12",
+                    RawInput =
 @"A Y
 B X
 C Z"
-            });
+                },
+            ];
             return testData;
         }
 
-        static Dictionary<char, char> Win = new Dictionary<char, char> { { 'A', 'C' }, { 'B', 'A' }, { 'C', 'B' } };
+        static Dictionary<char, char> Win = new() { { 'A', 'C' }, { 'B', 'A' }, { 'C', 'B' } };
         static Dictionary<char, char> Lose = Win.ToDictionary(w => w.Value, w => w.Key);
-        static Dictionary<char, int> Points = new Dictionary<char, int>() { { 'A', 1 }, { 'B', 2 }, { 'C', 3 } };
+        static Dictionary<char, int> Points = new() { { 'A', 1 }, { 'B', 2 }, { 'C', 3 } };
 
         class Strategy : Base.Pair<char, char>
         {
@@ -59,7 +58,7 @@ C Z"
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool input)
         {
-            List<Strategy> guide = inputs.Select(Strategy.Parse).ToList();
+            List<Strategy> guide = [.. inputs.Select(Strategy.Parse)];
 
             int score = 0;
             foreach (Strategy strat in guide)

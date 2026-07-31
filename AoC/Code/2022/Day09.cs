@@ -10,25 +10,23 @@ namespace AoC._2022
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "13",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "13",
+                    RawInput =
 @"R 4
 U 4
 L 3
@@ -37,12 +35,12 @@ R 4
 D 1
 L 5
 R 2"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "1",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "1",
+                    RawInput =
 @"R 4
 U 4
 L 3
@@ -51,12 +49,12 @@ R 4
 D 1
 L 5
 R 2"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "36",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "36",
+                    RawInput =
 @"R 5
 U 8
 L 8
@@ -65,7 +63,8 @@ R 17
 D 10
 L 25
 U 20"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -73,7 +72,7 @@ U 20"
         {
             public static Instruction Parse(string input)
             {
-                string[] split = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(input, ' ');
                 return new Instruction(split[0][0], int.Parse(split[1]));
             }
         }
@@ -162,12 +161,12 @@ U 20"
                 grid[maxY][0 - minX] = 's';
             }
 
-            Util.Grid.Print2D(Core.Log.ELevel.Debug, grid);
+            Util.Grid2.Print(Core.Log.ELevel.Debug, grid);
         }
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, int nodeCount)
         {
-            Instruction[] instructions = inputs.Select(Instruction.Parse).ToArray();
+            Instruction[] instructions = [.. inputs.Select(Instruction.Parse)];
             Base.Vec2[] rope = new Base.Vec2[nodeCount];
             for (int r = 0; r < rope.Length; ++r)
             {
@@ -175,7 +174,7 @@ U 20"
             }
             bool massPrint = false;
 
-            HashSet<Base.Vec2> visited = new HashSet<Base.Vec2>();
+            HashSet<Base.Vec2> visited = [];
             foreach (Instruction i in instructions)
             {
                 for (int s = 0; s < i.Steps; ++s)

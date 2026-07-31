@@ -10,26 +10,24 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Variables = new Dictionary<string, string>() { { "steps", "10" } },
-                Output = "204",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Variables = new Dictionary<string, string>() { { nameof(_Steps), "10" } }, 
+                    Output = "204",
+                    RawInput =
 @"5483143223
 2745854711
 5264556173
@@ -40,12 +38,12 @@ namespace AoC._2021
 6882881134
 4846848554
 5283751526"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "1656",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "1656",
+                    RawInput =
 @"5483143223
 2745854711
 5264556173
@@ -56,12 +54,12 @@ namespace AoC._2021
 6882881134
 4846848554
 5283751526"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "195",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "195",
+                    RawInput =
 @"5483143223
 2745854711
 5264556173
@@ -72,12 +70,17 @@ namespace AoC._2021
 6882881134
 4846848554
 5283751526"
-            });
+                },
+            ];
             return testData;
         }
 
-        private List<Base.Vec2> Surrounding = new List<Base.Vec2>
-        {
+#pragma warning disable IDE1006 // Naming Styles
+        private static string _Steps { get; }
+#pragma warning restore IDE1006 // Naming Styles
+
+        private List<Base.Vec2> Surrounding =
+        [
             new Base.Vec2(-1, -1),
             new Base.Vec2(0, -1),
             new Base.Vec2(1, -1),
@@ -86,13 +89,13 @@ namespace AoC._2021
             new Base.Vec2(-1, 1),
             new Base.Vec2(0, 1),
             new Base.Vec2(1, 1),
-        };
+        ];
 
         private void PrintGrid(int[,] grid, int maxX, int maxY)
         {
             for (int y = 0; y < maxY; ++y)
             {
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
                 sb.AppendFormat("{0,3} | ", y);
                 for (int x = 0; x < maxX; ++x)
                 {
@@ -105,8 +108,8 @@ namespace AoC._2021
 
         private int Step(ref int[,] grid, int maxX, int maxY)
         {
-            HashSet<Base.Vec2> history = new HashSet<Base.Vec2>();
-            Queue<Base.Vec2> flash = new Queue<Base.Vec2>();
+            HashSet<Base.Vec2> history = [];
+            Queue<Base.Vec2> flash = new();
             for (int x = 0; x < maxX; ++x)
             {
                 for (int y = 0; y < maxY; ++y)
@@ -155,8 +158,7 @@ namespace AoC._2021
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool findSync)
         {
-            int steps;
-            GetVariable(nameof(steps), 100, variables, out steps);
+            GetVariable(nameof(_Steps), 100, variables, out int steps);
             if (findSync)
             {
                 steps = int.MaxValue;

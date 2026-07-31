@@ -10,59 +10,58 @@ namespace AoC._2015
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "605",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "605",
+                    RawInput =
 @"London to Dublin = 464
 London to Belfast = 518
 Dublin to Belfast = 141"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "982",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "982",
+                    RawInput =
 @"London to Dublin = 464
 London to Belfast = 518
 Dublin to Belfast = 141"
-            });
+                },
+            ];
             return testData;
         }
 
-        public record Distance(string A, string B, int Dist) { }
+        public record Distance(string A, string B, int Dist);
 
-        public record ToInfo(string Destination, int Distance) { }
+        public record ToInfo(string Destination, int Distance);
 
-        private int FindPath(Dictionary<string, List<ToInfo>> map, bool findMin)
+        private static int FindPath(Dictionary<string, List<ToInfo>> map, bool findMin)
         {
-            List<string> cities = map.Keys.ToList();
+            List<string> cities = [.. map.Keys];
             int min = int.MaxValue;
             int max = int.MinValue;
             foreach (string city in cities)
             {
-                min = Math.Min(FindPathRecurse(map, city, cities.Where(c => c != city).ToList(), findMin), min);
-                max = Math.Max(FindPathRecurse(map, city, cities.Where(c => c != city).ToList(), findMin), max);
+                min = Math.Min(FindPathRecurse(map, city, [.. cities.Where(c => c != city)], findMin), min);
+                max = Math.Max(FindPathRecurse(map, city, [.. cities.Where(c => c != city)], findMin), max);
             }
             return findMin ? min : max;
         }
 
-        private int FindPathRecurse(Dictionary<string, List<ToInfo>> map, string startCity, List<string> visitableCities, bool findMin)
+        private static int FindPathRecurse(Dictionary<string, List<ToInfo>> map, string startCity, List<string> visitableCities, bool findMin)
         {
             if (visitableCities.Count == 0)
             {
@@ -79,33 +78,37 @@ Dublin to Belfast = 141"
             {
                 dist = curToInfo.Where(i => visitableCities.Contains(i.Destination)).Max(i => i.Distance);
             }
-            string nextCity = curToInfo.Where(i => visitableCities.Contains(i.Destination)).Where(i => i.Distance == dist).First().Destination;
+            string nextCity = curToInfo.Where(i => visitableCities.Contains(i.Destination)).First(i => i.Distance == dist).Destination;
             // Log(Core.Log.ELevel.Spam, $"{startCity} >--[{dist}]--> {nextCity}");
-            return dist + FindPathRecurse(map, nextCity, visitableCities.Where(c => c != nextCity).ToList(), findMin);
+            return dist + FindPathRecurse(map, nextCity, [.. visitableCities.Where(c => c != nextCity)], findMin);
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool findMin)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool findMin)
         {
-            Dictionary<string, List<ToInfo>> map = new Dictionary<string, List<ToInfo>>();
-            List<Distance> distances = new List<Distance>();
+            Dictionary<string, List<ToInfo>> map = [];
+            List<Distance> distances = [];
             foreach (string input in inputs)
             {
-                string[] splits = input.Split(" =".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string[] splits = Util.String.Split(input, " =");
                 string cityA = splits[0];
                 string cityB = splits[2];
                 int distance = int.Parse(splits[3]);
 
-                if (!map.ContainsKey(cityA))
+                if (!map.TryGetValue(cityA, out List<ToInfo> value))
                 {
-                    map[cityA] = new List<ToInfo>();
+                    value = [];
+                    map[cityA] = value;
                 }
-                map[cityA].Add(new ToInfo(cityB, distance));
 
-                if (!map.ContainsKey(cityB))
+                value.Add(new ToInfo(cityB, distance));
+
+                if (!map.TryGetValue(cityB, out List<ToInfo> value1))
                 {
-                    map[cityB] = new List<ToInfo>();
+                    value1 = [];
+                    map[cityB] = value1;
                 }
-                map[cityB].Add(new ToInfo(cityA, distance));
+
+                value1.Add(new ToInfo(cityA, distance));
             }
             return FindPath(map, findMin).ToString();
         }

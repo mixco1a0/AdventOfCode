@@ -10,38 +10,37 @@ namespace AoC._2015
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "",
+                    RawInput =
 @""
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
 
-        static string store =
+        static readonly string ItemStore =
 @"Weapons:    Cost  Damage  Armor
 Dagger        8     4       0
 Shortsword   10     5       0
@@ -74,22 +73,22 @@ Defense+3   80     0       3";
 
         record Item(string Name, int Cost, int Damage, int Armor) { }
 
-        private void ParseStore(out List<Item> weapons, out List<Item> armor, out List<Item> rings)
+        private static void ParseStore(out List<Item> weapons, out List<Item> armor, out List<Item> rings)
         {
-            weapons = new List<Item>();
-            armor = new List<Item>();
-            rings = new List<Item>();
+            weapons = [];
+            armor = [];
+            rings = [];
 
             ItemType cur = ItemType.Invalid;
-            foreach (string line in store.Split("\n\r".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
+            foreach (string line in Util.String.Split(ItemStore, "\n\r"))
             {
-                if (line.Contains(":"))
+                if (line.Contains(':'))
                 {
                     ++cur;
                     continue;
                 }
 
-                string[] parts = line.Split("\n\r ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string[] parts = Util.String.Split(line, "\n\r");
                 switch (cur)
                 {
                     case ItemType.Weapon:
@@ -107,7 +106,7 @@ Defense+3   80     0       3";
 
         record Attacker(int HP, int Damage, int Armor) { }
 
-        bool RunBattleSimulation(Attacker player, Attacker boss)
+        static bool RunBattleSimulation(Attacker player, Attacker boss)
         {
             int playerHP = player.HP;
             int bossHP = boss.HP;
@@ -127,7 +126,7 @@ Defense+3   80     0       3";
             return playerHP > bossHP;
         }
 
-        int GetBestPriceForRing(Item weapon, Item armor, Item ring, Attacker boss, List<Item> rings)
+        static int GetBestPriceForRing(Item weapon, Item armor, Item ring, Attacker boss, List<Item> rings)
         {
             int bestPrice = int.MaxValue;
             if (RunBattleSimulation(new Attacker(100, weapon.Damage + ring.Damage, armor.Armor + ring.Armor), boss))
@@ -140,14 +139,14 @@ Defense+3   80     0       3";
             {
                 foreach (Item nextRing in rings)
                 {
-                    Item combinedRings = new Item($"{ring.Name}_{nextRing.Name}", ring.Cost + nextRing.Cost, ring.Damage + nextRing.Damage, ring.Armor + nextRing.Armor);
+                    Item combinedRings = new($"{ring.Name}_{nextRing.Name}", ring.Cost + nextRing.Cost, ring.Damage + nextRing.Damage, ring.Armor + nextRing.Armor);
                     bestPrice = Math.Min(bestPrice, GetBestPriceForRing(weapon, armor, combinedRings, boss, null));
                 }
             }
             return bestPrice;
         }
 
-        int GetBestPriceForArmor(Item weapon, Item armor, Attacker boss, List<Item> rings)
+        static int GetBestPriceForArmor(Item weapon, Item armor, Attacker boss, List<Item> rings)
         {
             bool armorEnough = false;
             int bestPrice = int.MaxValue;
@@ -160,19 +159,19 @@ Defense+3   80     0       3";
             }
 
             // get price without armor
-            Item nullArmor = new Item("NA", 0, 0, 0);
+            Item nullArmor = new("NA", 0, 0, 0);
             foreach (Item ring in rings)
             {
                 if (!armorEnough)
                 {
-                    bestPrice = Math.Min(bestPrice, GetBestPriceForRing(weapon, armor, ring, boss, rings.Where(r => r.Name != ring.Name).ToList()));
+                    bestPrice = Math.Min(bestPrice, GetBestPriceForRing(weapon, armor, ring, boss, [.. rings.Where(r => r.Name != ring.Name)]));
                 }
-                bestPrice = Math.Min(bestPrice, GetBestPriceForRing(weapon, nullArmor, ring, boss, rings.Where(r => r.Name != ring.Name).ToList()));
+                bestPrice = Math.Min(bestPrice, GetBestPriceForRing(weapon, nullArmor, ring, boss, [.. rings.Where(r => r.Name != ring.Name)]));
             }
             return bestPrice;
         }
 
-        int GetBestPriceForWeapon(Item weapon, Attacker boss, List<Item> armors, List<Item> rings)
+        static int GetBestPriceForWeapon(Item weapon, Attacker boss, List<Item> armors, List<Item> rings)
         {
             int bestPrice = int.MaxValue;
             int d = weapon.Damage, a = 0;
@@ -192,22 +191,7 @@ Defense+3   80     0       3";
             return bestPrice;
         }
 
-        protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
-        {
-            List<int> bossVals = inputs.Select(i => int.Parse(i.Split(" :".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Last())).ToList();
-            Attacker boss = new Attacker(bossVals[0], bossVals[1], bossVals[2]);
-
-            List<Item> weapons, armors, rings;
-            ParseStore(out weapons, out armors, out rings);
-            int bestPrice = int.MaxValue;
-            for (int w = 0; w < weapons.Count; ++w)
-            {
-                bestPrice = Math.Min(bestPrice, GetBestPriceForWeapon(weapons[w], boss, armors, rings));
-            }
-            return bestPrice.ToString();
-        }
-
-        int GetWorstPriceForRing(Item weapon, Item armor, Item ring, Attacker boss, List<Item> rings)
+        static int GetWorstPriceForRing(Item weapon, Item armor, Item ring, Attacker boss, List<Item> rings)
         {
             if (RunBattleSimulation(new Attacker(100, weapon.Damage + ring.Damage, armor.Armor + ring.Armor), boss))
             {
@@ -221,14 +205,14 @@ Defense+3   80     0       3";
             {
                 foreach (Item nextRing in rings)
                 {
-                    Item combinedRings = new Item($"{ring.Name}_{nextRing.Name}", ring.Cost + nextRing.Cost, ring.Damage + nextRing.Damage, ring.Armor + nextRing.Armor);
+                    Item combinedRings = new($"{ring.Name}_{nextRing.Name}", ring.Cost + nextRing.Cost, ring.Damage + nextRing.Damage, ring.Armor + nextRing.Armor);
                     worstPrice = Math.Max(worstPrice, GetWorstPriceForRing(weapon, armor, combinedRings, boss, null));
                 }
             }
             return worstPrice;
         }
 
-        int GetWorstPriceForArmor(Item weapon, Item armor, Attacker boss, List<Item> rings)
+        static int GetWorstPriceForArmor(Item weapon, Item armor, Attacker boss, List<Item> rings)
         {
             bool armorEnough = true;
             int worstPrice = int.MinValue;
@@ -240,19 +224,19 @@ Defense+3   80     0       3";
             }
 
             // get price without armor
-            Item nullArmor = new Item("NA", 0, 0, 0);
+            Item nullArmor = new("NA", 0, 0, 0);
             foreach (Item ring in rings)
             {
                 if (!armorEnough)
                 {
-                    worstPrice = Math.Max(worstPrice, GetWorstPriceForRing(weapon, armor, ring, boss, rings.Where(r => r.Name != ring.Name).ToList()));
+                    worstPrice = Math.Max(worstPrice, GetWorstPriceForRing(weapon, armor, ring, boss, [.. rings.Where(r => r.Name != ring.Name)]));
                 }
-                worstPrice = Math.Max(worstPrice, GetWorstPriceForRing(weapon, nullArmor, ring, boss, rings.Where(r => r.Name != ring.Name).ToList()));
+                worstPrice = Math.Max(worstPrice, GetWorstPriceForRing(weapon, nullArmor, ring, boss, [.. rings.Where(r => r.Name != ring.Name)]));
             }
             return worstPrice;
         }
 
-        int GetWorstPriceForWeapon(Item weapon, Attacker boss, List<Item> armors, List<Item> rings)
+        static int GetWorstPriceForWeapon(Item weapon, Attacker boss, List<Item> armors, List<Item> rings)
         {
             int d = weapon.Damage, a = 0;
             // if the weapon is enough to kill, ignore the weapon
@@ -270,19 +254,37 @@ Defense+3   80     0       3";
             return worstPrice;
         }
 
-        protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool findWorstPrice)
         {
-            List<int> bossVals = inputs.Select(i => int.Parse(i.Split(" :".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Last())).ToList();
-            Attacker boss = new Attacker(bossVals[0], bossVals[1], bossVals[2]);
+            List<int> bossVals = [.. inputs.Select(i => int.Parse(Util.String.Split(i, " :").Last()))];
+            Attacker boss = new(bossVals[0], bossVals[1], bossVals[2]);
+            ParseStore(out List<Item> weapons, out List<Item> armors, out List<Item> rings);
 
-            List<Item> weapons, armors, rings;
-            ParseStore(out weapons, out armors, out rings);
-            int worstPrice = int.MinValue;
+            int price = int.MaxValue;
+            if (findWorstPrice)
+            {
+                price = int.MinValue;
+            }
+
             for (int w = 0; w < weapons.Count; ++w)
             {
-                worstPrice = Math.Max(worstPrice, GetWorstPriceForWeapon(weapons[w], boss, armors, rings));
+                if (findWorstPrice)
+                {
+                    price = Math.Max(price, GetWorstPriceForWeapon(weapons[w], boss, armors, rings));
+                }
+                else
+                {
+                    price = Math.Min(price, GetBestPriceForWeapon(weapons[w], boss, armors, rings));
+                }
             }
-            return worstPrice.ToString();
+
+            return price.ToString();
         }
+
+        protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
+            => SharedSolution(inputs, variables, false);
+
+        protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
+            => SharedSolution(inputs, variables, true);
     }
 }

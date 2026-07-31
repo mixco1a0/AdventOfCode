@@ -11,25 +11,23 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "26",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "26",
+                    RawInput =
 @"be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe
 edbfga begcd cbg gc gcadebf fbgde acbgfd abcde gfcbed gfec | fcgedb cgb dgebacf gc
 fgaebd cg bdaec gdafb agbcfd gdcbef bgcad gfac gcb cdgabef | cg cg fdcagb cbg
@@ -40,19 +38,19 @@ dbcfg fgd bdegcaf fgec aegbdf ecdfab fbedc dacgb gdcebf gf | cefg dcbef fcge gbc
 bdfegc cbegaf gecbf dfcage bdacg ed bedf ced adcbefg gebcd | ed bcgafe cdgba cbgef
 egadfb cdbfeg cegd fecab cgb gbdefca cg fgcdab egfdb bfceg | gbdfcae bgc cg cgb
 gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "5353",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "5353",
+                    RawInput =
 @"acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "61229",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "61229",
+                    RawInput =
 @"be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe
 edbfga begcd cbg gc gcadebf fbgde acbgfd abcde gfcbed gfec | fcgedb cgb dgebacf gc
 fgaebd cg bdaec gdafb agbcfd gdcbef bgcad gfac gcb cdgabef | cg cg fdcagb cbg
@@ -63,7 +61,8 @@ dbcfg fgd bdegcaf fgec aegbdf ecdfab fbedc dacgb gdcebf gf | cefg dcbef fcge gbc
 bdfegc cbegaf gecbf dfcage bdacg ed bedf ced adcbefg gebcd | ed bcgafe cdgba cbgef
 egadfb cdbfeg cegd fecab cgb gbdefca cg fgcdab egfdb bfceg | gbdfcae bgc cg cgb
 gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -90,7 +89,7 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
                     translator[i] = string.Concat(translator[i].OrderBy(c => c));
                 }
 
-                StringBuilder code = new StringBuilder();
+                StringBuilder code = new();
                 foreach (string output in Output)
                 {
                     code.Append(translator.Select((translated, idx) => new { translated = translated, idx = idx }).Single(p => p.translated == output).idx);
@@ -100,18 +99,18 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
 
             public static Signal Parse(string input)
             {
-                Signal signal = new Signal();
-                string[] split = input.Split('|', StringSplitOptions.RemoveEmptyEntries);
-                signal.Patterns = split[0].Split(' ', StringSplitOptions.RemoveEmptyEntries).OrderBy(s => s.Length).ToList();
-                signal.Output = split[1].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(s => string.Concat(s.OrderBy(c => c))).ToList();
+                Signal signal = new();
+                string[] split = Util.String.Split(input, '|');
+                signal.Patterns = [.. Util.String.Split(split[0], ' ').OrderBy(s => s.Length)];
+                signal.Output = [.. Util.String.Split(split[1], ' ').Select(s => string.Concat(s.OrderBy(c => c)))];
                 return signal;
             }
         }
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool decode)
         {
-            List<Signal> signals = inputs.Select(Signal.Parse).ToList();
-            HashSet<int> uniqueValues = new HashSet<int>() { 2, 4, 3, 7 };
+            List<Signal> signals = [.. inputs.Select(Signal.Parse)];
+            HashSet<int> uniqueValues = [2, 4, 3, 7];
             int sum = 0;
             foreach (Signal signal in signals)
             {

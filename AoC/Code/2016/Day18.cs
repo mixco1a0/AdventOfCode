@@ -10,50 +10,53 @@ namespace AoC._2016
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Variables = new Dictionary<string, string>() { { "rowCount", "3" } },
-                Output = "6",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Variables = new Dictionary<string, string>() { { nameof(_RowCount), "3" } },
+                    Output = "6",
+                    RawInput =
 @"..^^."
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Variables = new Dictionary<string, string>() { { "rowCount", "10" } },
-                Output = "38",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Variables = new Dictionary<string, string>() { { nameof(_RowCount), "10" } },
+                    Output = "38",
+                    RawInput =
 @".^^.^.^^^^"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
+					
+#pragma warning disable IDE1006 // Naming Styles
+        private static string _RowCount { get; }
+#pragma warning restore IDE1006 // Naming Styles
 
-        private char Safe { get { return '.'; } }
-        private char Trap { get { return '^'; } }
+        private static char Safe { get { return '.'; } }
+        private static char Trap { get { return '^'; } }
 
-        public char GetTile(string prevRow, int pos)
+        public static char GetTile(string prevRow, int pos)
         {
             char l = Safe, r = Safe;
 
@@ -76,24 +79,23 @@ namespace AoC._2016
             return Safe;
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, int defaultRowCount)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, int defaultRowCount)
         {
-            int rowCount;
-            GetVariable(nameof(rowCount), defaultRowCount, variables, out rowCount);
+            GetVariable(nameof(_RowCount), defaultRowCount, variables, out int rowCount);
             string prevRow = inputs.First();
-            StringBuilder allTiles = new StringBuilder();
+            StringBuilder allTiles = new();
             for (int r = 0; r < rowCount; ++r)
             {
                 //DebugWriteLine($"Row {r,2} - {prevRow}");
                 allTiles.AppendLine(prevRow);
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
                 for (int c = 0; c < prevRow.Length; ++c)
                 {
                     sb.Append(GetTile(prevRow, c));
                 }
                 prevRow = sb.ToString();
             }
-            return allTiles.ToString().Where(c => c == Safe).Count().ToString();
+            return allTiles.ToString().Count(c => c == Safe).ToString();
         }
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)

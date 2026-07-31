@@ -9,54 +9,60 @@ namespace AoC._2016
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "14",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "14",
+                    RawInput =
 @"###########
 #0.1.....2#
 #.#######.#
 #4.......3#
 ###########"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
 
-        private char WallChar = '#';
-        private char OpenChar = '.';
-        private char StartChar = '0';
+        private readonly char WallChar = '#';
+        private readonly char OpenChar = '.';
+        private readonly char StartChar = '0';
+        
+        private readonly Base.Vec2[] Movements =
+        [
+            Util.Grid2.Map.Neighbor[Util.Grid2.Dir.North],
+            Util.Grid2.Map.Neighbor[Util.Grid2.Dir.West],
+            Util.Grid2.Map.Neighbor[Util.Grid2.Dir.South],
+            Util.Grid2.Map.Neighbor[Util.Grid2.Dir.East]
+        ];
 
         private record Path(Base.Vec2 Coords, int Steps) { }
 
         private int PathTo(char[][] grid, Base.Vec2 max, Base.Vec2 start, char target)
         {
-            Queue<Path> pendingChecks = new Queue<Path>();
+            Queue<Path> pendingChecks = new();
             pendingChecks.Enqueue(new Path(start, 0));
 
-            HashSet<Base.Vec2> history = new HashSet<Base.Vec2>();
-            history.Add(start);
+            HashSet<Base.Vec2> history = [start];
 
             while (pendingChecks.Count > 0)
             {
@@ -66,8 +72,7 @@ namespace AoC._2016
                     return cur.Steps;
                 }
 
-                Base.Vec2[] movements = new Base.Vec2[] { new Base.Vec2(0, -1), new Base.Vec2(-1, 0), new Base.Vec2(0, 1), new Base.Vec2(1, 0) };
-                foreach (Base.Vec2 movement in movements)
+                foreach (Base.Vec2 movement in Movements)
                 {
                     Base.Vec2 nextMove = cur.Coords + movement;
                     if (nextMove.X >= 0 && nextMove.X < max.X && nextMove.Y >= 0 && nextMove.Y < max.Y)
@@ -89,7 +94,7 @@ namespace AoC._2016
         private int[] GeneratePaths(char[][] grid, Base.Vec2 max, char target, int totalTargets)
         {
             // get starting position
-            Base.Vec2 start = new Base.Vec2(-1, -1);
+            Base.Vec2 start = new(-1, -1);
             for (int y = 0; y < max.Y && start.Y < 0; ++y)
             {
                 for (int x = 0; x < max.X; ++x)
@@ -118,7 +123,7 @@ namespace AoC._2016
             return fromTargetTo;
         }
 
-        private int FindShortestPath(int[][] toAllTargets, int totalTargets, int prevTarget, string usedTargets, int pathLength, bool returnHome)
+        private static int FindShortestPath(int[][] toAllTargets, int totalTargets, int prevTarget, string usedTargets, int pathLength, bool returnHome)
         {
             if (usedTargets.Length == totalTargets)
             {
@@ -150,9 +155,9 @@ namespace AoC._2016
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool returnHome)
         {
-            Base.Vec2 max = new Base.Vec2(inputs[0].Length, inputs.Count);
+            Base.Vec2 max = new(inputs[0].Length, inputs.Count);
             char[][] grid = new char[inputs.Count][];
-            Base.Vec2 start = new Base.Vec2();
+            Base.Vec2 start = new();
             for (int i = 0; i < inputs.Count; ++i)
             {
                 grid[i] = inputs[i].ToCharArray();

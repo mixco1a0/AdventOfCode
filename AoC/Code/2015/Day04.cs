@@ -11,45 +11,44 @@ namespace AoC._2015
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v3";
-                case Core.Part.Two:
-                    return "v3";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v3",
+                Core.Part.Two => "v3",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "609043",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "609043",
+                    RawInput =
 @"abcdef"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "1048970",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "1048970",
+                    RawInput =
 @"pqrstuv"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
 
-        private bool HasLeadingZeroes(byte[] hashBytes, int leadingZeroes)
+        private static bool HasLeadingZeroes(byte[] hashBytes, int leadingZeroes)
         {
             for (int z = 0; z < leadingZeroes; ++z)
             {
@@ -62,27 +61,24 @@ namespace AoC._2015
             return true;
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, int leadingZeroes)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, int leadingZeroes)
         {
             string input = inputs[0];
-            using (MD5 md5 = MD5.Create())
+            for (int i = 0; i < int.MaxValue; ++i)
             {
-                for (int i = 0; i < int.MaxValue; ++i)
+                StringBuilder sb = new(input);
+                sb.Append(i);
+                byte[] inputBytes = Encoding.ASCII.GetBytes(sb.ToString());
+                byte[] hashBytes = MD5.HashData(inputBytes);
+                // byte[] hashBytes = null;
+                // Action compute = () =>
+                // {
+                //     hashBytes = MD5.HashData(inputBytes);
+                // };
+                // WasteTime(compute);
+                if (HasLeadingZeroes(hashBytes, leadingZeroes))
                 {
-                    StringBuilder sb = new StringBuilder(input);
-                    sb.Append(i);
-                    byte[] inputBytes = Encoding.ASCII.GetBytes(sb.ToString());
-                    byte[] hashBytes = md5.ComputeHash(inputBytes);
-                    // byte[] hashBytes = null;
-                    // Action compute = () =>
-                    // {
-                    //     hashBytes = md5.ComputeHash(inputBytes);
-                    // };
-                    // WasteTime(compute);
-                    if (HasLeadingZeroes(hashBytes, leadingZeroes))
-                    {
-                        return i.ToString();
-                    }
+                    return i.ToString();
                 }
             }
 

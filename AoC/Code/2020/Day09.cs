@@ -9,26 +9,24 @@ namespace AoC._2020
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Variables = new Dictionary<string, string> { { "preamble", "5" } },
-                Output = "127",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Variables = new Dictionary<string, string> { { nameof(_Preamble), "5" } }, 
+                    Output = "127",
+                    RawInput =
 @"35
 20
 15
@@ -49,13 +47,13 @@ namespace AoC._2020
 277
 309
 576"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Variables = new Dictionary<string, string> { { "preamble", "5" } },
-                Output = "62",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Variables = new Dictionary<string, string> { { nameof(_Preamble), "5" } },
+                    Output = "62",
+                    RawInput =
 @"35
 20
 15
@@ -76,26 +74,27 @@ namespace AoC._2020
 277
 309
 576"
-            });
+                },
+            ];
             return testData;
         }
 
+#pragma warning disable IDE1006 // Naming Styles
+        private static string _Preamble { get; }
+#pragma warning restore IDE1006 // Naming Styles
+
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            int preamble = 25;
-            if (variables != null && variables.ContainsKey(nameof(preamble)))
-            {
-                preamble = int.Parse(variables[nameof(preamble)]);
-            }
+            GetVariable(nameof(_Preamble), 25, variables, out int preamble);
             return GetWeakness(inputs, preamble);
         }
 
         private string GetWeakness(List<string> inputs, int preamble)
         {
-            List<long> numbers = inputs.Select(num => long.Parse(num)).ToList();
+            List<long> numbers = [.. inputs.Select(num => long.Parse(num))];
             for (int i = preamble; i < numbers.Count(); ++i)
             {
-                if (!FindSum(numbers.Skip(i - preamble).Take(preamble).ToList(), numbers[i]))
+                if (!FindSum([.. numbers.Skip(i - preamble).Take(preamble)], numbers[i]))
                 {
                     return numbers[i].ToString();
                 }
@@ -121,15 +120,11 @@ namespace AoC._2020
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            int preamble = 25;
-            if (variables != null && variables.ContainsKey(nameof(preamble)))
-            {
-                preamble = int.Parse(variables[nameof(preamble)]);
-            }
+            GetVariable(nameof(_Preamble), 25, variables, out int preamble);
 
             long weakness = long.Parse(GetWeakness(inputs, preamble));
 
-            List<long> numbers = inputs.Select(num => long.Parse(num)).ToList();
+            List<long> numbers = [.. inputs.Select(num => long.Parse(num))];
             for (int i = 0; i < numbers.Count(); ++i)
             {
                 long runningTotal = numbers[i];
@@ -138,7 +133,7 @@ namespace AoC._2020
                     runningTotal += numbers[j];
                     if (runningTotal == weakness)
                     {
-                        List<long> subset = numbers.Skip(i).Take(j - i + 1).ToList();
+                        List<long> subset = [.. numbers.Skip(i).Take(j - i + 1)];
                         subset.Sort();
                         return (subset.First() + subset.Last()).ToString();
                     }

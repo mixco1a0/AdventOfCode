@@ -11,57 +11,55 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Variables = new Dictionary<string, string>() { { "fullRegisterInput", "1" }, { "returnRegister", "x" } },
-                Output = "-1",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Variables = new Dictionary<string, string>() { { nameof(_FullRegisterInput), "1" }, { nameof(_ReturnRegisterInput), "x" } }, 
+                    Output = "-1",
+                    RawInput =
 @"inp x
 mul x -1"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Variables = new Dictionary<string, string>() { { "fullRegisterInput", "13" } },
-                Output = "1",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Variables = new Dictionary<string, string>() { { nameof(_FullRegisterInput), "13" } },
+                    Output = "1",
+                    RawInput =
 @"inp z
 inp x
 mul z 3
 eql z x"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Variables = new Dictionary<string, string>() { { "fullRegisterInput", "12" } },
-                Output = "0",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Variables = new Dictionary<string, string>() { { nameof(_FullRegisterInput), "12" } },
+                    Output = "0",
+                    RawInput =
 @"inp z
 inp x
 mul z 3
 eql z x"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Variables = new Dictionary<string, string>() { { "fullRegisterInput", "7" } },
-                Output = "1",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Variables = new Dictionary<string, string>() { { nameof(_FullRegisterInput), "7" } },
+                    Output = "1",
+                    RawInput =
 @"inp w
 add z w
 mod z 2
@@ -73,13 +71,13 @@ add x w
 mod x 2
 div w 2
 mod w 2"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Variables = new Dictionary<string, string>() { { "fullRegisterInput", "6" } },
-                Output = "0",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Variables = new Dictionary<string, string>() { { nameof(_FullRegisterInput), "6" } },
+                    Output = "0",
+                    RawInput =
 @"inp w
 add z w
 mod z 2
@@ -91,9 +89,15 @@ add x w
 mod x 2
 div w 2
 mod w 2"
-            });
+                },
+            ];
             return testData;
         }
+					
+#pragma warning disable IDE1006 // Naming Styles
+        private static string _FullRegisterInput { get; }
+        private static string _ReturnRegisterInput { get; }
+#pragma warning restore IDE1006 // Naming Styles
 
         private class Instruction
         {
@@ -205,7 +209,7 @@ mod w 2"
 
             public override string ToString()
             {
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
                 switch (Type)
                 {
                     case EType.Input:
@@ -323,8 +327,8 @@ mod w 2"
             }
         }
 
-        private static readonly List<ALURule> ALURules = new List<ALURule>()
-        {
+        private static readonly List<ALURule> ALURules =
+        [
             new ALURule(0, 13, 0),
             new ALURule(1, 12, 5),
             new ALURule(2, 11, -8),
@@ -332,21 +336,20 @@ mod w 2"
             new ALURule(4, 5, 7),
             new ALURule(6, 7, -7),
             new ALURule(9, 10, -3),
-        };
+        ];
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool findHighest)
         {
-            Dictionary<char, int> registers = new Dictionary<char, int>() { { 'w', 0 }, { 'x', 0 }, { 'y', 0 }, { 'z', 0 } };
+            Dictionary<char, int> registers = new() { { 'w', 0 }, { 'x', 0 }, { 'y', 0 }, { 'z', 0 } };
 
-            string fullRegisterInput;
-            GetVariable(nameof(fullRegisterInput), "______________", variables, out fullRegisterInput);
+            GetVariable(nameof(_FullRegisterInput), "______________", variables, out string fullRegisterInput);
 
-            Queue<int> registerInput = new Queue<int>();
+            Queue<int> registerInput = new();
 
-            List<Instruction> instructions = inputs.Select(Instruction.Parse).ToList();
+            List<Instruction> instructions = [.. inputs.Select(Instruction.Parse)];
             if (fullRegisterInput.Contains('_'))
             {
-                StringBuilder sb = new StringBuilder(fullRegisterInput);
+                StringBuilder sb = new(fullRegisterInput);
                 foreach (ALURule rule in ALURules)
                 {
                     int low;
@@ -388,8 +391,7 @@ mod w 2"
                 }
             }
 
-            char returnRegister;
-            GetVariable(nameof(returnRegister), 'z', variables, out returnRegister);
+            GetVariable(nameof(_ReturnRegisterInput), 'z', variables, out char returnRegister);
             return registers[returnRegister].ToString();
         }
 

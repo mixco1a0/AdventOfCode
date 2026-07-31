@@ -9,25 +9,23 @@ namespace AoC._2020
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "35",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "35",
+                    RawInput =
 @"16
 10
 15
@@ -39,12 +37,12 @@ namespace AoC._2020
 6
 12
 4"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "220",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "220",
+                    RawInput =
 @"28
 33
 18
@@ -76,12 +74,12 @@ namespace AoC._2020
 34
 10
 3"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "8",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "8",
+                    RawInput =
 @"16
 10
 15
@@ -93,12 +91,12 @@ namespace AoC._2020
 6
 12
 4"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "19208",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "19208",
+                    RawInput =
 @"28
 33
 18
@@ -130,13 +128,14 @@ namespace AoC._2020
 34
 10
 3"
-            });
+                },
+            ];
             return testData;
         }
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<long> numbers = inputs.Select(long.Parse).OrderBy(_ => _).ToList();
+            List<long> numbers = [.. inputs.Select(long.Parse).OrderBy(_ => _)];
 
             int oneJoltDiff = 0, threeJoltDiff = 0;
             long prevNumber = 0;
@@ -171,10 +170,10 @@ namespace AoC._2020
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<long> numbers = inputs.Select(long.Parse).OrderByDescending(_ => _).ToList();
+            List<long> numbers = [.. inputs.Select(long.Parse).OrderByDescending(_ => _)];
             numbers.Add(0);
 
-            Dictionary<long, long> sums = new Dictionary<long, long>();
+            Dictionary<long, long> sums = [];
             for (int i = 0; i < numbers.Count; ++i)
             {
                 long curSum = 1;
@@ -203,7 +202,7 @@ namespace AoC._2020
 
         private long GetPossibilities(List<long> numbers, int startIdx, out List<long> possibilities)
         {
-            possibilities = new List<long>();
+            possibilities = [];
             long curPossibilies = 0;
             long cur = numbers[startIdx];
             for (int i = startIdx - 1; i < numbers.Count && i >= 0; --i)

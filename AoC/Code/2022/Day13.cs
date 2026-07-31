@@ -10,25 +10,23 @@ namespace AoC._2022
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "13",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "13",
+                    RawInput =
 @"[1,1,3,1,1]
 [1,1,5,1,1]
 
@@ -52,12 +50,12 @@ namespace AoC._2022
 
 [1,[2,[3,[4,[5,6,7]]]],8,9]
 [1,[2,[3,[4,[5,6,0]]]],8,9]"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "140",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "140",
+                    RawInput =
 @"[1,1,3,1,1]
 [1,1,5,1,1]
 
@@ -81,7 +79,8 @@ namespace AoC._2022
 
 [1,[2,[3,[4,[5,6,7]]]],8,9]
 [1,[2,[3,[4,[5,6,0]]]],8,9]"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -221,7 +220,7 @@ namespace AoC._2022
 
         private void ParsePairs(List<string> inputs, out List<PacketPair> packets)
         {
-            packets = new List<PacketPair>();
+            packets = [];
             bool newPacket = true;
             foreach (string input in inputs)
             {
@@ -255,8 +254,8 @@ namespace AoC._2022
                 int lowPackets = 0;
                 int midPackets = 0;
 
-                PacketPair testPair2 = new PacketPair() { R = "[[2]]" };
-                PacketPair testPair6 = new PacketPair() { R = "[[6]]" };
+                PacketPair testPair2 = new() { R = "[[2]]" };
+                PacketPair testPair6 = new() { R = "[[6]]" };
                 foreach (string packet in inputs.Where(i => !string.IsNullOrWhiteSpace(i)))
                 {
                     testPair2.L = packet;

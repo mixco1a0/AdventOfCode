@@ -11,25 +11,23 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "198",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "198",
+                    RawInput =
 @"00100
 11110
 10110
@@ -42,12 +40,12 @@ namespace AoC._2021
 11001
 00010
 01010"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "230",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "230",
+                    RawInput =
 @"00100
 11110
 10110
@@ -60,15 +58,16 @@ namespace AoC._2021
 11001
 00010
 01010"
-            });
+                },
+            ];
             return testData;
         }
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool useLifeSupportRating)
         {
             IEnumerable<string> filteredInputs = inputs;
-            StringBuilder mostCommon = new StringBuilder();
-            StringBuilder leastCommon = new StringBuilder();
+            StringBuilder mostCommon = new();
+            StringBuilder leastCommon = new();
             int maxIdx = inputs[0].Length;
             for (int curIdx = 0; curIdx < maxIdx; ++curIdx)
             {

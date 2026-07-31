@@ -61,7 +61,7 @@ namespace AoC._2024
             List<int> left = [], right = [];
             foreach (string i in inputs)
             {
-                int[] split = Util.String.Split(i, ' ').Select(int.Parse).ToArray();
+                int[] split = [.. Util.String.Split(i, ' ').Select(int.Parse)];
                 left.Add(split[0]);
                 right.Add(split[1]);
             }

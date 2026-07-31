@@ -10,44 +10,47 @@ namespace AoC._2015
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Variables = new Dictionary<string, string> { { "times", "5" } },
-                Output = "6",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Variables = new Dictionary<string, string> { { nameof(_Times), "5" } },
+                    Output = "6",
+                    RawInput =
 @"1"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
 
-        private string Process(string input)
+#pragma warning disable IDE1006 // Naming Styles
+        private static string _Times { get; }
+#pragma warning restore IDE1006 // Naming Styles
+
+        private static string Process(string input)
         {
-            StringBuilder processed = new StringBuilder();
+            StringBuilder processed = new();
             char cur = input[0];
             int count = 1;
-            char[] restOfInput = input.Skip(1).ToArray();
+            char[] restOfInput = [.. input.Skip(1)];
             foreach (char c in restOfInput)
             {
                 if (c == cur)
@@ -67,10 +70,9 @@ namespace AoC._2015
             return processed.ToString();
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, int defaultTimes)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, int defaultTimes)
         {
-            int times;
-            GetVariable(nameof(times), defaultTimes, variables, out times);
+            GetVariable(nameof(_Times), defaultTimes, variables, out int times);
 
             string input = inputs.First();
             for (int i = 0; i < times; ++i)

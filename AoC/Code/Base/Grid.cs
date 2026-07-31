@@ -57,10 +57,10 @@ namespace AoC.Base
             }
         }
 
-        public override void PrintNextArrow(Core.Log.ELevel level, Base.Vec2 next = null, Util.Grid2.Dir dir = Util.Grid2.Dir.None)
+        public override void PrintNextArrow(Core.Log.ELevel level = Core.Log.ELevel.Spam, Base.Vec2 next = null, Util.Grid2.Dir dir = Util.Grid2.Dir.None)
         {
             StringBuilder sb = new();
-            Core.Log.WriteLine(Core.Log.ELevel.Spam, $"Printing grid {MaxCol}x{MaxRow}:");
+            Core.Log.WriteLine(level, $"Printing grid {MaxCol}x{MaxRow}:");
             for (int _r = 0; _r < MaxRow; ++_r)
             {
                 sb.Clear();
@@ -76,12 +76,13 @@ namespace AoC.Base
                         sb.Append(m_array[_r, _c]);
                     }
                 }
-                Core.Log.WriteLine(Core.Log.ELevel.Spam, sb.ToString());
+                Core.Log.WriteLine(level, sb.ToString());
             }
         }
     }
 
-    public class Grid2CharScanner(Grid2Char grid, Vec2 origin, int maxScan) : Util.Grid2.Scanner<char>(grid, origin, maxScan);
+    public class Grid2CharSpiralScanner(Grid2Char grid, Vec2 origin, Util.Grid2.Dir startingDir, int maxScan, bool outwardScan)
+        : Util.Grid2.SpiralScanner<char>(grid, origin, startingDir, maxScan, outwardScan);
 
     public class Grid2Bool : Grid2<bool>
     {
@@ -97,22 +98,22 @@ namespace AoC.Base
             }
         }
 
-        public Grid2Bool(List<string> rawGrid)
+        public Grid2Bool(List<string> rawGrid, bool defaultVal = false)
         {
             m_array = new bool[rawGrid.Count, rawGrid.First().Length];
             for (int _c = 0; _c < MaxCol; ++_c)
             {
                 for (int _r = 0; _r < MaxRow; ++_r)
                 {
-                    m_array[_r, _c] = false;
+                    m_array[_r, _c] = defaultVal;
                 }
             }
         }
 
-        public override void Print(Core.Log.ELevel level)
+        public override void Print(Core.Log.ELevel level = Core.Log.ELevel.Spam)
         {
             StringBuilder sb = new();
-            Core.Log.WriteLine(Core.Log.ELevel.Spam, $"Printing grid {MaxCol}x{MaxRow}:");
+            Core.Log.WriteLine(level, $"Printing grid {MaxCol}x{MaxRow}:");
             for (int _r = 0; _r < MaxRow; ++_r)
             {
                 sb.Clear();
@@ -121,7 +122,7 @@ namespace AoC.Base
                 {
                     sb.Append(m_array[_r, _c] ? '#' : '.');
                 }
-                Core.Log.WriteLine(Core.Log.ELevel.Spam, sb.ToString());
+                Core.Log.WriteLine(level, sb.ToString());
             }
         }
     }
@@ -167,7 +168,7 @@ namespace AoC.Base
         public override void Print(Core.Log.ELevel level)
         {
             StringBuilder sb = new();
-            Core.Log.WriteLine(Core.Log.ELevel.Spam, $"Printing grid {MaxCol}x{MaxRow}:");
+            Core.Log.WriteLine(level, $"Printing grid {MaxCol}x{MaxRow}:");
             for (int _r = 0; _r < MaxRow; ++_r)
             {
                 sb.Clear();
@@ -176,8 +177,21 @@ namespace AoC.Base
                 {
                     sb.Append(m_array[_r, _c] == 0 ? '.' : m_array[_r, _c].ToString());
                 }
-                Core.Log.WriteLine(Core.Log.ELevel.Spam, sb.ToString());
+                Core.Log.WriteLine(level, sb.ToString());
             }
+        }
+
+        public long Sum()
+        {
+            long sum = 0;
+            for (int _c = 0; _c < MaxCol; ++_c)
+            {
+                for (int _r = 0; _r < MaxRow; ++_r)
+                {
+                    sum += m_array[_r, _c];
+                }
+            }
+            return sum;
         }
     }
 

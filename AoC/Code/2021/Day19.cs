@@ -11,25 +11,23 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v0"; // v1 is very slow
-                case Core.Part.Two:
-                    return "v0"; // v1 is very slow
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v0",// v1 is very slow
+                Core.Part.Two => "v0",// v1 is very slow
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "79",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "79",
+                    RawInput =
 @"--- scanner 0 ---
 404,-588,-901
 528,-643,409
@@ -167,12 +165,12 @@ namespace AoC._2021
 -652,-548,-490
 30,-46,-14
 "
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "3621",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "3621",
+                    RawInput =
 @"--- scanner 0 ---
 404,-588,-901
 528,-643,409
@@ -310,7 +308,8 @@ namespace AoC._2021
 -652,-548,-490
 30,-46,-14
 "
-            });
+                },
+            ];
             return testData;
         }
 
@@ -450,7 +449,7 @@ namespace AoC._2021
             public void ResetBeaconDistances()
             {
                 Beacon first = Beacons.First();
-                m_beaconDistances = first.Local.ToOthers.Select(pair => Math.Abs(first.Local.Pos.X - pair.Value.X) + Math.Abs(first.Local.Pos.Y - pair.Value.Y) + Math.Abs(first.Local.Pos.Z - pair.Value.Z)).Select(p => (int)p).OrderDescending().ToList();
+                m_beaconDistances = [.. first.Local.ToOthers.Select(pair => Math.Abs(first.Local.Pos.X - pair.Value.X) + Math.Abs(first.Local.Pos.Y - pair.Value.Y) + Math.Abs(first.Local.Pos.Z - pair.Value.Z)).Select(p => (int)p).OrderDescending()];
                 //m_beaconDistances = Beacons.First().Local.ToOthers.Select(pair => Math.Sqrt(Math.Pow(pair.Value.X, 2) + Math.Pow(pair.Value.Y, 2) + Math.Pow(pair.Value.Z, 2))).OrderDescending().ToList();
             }
 
@@ -477,14 +476,14 @@ namespace AoC._2021
                 {
                     Id = InvalidId;
                     Pos = Vector3.Zero;
-                    ToOthers = new Dictionary<int, Vector3>();
+                    ToOthers = [];
                 }
 
                 public Info(int id, Vector3 pos, Dictionary<int, Vector3> localBeacons)
                 {
                     Id = id;
                     Pos = pos;
-                    ToOthers = new Dictionary<int, Vector3>();
+                    ToOthers = [];
                     foreach (KeyValuePair<int, Vector3> pair in localBeacons)
                     {
                         if (Pos != pair.Value)
@@ -539,7 +538,7 @@ namespace AoC._2021
 
         private Dictionary<RotationIndex, Vector3> GetAllOrientations(Vector3 original, HashSet<RotationIndex> rotations)
         {
-            Dictionary<RotationIndex, Vector3> allRotations = new Dictionary<RotationIndex, Vector3>();
+            Dictionary<RotationIndex, Vector3> allRotations = [];
             for (RotationIndex ri = RotationIndex.Start; ri <= RotationIndex.End; ++ri)
             {
                 if (rotations.Count == 0 || rotations.Contains(ri))
@@ -553,24 +552,24 @@ namespace AoC._2021
 
         private List<Scanner> ParseScanners(List<string> inputs)
         {
-            List<Scanner> scanners = new List<Scanner>();
-            Dictionary<int, Vector3> localBeacons = new Dictionary<int, Vector3>();
+            List<Scanner> scanners = [];
+            Dictionary<int, Vector3> localBeacons = [];
             int curScannerId = InvalidId;
             int curLocalBeaconId = InvalidId;
             foreach (string input in inputs)
             {
                 if (input.Contains("scanner"))
                 {
-                    curScannerId = input.Split(" ", StringSplitOptions.RemoveEmptyEntries).Where(i => int.TryParse(i, out int ii)).Select(int.Parse).First();
+                    curScannerId = Util.Number.Split(input, ' ').First();
                 }
                 else if (!string.IsNullOrEmpty(input))
                 {
-                    float[] vec3 = input.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(float.Parse).ToArray();
+                    float[] vec3 = [.. Util.Number.SplitF(input, ',')];
                     localBeacons[++curLocalBeaconId] = new Vector3(vec3);
                 }
                 else
                 {
-                    List<Beacon> scannerBeacons = new List<Beacon>();
+                    List<Beacon> scannerBeacons = [];
                     foreach (var pair in localBeacons)
                     {
                         scannerBeacons.Add(new Beacon(pair.Key, pair.Value, localBeacons));
@@ -617,7 +616,7 @@ namespace AoC._2021
             public CombinedScanner(IScanner baseScanner)
             {
                 BaseScanner = baseScanner;
-                Children = new List<Child>();
+                Children = [];
                 if (baseScanner is CombinedScanner)
                 {
                     Children.AddRange((baseScanner as CombinedScanner).Children);
@@ -663,7 +662,7 @@ namespace AoC._2021
 
             public List<Vector3> GetAllScannerPos(Vector3 offset, RotationIndex rotationIndex, int level, Action<Core.Log.ELevel, string> printFunc)
             {
-                List<Vector3> allPos = new List<Vector3>();
+                List<Vector3> allPos = [];
                 Vector3 pos = ToRotationIndex(BaseScanner.Pos, rotationIndex) + offset;
                 printFunc(Core.Log.ELevel.Debug, $"*** {new string(' ', level)} Adding [C] [{BaseScanner.Id,2}] @ {pos.ToString()}");
                 allPos.Add(pos);
@@ -697,7 +696,7 @@ namespace AoC._2021
             public void ResetBeaconDistances()
             {
                 Beacon first = Beacons.First();
-                m_beaconDistances = first.Local.ToOthers.Select(pair => Math.Abs(first.Local.Pos.X - pair.Value.X) + Math.Abs(first.Local.Pos.Y - pair.Value.Y) + Math.Abs(first.Local.Pos.Z - pair.Value.Z)).Select(p => (int)p).OrderDescending().ToList();
+                m_beaconDistances = [.. first.Local.ToOthers.Select(pair => Math.Abs(first.Local.Pos.X - pair.Value.X) + Math.Abs(first.Local.Pos.Y - pair.Value.Y) + Math.Abs(first.Local.Pos.Z - pair.Value.Z)).Select(p => (int)p).OrderDescending()];
                 // m_beaconDistances = Beacons.First().Local.ToOthers.Select(pair => Math.Sqrt(Math.Pow(pair.Value.X, 2) + Math.Pow(pair.Value.Y, 2) + Math.Pow(pair.Value.Z, 2))).OrderDescending().ToList();
             }
 
@@ -709,23 +708,23 @@ namespace AoC._2021
 
         private CombinedScanner CombineScanners(ref List<Scanner> localScanners)
         {
-            List<CombinedScanner> combinedScanners = new List<CombinedScanner>();
+            List<CombinedScanner> combinedScanners = [];
             localScanners.Sort();
             //localScanners = localScanners.OrderByDescending(s => s).ToList();
-            Queue<IScanner> pendingScanners = new Queue<IScanner>(localScanners);
+            Queue<IScanner> pendingScanners = new(localScanners);
 
             Log(Core.Log.ELevel.Debug, $"Starting new scanner combinations [{pendingScanners.Count + 1,2} pending...]");
             Log(Core.Log.ELevel.Debug, $"Matching scanner [{pendingScanners.Peek().Id,2}]");
             combinedScanners.Add(new CombinedScanner(pendingScanners.Dequeue()));
 
             CombinedScanner currentCombinedScanner = combinedScanners.First();
-            HashSet<int> skippedScanners = new HashSet<int>();
+            HashSet<int> skippedScanners = [];
             while (pendingScanners.Count > 0)
             {
                 IScanner pendingScanner = pendingScanners.Dequeue();
                 RotationIndex rotationToBase = RotationIndex.Invalid;
-                Dictionary<int, int> localToGlobalId = new Dictionary<int, int>();
-                Dictionary<int, HashSet<int>> localToGlobalIds = new Dictionary<int, HashSet<int>>();
+                Dictionary<int, int> localToGlobalId = [];
+                Dictionary<int, HashSet<int>> localToGlobalIds = [];
 
                 // IEnumerable<int> cbd = currentCombinedScanner.BeaconDistances.Intersect(pendingScanner.BeaconDistances);
                 //DebugWriteLine(Core.Log.ELevel.Debug, $"\tChecking scanner [{pendingScanner.Id,2}] to scanner {currentCombinedScanner.Id} [{cbd.Count()} total shared beacons]");
@@ -734,9 +733,9 @@ namespace AoC._2021
                     // find potentially matching beacons
                     foreach (Beacon beacon in pendingScanner.Beacons)
                     {
-                        HashSet<int> potentialIds = new HashSet<int>();
-                        HashSet<int> connectedIds = new HashSet<int>();
-                        HashSet<RotationIndex> matchingRotations = new HashSet<RotationIndex>();
+                        HashSet<int> potentialIds = [];
+                        HashSet<int> connectedIds = [];
+                        HashSet<RotationIndex> matchingRotations = [];
                         foreach (var toOther in beacon.Local.ToOthers)
                         {
                             Dictionary<RotationIndex, Vector3> allOrientations = GetAllOrientations(toOther.Value, matchingRotations);
@@ -747,15 +746,15 @@ namespace AoC._2021
                                 {
                                     potentialIds.Add(potentialMatch.Global.Id);
                                     IEnumerable<int> matchingIds = potentialMatch.Global.ToOthers.Where(to => matchingVectors.Contains(to.Value)).Select(to => to.Key);
-                                    connectedIds = connectedIds.Union(matchingIds).ToHashSet();
+                                    connectedIds = [.. connectedIds.Union(matchingIds)];
                                     IEnumerable<RotationIndex> rotations = allOrientations.Where(ao => matchingVectors.Contains(ao.Value)).Select(ao => ao.Key);
                                     if (matchingRotations.Any())
                                     {
-                                        matchingRotations = matchingRotations.Intersect(rotations).ToHashSet();
+                                        matchingRotations = [.. matchingRotations.Intersect(rotations)];
                                     }
                                     else
                                     {
-                                        matchingRotations = rotations.ToHashSet();
+                                        matchingRotations = [.. rotations];
                                     }
                                 }
                             }

@@ -11,58 +11,57 @@ namespace AoC._2023
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "2",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "2",
+                    RawInput =
 @"??.#. 1,1"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "21",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "21",
+                    RawInput =
 @"???.### 1,1,3
 .??..??...?##. 1,1,3
 ?#?#?#?#?#?#?#? 1,3,1,6
 ????.#...#... 4,1,1
 ????.######..#####. 1,6,5
 ?###???????? 3,2,1"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "534",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "534",
+                    RawInput =
 @"??.#. 1,1"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "525152",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "525152",
+                    RawInput =
 @"???.### 1,1,3
 .??..??...?##. 1,1,3
 ?#?#?#?#?#?#?#? 1,3,1,6
 ????.#...#... 4,1,1
 ????.######..#####. 1,6,5
 ?###???????? 3,2,1"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -80,9 +79,9 @@ namespace AoC._2023
             {
                 string[] split = Util.String.Split(input, " ");
 
-                Pattern pattern = new Pattern();
+                Pattern pattern = new();
                 pattern.Springs = split[0];
-                pattern.Records = Util.Number.Split(split[1], ',').ToArray();
+                pattern.Records = [.. Util.Number.Split(split[1], ',')];
                 return pattern;
             }
 
@@ -95,7 +94,7 @@ namespace AoC._2023
 
                 public override string ToString()
                 {
-                    StringBuilder stringBuilder = new StringBuilder();
+                    StringBuilder stringBuilder = new();
                     stringBuilder.Append(Springs);
                     stringBuilder.Append(" -> [");
                     stringBuilder.Append(string.Join(',', Records));
@@ -106,7 +105,7 @@ namespace AoC._2023
 
             public long Solve()
             {
-                Cache = new Dictionary<string, long>();
+                Cache = [];
                 long solve = SolveRecurse(SolveState.CreateState(this));
                 return solve;
             }
@@ -205,10 +204,10 @@ namespace AoC._2023
             {
                 string[] split = Util.String.Split(input, " ");
                 string foldedSprings = split[0];
-                int[] foldedRecords = Util.Number.Split(split[1], ',').ToArray();
+                int[] foldedRecords = [.. Util.Number.Split(split[1], ',')];
 
-                StringBuilder sb = new StringBuilder();
-                List<int> fullRecords = new List<int>();
+                StringBuilder sb = new();
+                List<int> fullRecords = [];
                 for (int i = 0; i < 5; ++i)
                 {
                     sb.Append(foldedSprings);
@@ -217,15 +216,15 @@ namespace AoC._2023
                 }
                 sb.Length--;
 
-                Pattern pattern = new Pattern();
+                Pattern pattern = new();
                 pattern.Springs = sb.ToString();
-                pattern.Records = fullRecords.ToArray();
+                pattern.Records = [.. fullRecords];
                 return pattern;
             }
 
             public override string ToString()
             {
-                StringBuilder stringBuilder = new StringBuilder();
+                StringBuilder stringBuilder = new();
                 stringBuilder.Append(Springs);
                 stringBuilder.Append(" -> [");
                 stringBuilder.Append(string.Join(',', Records));
@@ -238,12 +237,12 @@ namespace AoC._2023
         {
             if (isFolded)
             {
-                List<Pattern> patterns = inputs.Select(Pattern.FoldedParse).ToList();
+                List<Pattern> patterns = [.. inputs.Select(Pattern.FoldedParse)];
                 return patterns.Select(p => p.Solve()).Sum().ToString();
             }
             else
             {
-                List<Pattern> patterns = inputs.Select(Pattern.Parse).ToList();
+                List<Pattern> patterns = [.. inputs.Select(Pattern.Parse)];
                 return patterns.Select(p => p.Solve()).Sum().ToString();
             }
         }

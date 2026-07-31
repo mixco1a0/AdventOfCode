@@ -10,25 +10,23 @@ namespace AoC._2022
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "10605",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "10605",
+                    RawInput =
 @"Monkey 0:
   Starting items: 79, 98
   Operation: new = old * 19
@@ -56,12 +54,12 @@ Monkey 3:
   Test: divisible by 17
     If true: throw to monkey 0
     If false: throw to monkey 1"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "2713310158",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "2713310158",
+                    RawInput =
 @"Monkey 0:
   Starting items: 79, 98
   Operation: new = old * 19
@@ -89,7 +87,8 @@ Monkey 3:
   Test: divisible by 17
     If true: throw to monkey 0
     If false: throw to monkey 1"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -114,18 +113,18 @@ Monkey 3:
 
             public static Monkey Parse(List<string> input)
             {
-                Monkey monkey = new Monkey();
-                monkey.Id = int.Parse(input[0].Split(" :".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Last());
-                monkey.Items = input[1].Split(" ,".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Where(s => long.TryParse(s, out long l)).Select(long.Parse).ToList();
+                Monkey monkey = new();
+                monkey.Id = Util.Number.Split(input[0], " :").Last();
+                monkey.Items = [.. Util.Number.SplitL(input[1], " :")];
                 monkey.Op = input[2].Contains('*') ? EOp.Mult : EOp.Add;
-                monkey.UseOld = input[2].Split(" +*".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Last() == "old";
+                monkey.UseOld = Util.String.Split(input[2], " +*").Last() == "old";
                 if (!monkey.UseOld)
                 {
-                    monkey.Value = long.Parse(input[2].Split(" +*".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Last());
+                    monkey.Value = Util.Number.SplitL(input[1], " +*").Last();
                 }
-                monkey.Div = long.Parse(input[3].Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Last());
-                monkey.True = int.Parse(input[4].Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Last());
-                monkey.False = int.Parse(input[5].Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Last());
+                monkey.Div = Util.Number.SplitL(input[3], " ").Last();
+                monkey.True = Util.Number.Split(input[4], " ").Last();
+                monkey.False = Util.Number.Split(input[5], " ").Last();
                 monkey.InspectionCount = 0;
                 LCDiv *= monkey.Div;
                 return monkey;
@@ -169,8 +168,8 @@ Monkey 3:
 
         public Monkey[] GetMonkeys(List<string> inputs)
         {
-            List<Monkey> monkeys = new List<Monkey>();
-            List<string> curMonkey = new List<string>();
+            List<Monkey> monkeys = [];
+            List<string> curMonkey = [];
             foreach (string input in inputs)
             {
                 if (string.IsNullOrWhiteSpace(input))
@@ -184,7 +183,7 @@ Monkey 3:
                 }
             }
             monkeys.Add(Monkey.Parse(curMonkey));
-            return monkeys.ToArray();
+            return [.. monkeys];
         }
 
         public void DoRound(ref Monkey[] monkeys, bool relief)
@@ -214,7 +213,7 @@ Monkey 3:
             {
                 DoRound(ref monkeys, relief);
             }
-            List<long> ic = monkeys.Select(m => m.InspectionCount).OrderByDescending(mic => mic).Take(2).ToList();
+            List<long> ic = [.. monkeys.Select(m => m.InspectionCount).OrderByDescending(mic => mic).Take(2)];
             return (ic[0] * ic[1]).ToString();
         }
 

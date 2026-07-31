@@ -1,14 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
 namespace AoC.Util
 {
     #region Grid2
-    namespace Grid2
+    public class Grid2
     {
+        #region Constants
         public enum Dir { North, NorthEast, East, SouthEast, South, SouthWest, West, NorthWest, None }
 
         public static class Map
@@ -140,25 +142,21 @@ namespace AoC.Util
                 Dir.NorthWest
             ];
         };
+        #endregion
 
-        public class Scanner<T> : IEnumerable
+        #region Scanner
+        public abstract class ScannerBase<T> : IEnumerable
         {
             protected readonly Base.Grid2<T> m_grid;
-            protected readonly Base.Vec2 m_origin;
-            protected readonly int m_maxScan;
 
-            protected Scanner()
+            protected ScannerBase() : base()
             {
                 m_grid = default;
-                m_origin = default;
-                m_maxScan = default;
             }
 
-            public Scanner(Base.Grid2<T> grid, Base.Vec2 origin, int maxScan)
+            protected ScannerBase(Base.Grid2<T> grid)
             {
                 m_grid = grid;
-                m_origin = origin;
-                m_maxScan = maxScan;
             }
 
             IEnumerator IEnumerable.GetEnumerator()
@@ -166,10 +164,42 @@ namespace AoC.Util
                 return GetEnumerator();
             }
 
-            IEnumerator<Base.Vec2> GetEnumerator()
+            abstract protected IEnumerator<Base.Vec2> GetEnumerator();
+        }
+
+        public class SpiralScanner<T> : ScannerBase<T>
+        {
+            protected readonly Base.Vec2 m_origin;
+            protected readonly Dir m_startingDir;
+            protected readonly int m_maxScan;
+            protected readonly bool m_outwardScan;
+
+            protected SpiralScanner() : base()
+            {
+                m_origin = default;
+                m_startingDir = default;
+                m_maxScan = default;
+                m_outwardScan = default;
+            }
+
+            public SpiralScanner(Base.Grid2<T> grid, Base.Vec2 origin, Dir startingDir, int maxScan, bool outwardScan) : base(grid)
+            {
+                m_origin = origin;
+                m_startingDir = startingDir;
+                m_maxScan = maxScan;
+                m_outwardScan = outwardScan;
+                
+                Debug.Assert(m_startingDir == Dir.North, "Only Dir.North currently supported");
+                Debug.Assert(outwardScan, "Only outward scan supported currently");
+            }
+
+            protected override IEnumerator<Base.Vec2> GetEnumerator()
             {
                 yield return m_origin;
 
+                // TODO: support m_startingDir
+                // TODO: support m_outwardScan
+                
                 for (int curMax = 1; curMax <= m_maxScan; ++curMax)
                 {
                     foreach (Dir dir in Iter.Cardinal)
@@ -198,13 +228,10 @@ namespace AoC.Util
                 }
             }
         }
-    }
-    #endregion
+        #endregion
 
-    public static class Grid
-    {
-        #region Print 2D
-        public static void Print2D(Core.Log.ELevel level, List<string> grid)
+        #region Print
+        public static void Print(Core.Log.ELevel level, List<string> grid)
         {
             StringBuilder sb = new();
             Core.Log.WriteLine(level, $"Printing grid {grid.First().Length}x{grid.Count}:");
@@ -218,7 +245,7 @@ namespace AoC.Util
             }
         }
 
-        public static void Print2D(Core.Log.ELevel level, List<List<char>> grid)
+        public static void Print(Core.Log.ELevel level, List<List<char>> grid)
         {
             StringBuilder sb = new();
             Core.Log.WriteLine(level, $"Printing grid {grid[0].Count}x{grid.Count}:");
@@ -231,7 +258,7 @@ namespace AoC.Util
             }
         }
 
-        public static void Print2D(Core.Log.ELevel level, char[][] grid)
+        public static void Print(Core.Log.ELevel level, char[][] grid)
         {
             StringBuilder sb = new();
             Core.Log.WriteLine(level, $"Printing grid {grid[0].Length}x{grid.Length}:");
@@ -244,7 +271,7 @@ namespace AoC.Util
             }
         }
 
-        public static void Print2D(Core.Log.ELevel level, char[,] grid)
+        public static void Print(Core.Log.ELevel level, char[,] grid)
         {
             StringBuilder sb = new();
             Core.Log.WriteLine(level, $"Printing grid {grid.GetLength(0)}x{grid.GetLength(1)}:");
@@ -258,8 +285,8 @@ namespace AoC.Util
         }
         #endregion
 
-        #region Parse 2D
-        public static void Parse2D(List<string> inputs, out char[][] grid, out int maxCol, out int maxRow)
+        #region Parse
+        public static void Parse(List<string> inputs, out char[][] grid, out int maxCol, out int maxRow)
         {
             maxCol = inputs[0].Length;
             maxRow = inputs.Count;
@@ -275,7 +302,7 @@ namespace AoC.Util
             }
         }
 
-        public static void Parse2D(List<string> inputs, out char[,] grid, out int maxCol, out int maxRow)
+        public static void Parse(List<string> inputs, out char[,] grid, out int maxCol, out int maxRow)
         {
             maxCol = inputs[0].Length;
             maxRow = inputs.Count;
@@ -291,11 +318,11 @@ namespace AoC.Util
         }
         #endregion
 
-        #region Modify 2D
-        public static void Rotate2D(bool right, ref List<string> grid)
+        #region Modification
+        public static void Rotate(bool cw, ref List<string> grid)
         {
             List<string> newGrid = [];
-            if (right)
+            if (cw)
             {
                 for (int i = 0; i < grid[0].Length; ++i)
                 {
@@ -312,7 +339,7 @@ namespace AoC.Util
             grid = newGrid;
         }
 
-        public static void Flip2D(bool horizontal, ref List<string> grid)
+        public static void Flip(bool horizontal, ref List<string> grid)
         {
             if (horizontal)
             {
@@ -328,8 +355,9 @@ namespace AoC.Util
         }
         #endregion
 
+
         #region Process 2D
-        public static bool ProcessGrid(ref List<List<char>> grid, Func<int, int, List<List<char>>, char> ProcessIndexFunc)
+        public static bool Process(ref List<List<char>> grid, Func<int, int, List<List<char>>, char> ProcessIndexFunc)
         {
             List<List<char>> newGrid = [];
             foreach (List<char> row in grid)
@@ -354,6 +382,7 @@ namespace AoC.Util
 
         public static int ProcessIndexBorder(int x, int y, List<List<char>> grid, char match)
         {
+            // TODO: use a scanner
             int borderMatch = 0;
             for (int _x = x - 1; _x <= x + 1; ++_x)
             {
@@ -385,6 +414,7 @@ namespace AoC.Util
 
         public static Dictionary<char, int> ProcessIndexBorder(int x, int y, List<List<char>> grid)
         {
+            // TODO: use a scanner
             Dictionary<char, int> borderValues = [];
             for (int _x = x - 1; _x <= x + 1; ++_x)
             {
@@ -430,11 +460,11 @@ namespace AoC.Util
             return sb.ToString();
         }
 
-        public static bool ProcessGrid(ref Dictionary<string, char> grid, List<Base.Range> indexRanges, Func<Dictionary<string, char>, List<int>, char> ProcessIndexFunc)
+        public static bool Process(ref Dictionary<string, char> grid, List<Base.Range> indexRanges, Func<Dictionary<string, char>, List<int>, char> ProcessIndexFunc)
         {
             bool complete = true;
 
-            List<int> index = indexRanges.Select(r => r.Min).ToList();
+            List<int> index = [.. indexRanges.Select(r => r.Min)];
             Dictionary<string, char> newGrid = [];
             while (true)
             {
@@ -472,8 +502,8 @@ namespace AoC.Util
         {
             int borderMatch = 0;
             string indexKey = GetDynamicIndexKey(index);
-            List<Base.Range> indexRanges = index.Select(i => new Base.Range(i - 1, i + 1)).ToList();
-            List<int> borderIndex = indexRanges.Select(r => r.Min).ToList();
+            List<Base.Range> indexRanges = [.. index.Select(i => new Base.Range(i - 1, i + 1))];
+            List<int> borderIndex = [.. indexRanges.Select(r => r.Min)];
             while (true)
             {
                 for (int i = 0; i < indexRanges.Count && borderIndex[i] > indexRanges[i].Max;)
@@ -500,4 +530,5 @@ namespace AoC.Util
         }
         #endregion
     }
+    #endregion
 }

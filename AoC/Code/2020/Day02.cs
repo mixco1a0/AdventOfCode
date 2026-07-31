@@ -10,38 +10,37 @@ namespace AoC._2020
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "2",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "2",
+                    RawInput =
 @"1-3 a: abcde
 1-3 b: cdefg
 2-9 c: ccccccccc"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "1",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "1",
+                    RawInput =
 @"1-3 a: abcde
 1-3 b: cdefg
 2-9 c: ccccccccc"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -55,7 +54,7 @@ namespace AoC._2020
 
             public static PasswordInput Parse(string input)
             {
-                string[] split = input.Split("-: ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(input, "-: ");
                 return new PasswordInput
                 {
                     LowValue = int.Parse(split[0]),
@@ -68,7 +67,7 @@ namespace AoC._2020
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<PasswordInput> passwordInputs = inputs.Select(PasswordInput.Parse).ToList();
+            List<PasswordInput> passwordInputs = [.. inputs.Select(PasswordInput.Parse)];
             int validPasswords = 0;
             for (int i = 0; i < passwordInputs.Count; ++i)
             {
@@ -86,7 +85,7 @@ namespace AoC._2020
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<PasswordInput> passwordInputs = inputs.Select(PasswordInput.Parse).ToList();
+            List<PasswordInput> passwordInputs = [.. inputs.Select(PasswordInput.Parse)];
             int validPasswords = 0;
             for (int i = 0; i < passwordInputs.Count; ++i)
             {
@@ -116,7 +115,7 @@ namespace AoC._2020
             int validPasswords = 0;
             foreach(string input in inputs)
             {
-                string[] split = input.Split("-: ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(input, "-: ");
                 if (split.Length != 4)
                 {
                     continue;
@@ -153,7 +152,7 @@ namespace AoC._2020
             int validPasswords = 0;
             foreach(string input in inputs)
             {
-                string[] split = input.Split("-: ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(input, "-: ");
                 if (split.Length != 4)
                 {
                     continue;

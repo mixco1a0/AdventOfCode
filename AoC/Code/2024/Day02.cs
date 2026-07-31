@@ -63,7 +63,7 @@ namespace AoC._2024
             public int[] Levels { get; set; }
             public static Report Parse(string input)
             {
-                return new Report { Levels = Util.String.Split(input, ' ').Select(int.Parse).ToArray() };
+                return new Report { Levels = [.. Util.String.Split(input, ' ').Select(int.Parse)] };
             }
 
             private static bool IsSafeInternal(int[] levels)
@@ -143,7 +143,7 @@ namespace AoC._2024
 
         private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool useProblemDampener)
         {
-            List<Report> reports = inputs.Select(Report.Parse).ToList();
+            List<Report> reports = [.. inputs.Select(Report.Parse)];
             if (!useProblemDampener)
             {
                 return reports.Where(r => r.IsSafe()).Count().ToString();

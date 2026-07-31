@@ -114,7 +114,7 @@ namespace AoC._2024
                     }
                     else
                     {
-                        Pages.Add(Util.Number.Split(input, ',').ToList());
+                        Pages.Add([.. Util.Number.Split(input, ',')]);
                     }
                 }
             }

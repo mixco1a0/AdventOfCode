@@ -149,7 +149,7 @@ v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^"
                 }
             }
 
-            Util.Grid2.Dir[] instructions = string.Join("", inputs.Skip(maxInput)).Select(i => Util.Grid2.Map.SimpleArrowFlipped[i]).ToArray();
+            Util.Grid2.Dir[] instructions = [.. string.Join("", inputs.Skip(maxInput)).Select(i => Util.Grid2.Map.SimpleArrowFlipped[i])];
 
             Base.Grid2Char grid = new(inputs.Take(maxInput).ToList());
             HashSet<Base.Vec2> walls = [];
@@ -293,8 +293,8 @@ v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^"
         private static void PrintBigGrid(Base.Grid2Char grid, Base.Vec2 robot, Util.Grid2.Dir dir, HashSet<BigBox> boxes)
         {
             Base.Grid2Char temp = new(grid);
-            HashSet<Base.Vec2> leftBoxes = boxes.Select(b => b.Left).ToHashSet();
-            HashSet<Base.Vec2> rightBoxes = boxes.Select(b => b.Right).ToHashSet();
+            HashSet<Base.Vec2> leftBoxes = [.. boxes.Select(b => b.Left)];
+            HashSet<Base.Vec2> rightBoxes = [.. boxes.Select(b => b.Right)];
             foreach (Base.Vec2 vec2 in grid)
             {
                 if (vec2.Equals(robot))
@@ -332,7 +332,7 @@ v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^"
                 }
             }
 
-            Util.Grid2.Dir[] instructions = string.Join("", inputs.Skip(maxInput)).Select(i => Util.Grid2.Map.SimpleArrowFlipped[i]).ToArray();
+            Util.Grid2.Dir[] instructions = [.. string.Join("", inputs.Skip(maxInput)).Select(i => Util.Grid2.Map.SimpleArrowFlipped[i])];
             Base.Grid2Char grid = new(inputs.Take(maxInput).ToList());
             HashSet<Base.Vec2> walls = [];
             HashSet<BigBox> boxes = [];
@@ -378,7 +378,7 @@ v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^"
                         HashSet<Base.Vec2> movedBoxes = [];
                         if (potentialBox.First().CanMove(dir, walls, boxes, ref movedBoxes))
                         {
-                            List<BigBox> moved = boxes.Where(b => movedBoxes.Contains(b.Left)).ToList();
+                            List<BigBox> moved = [.. boxes.Where(b => movedBoxes.Contains(b.Left))];
                             boxes.RemoveWhere(moved.Contains);
                             foreach (BigBox bb in moved)
                             {

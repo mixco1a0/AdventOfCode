@@ -11,26 +11,24 @@ namespace AoC._2016
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Variables = new Dictionary<string, string>() { { "unscrambledPassword", "abcde" } },
-                Output = "decab",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Variables = new Dictionary<string, string>() { { nameof(_UnscrambledPassword), "abcde" } },
+                    Output = "decab",
+                    RawInput =
 @"swap position 4 with position 0
 swap letter d with letter b
 reverse positions 0 through 4
@@ -39,13 +37,13 @@ move position 1 to position 4
 move position 3 to position 0
 rotate based on position of letter b
 rotate based on position of letter d"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Variables = new Dictionary<string, string>() { { "unscrambledPassword", "decab" } },
-                Output = "abcde",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Variables = new Dictionary<string, string>() { { nameof(_UnscrambledPassword), "decab" } },
+                    Output = "abcde",
+                    RawInput =
 @"swap position 4 with position 0
 swap letter d with letter b
 reverse positions 0 through 4
@@ -54,9 +52,14 @@ move position 1 to position 4
 move position 3 to position 0
 rotate based on position of letter b
 rotate based on position of letter d"
-            });
+                },
+            ];
             return testData;
         }
+					
+#pragma warning disable IDE1006 // Naming Styles
+        private static string _UnscrambledPassword { get; }
+#pragma warning restore IDE1006 // Naming Styles
 
         private enum Operation
         {
@@ -78,7 +81,7 @@ rotate based on position of letter d"
                 char l1 = ' ', l2 = ' ';
                 int p1 = 0, p2 = 0;
 
-                string[] split = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(input, ' ');
                 if (split[0] == "swap")
                 {
                     if (split[1] == "letter")
@@ -117,7 +120,7 @@ rotate based on position of letter d"
                     op = Operation.Move;
                 }
 
-                List<int> positions = split.Where(s => char.IsDigit(s[0])).Select(int.Parse).ToList();
+                List<int> positions = [.. split.Where(s => char.IsDigit(s[0])).Select(int.Parse)];
                 if (positions.Count > 0)
                 {
                     p1 = positions[0];
@@ -131,31 +134,30 @@ rotate based on position of letter d"
             }
         }
 
-        private string Rotate(bool right, int rot, string curPassword)
+        private static string Rotate(bool right, int rot, string curPassword)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             if (right)
             {
                 string sub1 = curPassword.Substring(curPassword.Length - rot, rot);
-                string sub2 = curPassword.Substring(0, curPassword.Length - rot);
+                string sub2 = curPassword[..^rot];
                 sb.Append(sub1);
                 sb.Append(sub2);
             }
             else
             {
-                string sub1 = curPassword.Substring(0, rot);
-                string sub2 = curPassword.Substring(rot);
+                string sub1 = curPassword[..rot];
+                string sub2 = curPassword[rot..];
                 sb.Append(sub2);
                 sb.Append(sub1);
             }
             return sb.ToString();
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, string defaultPassword, bool reverse)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, string defaultPassword, bool reverse)
         {
-            string unscrambledPassword;
-            GetVariable(nameof(unscrambledPassword), defaultPassword, variables, out unscrambledPassword);
-            StringBuilder sb = new StringBuilder(unscrambledPassword);
+            GetVariable(nameof(_UnscrambledPassword), defaultPassword, variables, out string unscrambledPassword);
+            StringBuilder sb = new(unscrambledPassword);
 
             IEnumerable<Instruction> instructions = inputs.Select(Instruction.Parse);
             if (reverse)
@@ -169,18 +171,14 @@ rotate based on position of letter d"
                 {
                     case Operation.SwapPosition:
                         {
-                            char t = sb[instruction.PosOne];
-                            sb[instruction.PosOne] = sb[instruction.PosTwo];
-                            sb[instruction.PosTwo] = t;
+                            (sb[instruction.PosTwo], sb[instruction.PosOne]) = (sb[instruction.PosOne], sb[instruction.PosTwo]);
                         }
                         break;
                     case Operation.SwapLetter:
                         {
                             int p1 = curPassword.IndexOf(instruction.LetterOne);
                             int p2 = curPassword.IndexOf(instruction.LetterTwo);
-                            char t = sb[p1];
-                            sb[p1] = sb[p2];
-                            sb[p2] = t;
+                            (sb[p2], sb[p1]) = (sb[p1], sb[p2]);
                         }
                         break;
                     case Operation.RotateLeft:
@@ -247,12 +245,12 @@ rotate based on position of letter d"
                             sb.Clear();
                             if (instruction.PosOne > 0)
                             {
-                                sb.Append(curPassword.Substring(0, instruction.PosOne));
+                                sb.Append(curPassword[..instruction.PosOne]);
                             }
                             sb.Append(string.Join(string.Empty, sub1.Reverse()));
                             if (instruction.PosTwo < curPassword.Length - 1)
                             {
-                                sb.Append(curPassword.Substring(instruction.PosTwo + 1));
+                                sb.Append(curPassword[(instruction.PosTwo + 1)..]);
                             }
                         }
                         break;

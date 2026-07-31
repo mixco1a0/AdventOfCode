@@ -9,40 +9,39 @@ namespace AoC._2020
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "67384529",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "67384529",
+                    RawInput =
 @"389125467"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "149245887792",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "149245887792",
+                    RawInput =
 @"389125467"
-            });
+                },
+            ];
             return testData;
         }
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<int> cups = inputs[0].ToCharArray().Select(c => int.Parse(c.ToString())).ToList();
+            List<int> cups = [.. inputs[0].ToCharArray().Select(c => int.Parse(c.ToString()))];
 
             int curCupIdx = 0;
             int offset = 0;
@@ -50,7 +49,7 @@ namespace AoC._2020
             {
                 // DebugWriteLine($"-- move {i + 1} --");
                 // DebugWriteLine($"cups: {string.Join(",", cups)}");
-                List<int> removedCups = new List<int>(cups.GetRange(curCupIdx + 1, 3));
+                List<int> removedCups = new(cups.GetRange(curCupIdx + 1, 3));
                 // DebugWriteLine($"cups: {string.Join(",", removedCups)}");
                 cups.RemoveRange(curCupIdx + 1, 3);
 
@@ -99,7 +98,7 @@ namespace AoC._2020
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<long> cups = inputs[0].ToCharArray().Select(c => long.Parse(c.ToString())).ToList();
+            List<long> cups = [.. inputs[0].ToCharArray().Select(c => long.Parse(c.ToString()))];
 
             long max = cups.Max();
             for (long i = max + 1; i <= 1000000; ++i)
@@ -107,8 +106,8 @@ namespace AoC._2020
                 cups.Add(i);
             }
 
-            List<Cup> cupList = cups.Select(c => new Cup { Value = c }).ToList();
-            Dictionary<long, Cup> valueToCup = new Dictionary<long, Cup>();
+            List<Cup> cupList = [.. cups.Select(c => new Cup { Value = c })];
+            Dictionary<long, Cup> valueToCup = [];
             for (int i = 0; i < cupList.Count; ++i)
             {
                 cupList[i].Next = cupList[(i + 1) % 1000000];

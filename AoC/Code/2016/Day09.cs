@@ -11,90 +11,89 @@ namespace AoC._2016
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "6",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "6",
+                    RawInput =
 @"ADVENT"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "7",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "7",
+                    RawInput =
 @"A(1x5)BC"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "9",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "9",
+                    RawInput =
 @"(3x3)XYZ"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "11",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "11",
+                    RawInput =
 @"A(2x2)BCD(2x2)EFG"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "6",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "6",
+                    RawInput =
 @"(6x1)(1x3)A"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "18",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "18",
+                    RawInput =
 @"X(8x2)(3x3)ABCY"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "9",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "9",
+                    RawInput =
 @"(3x3)XYZ"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "20",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "20",
+                    RawInput =
 @"X(8x2)(3x3)ABCY"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "241920",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "241920",
+                    RawInput =
 @"(27x12)(20x12)(13x14)(7x10)(1x12)A"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "445",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "445",
+                    RawInput =
 @"(25x3)(3x3)ABC(2x3)XY(5x2)PQRSTX(18x9)(3x2)TWO(5x7)SEVEN"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -102,7 +101,7 @@ namespace AoC._2016
         {
             static public SequenceCompression Parse(string input)
             {
-                string[] split = input.Split("(x)".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(input, "(x)");
                 return new SequenceCompression(int.Parse(split[0]), int.Parse(split[1]));
             }
         }
@@ -114,14 +113,14 @@ namespace AoC._2016
                 Sequence = sequence;
                 CharacterCount = sequenceCompression.CharacterCount;
                 RepititionCount = sequenceCompression.RepititionCount;
-                Children = new List<NestedSequence>();
+                Children = [];
 
                 int start = 0;
                 int openP = sequence.IndexOf('(');
                 while (openP >= 0)
                 {
                     int closeP = sequence.IndexOf(')', openP) + 1;
-                    SequenceCompression sc = SequenceCompression.Parse(sequence.Substring(openP, closeP - openP));
+                    SequenceCompression sc = SequenceCompression.Parse(sequence[openP..closeP]);
                     string childSequence = sequence.Substring(closeP, sc.CharacterCount);
                     Children.Add(new NestedSequence(sc, childSequence));
                     start = closeP + sc.CharacterCount;
@@ -135,7 +134,7 @@ namespace AoC._2016
             {
                 get
                 {
-                    StringBuilder sb = new StringBuilder();
+                    StringBuilder sb = new();
                     sb.Append('(');
                     sb.Append(CharacterCount);
                     sb.Append('x');
@@ -150,7 +149,7 @@ namespace AoC._2016
                 }
             }
 
-            long CharacterCount;
+            readonly long CharacterCount;
 
             long RepititionCount { get; set; }
 
@@ -174,7 +173,7 @@ namespace AoC._2016
             }
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool fullDecompress)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool fullDecompress)
         {
             string compressedString = inputs.First();
             long decompressedLength = 0;
@@ -192,12 +191,12 @@ namespace AoC._2016
                     decompressedLength += openP;
 
                     int closeP = compressedString.IndexOf(')', openP) + 1;
-                    SequenceCompression sc = SequenceCompression.Parse(compressedString.Substring(openP, closeP - openP));
+                    SequenceCompression sc = SequenceCompression.Parse(compressedString[openP..closeP]);
                     string sequence = compressedString.Substring(closeP, sc.CharacterCount);
-                    compressedString = compressedString.Remove(0, closeP + sc.CharacterCount);
+                    compressedString = compressedString[(closeP + sc.CharacterCount)..];
                     if (fullDecompress)
                     {
-                        NestedSequence nested = new NestedSequence(sc, sequence);
+                        NestedSequence nested = new(sc, sequence);
                         decompressedLength += nested.GetLength();
                     }
                     else

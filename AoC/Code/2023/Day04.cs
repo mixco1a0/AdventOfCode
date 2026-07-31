@@ -10,44 +10,43 @@ namespace AoC._2023
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "13",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "13",
+                    RawInput =
 @"Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
 Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19
 Card 3:  1 21 53 59 44 | 69 82 63 72 16 21 14  1
 Card 4: 41 92 73 84 69 | 59 84 76 51 58  5 54 83
 Card 5: 87 83 26 28 32 | 88 30 70 12 93 22 82 36
 Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "30",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "30",
+                    RawInput =
 @"Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
 Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19
 Card 3:  1 21 53 59 44 | 69 82 63 72 16 21 14  1
 Card 4: 41 92 73 84 69 | 59 84 76 51 58  5 54 83
 Card 5: 87 83 26 28 32 | 88 30 70 12 93 22 82 36
 Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -61,8 +60,8 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11"
             {
                 Id = default;
                 Count = 1;
-                Win = new List<int>();
-                Have = new List<int>();
+                Win = [];
+                Have = [];
             }
 
             public int GetMatches()
@@ -87,21 +86,21 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11"
 
             public static ScratchCard Parse(string input)
             {
-                ScratchCard sc = new ScratchCard();
+                ScratchCard sc = new();
                 string[] split = Util.String.Split(input, ":|");
                 sc.Id = int.Parse(Util.String.Split(split[0], ' ').Last());
-                sc.Win = Util.Number.Split(split[1], ' ').ToList();
-                sc.Have = Util.Number.Split(split[2], ' ').ToList();
+                sc.Win = [.. Util.Number.Split(split[1], ' ')];
+                sc.Have = [.. Util.Number.Split(split[2], ' ')];
                 return sc;
             }
         }
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool useRealRules)
         {
-            List<ScratchCard> cards = inputs.Select(ScratchCard.Parse).ToList();
+            List<ScratchCard> cards = [.. inputs.Select(ScratchCard.Parse)];
             if (useRealRules)
             {
-                List<ScratchCard> scoringCards = new List<ScratchCard>();
+                List<ScratchCard> scoringCards = [];
                 for (int i = 0; i < cards.Count; ++i)
                 {
                     ScratchCard card = cards[i];

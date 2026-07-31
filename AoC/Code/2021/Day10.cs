@@ -9,25 +9,23 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "26397",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "26397",
+                    RawInput =
 @"[({(<(())[]>[[{[]{<()<>>
 [(()[<>])]({[<{<<[]>>(
 {([(<{}[<>[]}>{[]{[(<()>
@@ -38,12 +36,12 @@ namespace AoC._2021
 [<(<(<(<{}))><([]([]()
 <{([([[(<>()){}]>(<<{{
 <{([{{}}[<[[[<>{}]]]>[]]"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "288957",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "288957",
+                    RawInput =
 @"[({(<(())[]>[[{[]{<()<>>
 [(()[<>])]({[<{<<[]>>(
 {([(<{}[<>[]}>{[]{[(<()>
@@ -54,12 +52,13 @@ namespace AoC._2021
 [<(<(<(<{}))><([]([]()
 <{([([[(<>()){}]>(<<{{
 <{([{{}}[<[[[<>{}]]]>[]]"
-            });
+                },
+            ];
             return testData;
         }
 
-        Dictionary<char, char> OpenToClose = new Dictionary<char, char> { { '(', ')' }, { '[', ']' }, { '{', '}' }, { '<', '>' } };
-        Dictionary<char, long> Points = new Dictionary<char, long>()
+        Dictionary<char, char> OpenToClose = new() { { '(', ')' }, { '[', ']' }, { '{', '}' }, { '<', '>' } };
+        Dictionary<char, long> Points = new()
         {
             { ')', 3 },
             { ']', 57 },
@@ -75,10 +74,10 @@ namespace AoC._2021
         {
             string allOpen = string.Join(string.Empty, OpenToClose.Keys);
             long score = 0;
-            List<long> scores = new List<long>();
+            List<long> scores = [];
             foreach (string input in inputs)
             {
-                Stack<char> opened = new Stack<char>();
+                Stack<char> opened = new();
                 foreach (char i in input)
                 {
                     if (allOpen.Contains(i))

@@ -19,16 +19,30 @@ namespace AoC.Base
     {
         public Vec2 Pos { get; set; }
         public Vec2 Vel { get; set; }
-        private Vec2 Next => Tick(1);
 
+        private Vec2 _next;
+        public Vec2 Next
+        {
+            get
+            {
+                if (_next != null)
+                {
+                    return _next;
+                }
+                _next = Pos + Vel;
+                return _next;
+            }
+        }
+
+        // Uses Cramer's Rule formula
         // Ax + By = C
-        // A = Vel.Y (Next.Y - Pos.Y)
-        // B = Vel.X * -1 (Pos.X - Next.Y)
+        // A = Y2 - Y1 => Next.Y - Pos.Y => Vel.Y
         private long A { get => Vel.Y; }
+        // B = X1 - X2 => Pos.X - Next.X => Vel.X * -1
         private long B { get => Vel.X * -1; }
-        // C = A * Pos.X + B * Vel.Y
         private bool _cSet = false;
         private long _c = 0;
+        // C = A * X1 + B * Y1 => A * Pos.X + B * Pos.Y
         private long C
         {
             get
@@ -57,7 +71,7 @@ namespace AoC.Base
 
         public static Ray2 FromPos(Vec2 pos, Vec2 next)
         {
-            return new() { Pos = pos, Vel = next - pos };
+            return new() { Pos = pos, Vel = next - pos, _next = next };
         }
 
         public static Ray2 FromVel(Vec2 pos, Vec2 vel)
@@ -67,19 +81,19 @@ namespace AoC.Base
 
         public static Ray2 ParsePos(string input)
         {
-            int[] split = Util.Number.Split(input, ", @").ToArray();
-            return FromPos(new(split[0], split[1]), new(split[3], split[4]));
+            int[] split = [.. Util.Number.Split(input, ", @")];
+            return FromPos(new(split[0], split[1]), new(split[2], split[3]));
         }
 
         public static Ray2 ParseVel(string input)
         {
-            int[] split = Util.Number.Split(input, ", @").ToArray();
-            return FromVel(new(split[0], split[1]), new(split[3], split[4]));
+            int[] split = [.. Util.Number.Split(input, ", @")];
+            return FromVel(new(split[0], split[1]), new(split[2], split[3]));
         }
 
         public Ray.Intersection2D GetIntersection(Ray2 other, out Vec2 intersection)
         {
-            intersection = new();
+            // Cramer's Rule
             // A1x + B1y = C1
             // A2x + B2y = C2
 
@@ -95,6 +109,10 @@ namespace AoC.Base
             // --------------------------------
             // x = (B2C1 - B1C2) / (A1B2 - A2B1)
             // ----------------------------------
+            // x = (B2C1 - B1C2) / D
+            // ----------------------------------
+            // D = A1B2 - A2B1
+            // ----------------------------------
 
             // (A1x + B1y = C1) * A2
             // (A2x + B2y = C2) * A1
@@ -108,22 +126,76 @@ namespace AoC.Base
             // --------------------------------
             // y = (A2C1 - A1C2) / (A2B1 - A1B2)
             // ----------------------------------
-            if (A == other.A && B == other.B)
-            {
-                return Ray.Intersection2D.Overlap;
-            }
+            // y = (A1C2 - A2C1) / (A1B2 - A2B1)
+            // ----------------------------------
+            // y = (A1C2 - A2C1) / D
+            // ----------------------------------
 
-            long denominator = A * other.B - other.A * B;
-            if (denominator == 0)
+            // resolve D first
+            long determinant = A * other.B - other.A * B;
+            if (determinant == 0)
             {
+                // there isn't a single point
+                intersection = null;
+
+                // calculate numerators
+                long xNumerator = C * other.B - B * other.C;
+                long yNumerator = A * other.C - C * other.A;
+                if (xNumerator == 0 && yNumerator == 0)
+                {
+                    return Ray.Intersection2D.Overlap;
+                }
+
+                // either parallel or collinear
                 return Ray.Intersection2D.Parallel;
             }
 
-            long x = (other.B * C - B * other.C) / denominator;
-            long y = -1 * (other.A * C - A * other.C) / denominator;
+            // resolve x and y
+            long x = (other.B * C - B * other.C) / determinant;
+            long y = (A * other.C - other.A * C) / determinant;
             intersection = new((int)x, (int)y);
 
             return Ray.Intersection2D.SinglePoint;
+        }
+
+        public bool Intersects(Ray2 other, out Vec2 intersection, int maxTicks = 1)
+        {
+            bool intersects = false;
+            static bool isWithinRange(Ray2 ray, Vec2 vec, int maxTicks)
+            {
+                Range rangeX = ray.GetRangeForX(maxTicks);
+                Range rangeY = ray.GetRangeForY(maxTicks);
+                return rangeX.HasInc(vec.X) && rangeY.HasInc(vec.Y);
+            }
+
+            Ray.Intersection2D intersection2D = GetIntersection(other, out intersection);
+            if (intersection2D == Ray.Intersection2D.SinglePoint)
+            {
+                intersects = isWithinRange(this, intersection, maxTicks);
+                intersects &= isWithinRange(other, intersection, maxTicks);
+            }
+            else if (intersection2D == Ray.Intersection2D.Overlap)
+            {
+                intersects = isWithinRange(this, other.Pos, maxTicks);
+                intersects |= isWithinRange(other, Pos, maxTicks);
+            }
+            else // Ray.Intersection2D.Parallel
+            {
+                // do nothing for parallel lines
+            }
+            return intersects;
+        }
+
+        public Range GetRangeForX(int maxTicks = 1)
+        {
+            Vec2 end = Tick(maxTicks);
+            return new(Math.Min(Pos.X, end.X), Math.Max(Pos.X, end.X));
+        }
+
+        public Range GetRangeForY(int maxTicks = 1)
+        {
+            Vec2 end = Tick(maxTicks);
+            return new(Math.Min(Pos.Y, end.Y), Math.Max(Pos.Y, end.Y));
         }
 
         public int GetLength()
@@ -215,9 +287,14 @@ namespace AoC.Base
             Vel = new();
         }
 
+        public Vec2L Tick(int ticks)
+        {
+            return Pos + Vel * ticks; 
+        }
+
         public static Ray2L FromPos(Vec2L pos, Vec2L next)
         {
-            return new() { Pos = pos, Vel = next - pos };
+            return new() { Pos = pos, Vel = next - pos, _next = next };
         }
 
         public static Ray2L FromVel(Vec2L pos, Vec2L vel)
@@ -227,32 +304,35 @@ namespace AoC.Base
 
         public static Ray2L ParsePos(string input)
         {
-            long[] split = Util.Number.SplitL(input, ", @").ToArray();
+            long[] split = [.. Util.Number.SplitL(input, ", @")];
             return FromPos(new(split[0], split[1]), new(split[2], split[3]));
         }
 
         public static Ray2L ParseVel(string input)
         {
-            long[] split = Util.Number.SplitL(input, ", @").ToArray();
-            return FromPos(new(split[0], split[1]), new(split[2], split[3]));
+            long[] split = [.. Util.Number.SplitL(input, ", @")];
+            return FromVel(new(split[0], split[1]), new(split[2], split[3]));
         }
 
         public Ray.Intersection2D GetIntersection(Ray2L other, out Vec2L intersection)
         {
-            intersection = new();
-            if (A == other.A && B == other.B)
+            BigInteger determinant = A * other.B - other.A * B;
+            if (determinant == 0)
             {
-                return Ray.Intersection2D.Overlap;
-            }
+                intersection = null;
 
-            BigInteger denominator = A * other.B - other.A * B;
-            if (denominator == 0)
-            {
+                BigInteger xNumerator = C * other.B - B * other.C;
+                BigInteger yNumerator = A * other.C - other.A * C;
+                if (xNumerator == 0 && yNumerator == 0)
+                {
+                    return Ray.Intersection2D.Overlap;
+                }
+
                 return Ray.Intersection2D.Parallel;
             }
 
-            BigInteger x = (other.B * C - B * other.C) / denominator;
-            BigInteger y = -1 * (other.A * C - A * other.C) / denominator;
+            BigInteger x = (other.B * C - B * other.C) / determinant;
+            BigInteger y = (A * other.C - other.A * C) / determinant;
             intersection = new((long)x, (long)y);
 
             return Ray.Intersection2D.SinglePoint;
@@ -330,7 +410,7 @@ namespace AoC.Base
 
         public static Ray3 FromPos(Vec3 pos, Vec3 next)
         {
-            return new() { Pos = pos, Vel = next - pos };
+            return new() { Pos = pos, Vel = next - pos, _next = next };
         }
 
         public static Ray3 FromVel(Vec3 pos, Vec3 vel)
@@ -340,13 +420,13 @@ namespace AoC.Base
 
         public static Ray3 ParsePos(string input)
         {
-            int[] split = Util.Number.Split(input, ", @").ToArray();
+            int[] split = [.. Util.Number.Split(input, ", @")];
             return FromPos(new(split[0], split[1], split[2]), new(split[3], split[4], split[5]));
         }
 
         public static Ray3 ParseVel(string input)
         {
-            int[] split = Util.Number.Split(input, ", @").ToArray();
+            int[] split = [.. Util.Number.Split(input, ", @")];
             return FromVel(new(split[0], split[1], split[2]), new(split[3], split[4], split[5]));
         }
 
@@ -427,7 +507,7 @@ namespace AoC.Base
 
         public static Ray3L FromPos(Vec3L pos, Vec3L next)
         {
-            return new() { Pos = pos, Vel = next - pos };
+            return new() { Pos = pos, Vel = next - pos, _next = next };
         }
 
         public static Ray3L FromVel(Vec3L pos, Vec3L vel)
@@ -437,13 +517,13 @@ namespace AoC.Base
 
         public static Ray3L ParsePos(string input)
         {
-            long[] split = Util.Number.SplitL(input, ", @").ToArray();
+            long[] split = [.. Util.Number.SplitL(input, ", @")];
             return FromPos(new(split[0], split[1], split[2]), new(split[3], split[4], split[5]));
         }
 
         public static Ray3L ParseVel(string input)
         {
-            long[] split = Util.Number.SplitL(input, ", @").ToArray();
+            long[] split = [.. Util.Number.SplitL(input, ", @")];
             return FromVel(new(split[0], split[1], split[2]), new(split[3], split[4], split[5]));
         }
 

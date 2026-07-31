@@ -152,7 +152,7 @@ namespace AoC.Core
             }
             else
             {
-                output = ConvertDayFileToList(File.ReadAllText(outputFile)).ToList();
+                output = [.. ConvertDayFileToList(File.ReadAllText(outputFile))];
             }
             output.AddRange([string.Empty, string.Empty]);
             return output;
@@ -177,12 +177,12 @@ namespace AoC.Core
                     // make sure the test has an output, and isn't just the default empty test set
                     if (!string.IsNullOrWhiteSpace(datum.Output))
                     {
-                        RunTimedInternal(RunType.Testing, part, datum.Input.ToList(), datum.Output, datum.Variables);
+                        RunTimedInternal(RunType.Testing, part, [.. datum.Input], datum.Output, datum.Variables);
                     }
                 }
             }
 
-            TimeResults[part] = RunTimedInternal(RunType.Problem, part, problemInput.ToList(), problemOutput.ElementAt(((int)part) - 1), null);
+            TimeResults[part] = RunTimedInternal(RunType.Problem, part, [.. problemInput], problemOutput.ElementAt(((int)part) - 1), null);
             TimeWasted[part] = TimeWaste;
 
             // reset logging
@@ -313,7 +313,7 @@ namespace AoC.Core
                 string smallFiller = new(filler, 3);
                 Core.Log.WriteLine(Core.Log.ELevel.Info, $"[{LogID}] {bigFiller}{buffer}{bigFiller}");
                 Core.Log.WriteLine(Core.Log.ELevel.Info, $"[{LogID}] {smallFiller}  {empty}  {smallFiller}");
-                Core.Log.WriteLine(Core.Log.ELevel.Info, $"[{LogID}] {smallFiller}  {Core.Log.ColorMarker}{answer}{Core.Log.ColorMarker}  {smallFiller}", new List<Color>() { color });
+                Core.Log.WriteLine(Core.Log.ELevel.Info, $"[{LogID}] {smallFiller}  {Core.Log.ColorMarker}{answer}{Core.Log.ColorMarker}  {smallFiller}", [color]);
                 Core.Log.WriteLine(Core.Log.ELevel.Info, $"[{LogID}] {smallFiller}  {empty}  {smallFiller}");
                 Core.Log.WriteLine(Core.Log.ELevel.Info, $"[{LogID}] {bigFiller}{buffer}{bigFiller}");
             }

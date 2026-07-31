@@ -10,36 +10,35 @@ namespace AoC._2016
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "1",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "1",
+                    RawInput =
 @"5 10 25
 3 4 5
 5 10 30"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
 
@@ -48,7 +47,7 @@ namespace AoC._2016
             int possible = 0;
             foreach (string input in inputs)
             {
-                List<int> sides = input.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList();
+                List<int> sides = [.. Util.Number.Split(input, ' ')];
                 sides.Sort();
                 if (sides[0] + sides[1] > sides[2])
                 {
@@ -63,12 +62,12 @@ namespace AoC._2016
             int possible = 0;
             for (int i = 0; i + 2 < inputs.Count;)
             {
-                List<int> sidesA = inputs[i].Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList();
-                List<int> sidesB = inputs[i + 1].Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList();
-                List<int> sidesC = inputs[i + 2].Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList();
+                List<int> sidesA = [.. Util.Number.Split(inputs[i], ' ')];
+                List<int> sidesB = [.. Util.Number.Split(inputs[i + 1], ' ')];
+                List<int> sidesC = [.. Util.Number.Split(inputs[i + 2], ' ')];
                 for (int j = 0; j < 3; ++j, ++i)
                 {
-                    List<int> cur = sidesA.Skip(j).Take(1).Concat(sidesB.Skip(j).Take(1)).Concat(sidesC.Skip(j).Take(1)).ToList();
+                    List<int> cur = [.. sidesA.Skip(j).Take(1), .. sidesB.Skip(j).Take(1), .. sidesC.Skip(j).Take(1)];
                     cur.Sort();
                     if (cur[0] + cur[1] > cur[2])
                     {

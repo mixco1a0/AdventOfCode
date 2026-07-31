@@ -10,38 +10,37 @@ namespace AoC._2023
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "114",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "114",
+                    RawInput =
 @"0 3 6 9 12 15
 1 3 6 10 15 21
 10 13 16 21 30 45"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "2",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "2",
+                    RawInput =
 @"0 3 6 9 12 15
 1 3 6 10 15 21
 10 13 16 21 30 45"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -53,7 +52,7 @@ namespace AoC._2023
 
             public Oasis()
             {
-                Values = new List<long>();
+                Values = [];
                 NextValue = 0;
                 PrevValue = 0;
             }
@@ -75,7 +74,7 @@ namespace AoC._2023
 
             private long WorkDown(List<long> prevHistory, bool isNext)
             {
-                List<long> curHistory = new List<long>();
+                List<long> curHistory = [];
                 for (int i = 0; i < prevHistory.Count - 1; ++i)
                 {
                     curHistory.Add(prevHistory[i + 1] - prevHistory[i]);
@@ -115,7 +114,7 @@ namespace AoC._2023
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool isNext)
         {
-            List<Oasis> allOasis = inputs.Select(Oasis.Parse).ToList();
+            List<Oasis> allOasis = [.. inputs.Select(Oasis.Parse)];
             foreach (Oasis oasis in allOasis)
             {
                 if (isNext)

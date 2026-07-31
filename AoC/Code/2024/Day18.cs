@@ -152,7 +152,7 @@ namespace AoC._2024
         {
             GetVariable(nameof(_GridSize), 70, variables, out int gridSize);
             GetVariable(nameof(_CorruptedCount), 1024, variables, out int corruptedCount);
-            List<Base.Vec2> bytes = inputs.Select(i => Util.String.Split(i, ',').Select(int.Parse).ToArray()).Select(xy => new Base.Vec2(xy.First(), xy.Last())).ToList();
+            List<Base.Vec2> bytes = [.. inputs.Select(i => Util.String.Split(i, ',').Select(int.Parse).ToArray()).Select(xy => new Base.Vec2(xy.First(), xy.Last()))];
             Base.Grid2Int grid = new(gridSize + 1, gridSize + 1, int.MaxValue);
             if (!findImpossible)
             {

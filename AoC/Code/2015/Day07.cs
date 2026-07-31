@@ -9,26 +9,24 @@ namespace AoC._2015
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Variables = new Dictionary<string, string> { { "wire", "d" } },
-                Output = "72",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Variables = new Dictionary<string, string> { { nameof(_Wire), "d" } },
+                    Output = "72",
+                    RawInput =
 @"123 -> x
 456 -> y
 x AND y -> d
@@ -37,13 +35,13 @@ x LSHIFT 2 -> f
 y RSHIFT 2 -> g
 NOT x -> h
 NOT y -> i"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Variables = new Dictionary<string, string> { { "wire", "e" } },
-                Output = "507",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Variables = new Dictionary<string, string> { { nameof(_Wire), "e" } },
+                    Output = "507",
+                    RawInput =
 @"123 -> x
 456 -> y
 x AND y -> d
@@ -52,13 +50,13 @@ x LSHIFT 2 -> f
 y RSHIFT 2 -> g
 NOT x -> h
 NOT y -> i"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Variables = new Dictionary<string, string> { { "wire", "h" } },
-                Output = "65412",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Variables = new Dictionary<string, string> { { nameof(_Wire), "h" } },
+                    Output = "65412",
+                    RawInput =
 @"123 -> x
 456 -> y
 x AND y -> d
@@ -67,16 +65,21 @@ x LSHIFT 2 -> f
 y RSHIFT 2 -> g
 NOT x -> h
 NOT y -> i"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
+
+#pragma warning disable IDE1006 // Naming Styles
+        private static string _Wire { get; }
+#pragma warning restore IDE1006 // Naming Styles
 
         private const char InvalidSignal = '_';
 
@@ -125,14 +128,16 @@ NOT y -> i"
 
             public static Instruction Parse(string input)
             {
-                Instruction instruction = new Instruction();
-                instruction.Signal2 = string.Empty;
-                string[] split = input.Split(" ").ToArray();
-                int[] intVals = split.Where(s => { int i; return int.TryParse(s, out i); }).Select(int.Parse).ToArray();
+                Instruction instruction = new()
+                {
+                    Signal2 = string.Empty
+                };
+                string[] split = [.. input.Split(" ")];
+                int[] intVals = [.. split.Where(s => { return int.TryParse(s, out int i); }).Select(int.Parse)];
                 instruction.Value = intVals.FirstOrDefault();
                 if (input.Contains("AND"))
                 {
-                    if (intVals.Count() > 0)
+                    if (intVals.Length > 0)
                     {
                         instruction.Type = InstructionType.And;
                     }
@@ -143,7 +148,7 @@ NOT y -> i"
                 }
                 else if (input.Contains("OR"))
                 {
-                    if (intVals.Count() > 0)
+                    if (intVals.Length > 0)
                     {
                         instruction.Type = InstructionType.Or;
                     }
@@ -166,7 +171,7 @@ NOT y -> i"
                 }
                 else
                 {
-                    if (intVals.Count() > 0)
+                    if (intVals.Length > 0)
                     {
                         instruction.Type = InstructionType.Set;
                     }
@@ -188,8 +193,7 @@ NOT y -> i"
                         break;
                     case InstructionType.And:
                     case InstructionType.Or:
-                        int test;
-                        if (int.TryParse(split[0], out test))
+                        if (int.TryParse(split[0], out int test))
                         {
                             instruction.Signal1 = split[2];
                             instruction.Signal2 = split[0];
@@ -284,30 +288,21 @@ NOT y -> i"
 
             public override string ToString()
             {
-                switch (Type)
+                return Type switch
                 {
-                    case InstructionType.And:
-                    case InstructionType.AndRef:
-                    case InstructionType.Or:
-                    case InstructionType.OrRef:
-                    case InstructionType.LShift:
-                    case InstructionType.RShift:
-                        return $"{Signal1} {Type} {Signal2} -> {Destination}";
-                    case InstructionType.Not:
-                        return $"{Type} {Signal1} -> {Destination}";
-                    case InstructionType.Set:
-                    case InstructionType.SetRef:
-                        return $"{Signal1} -> {Destination}";
-                }
-                return base.ToString();
+                    InstructionType.And or InstructionType.AndRef or InstructionType.Or or InstructionType.OrRef or InstructionType.LShift or InstructionType.RShift => $"{Signal1} {Type} {Signal2} -> {Destination}",
+                    InstructionType.Not => $"{Type} {Signal1} -> {Destination}",
+                    InstructionType.Set or InstructionType.SetRef => $"{Signal1} -> {Destination}",
+                    _ => base.ToString(),
+                };
             }
         }
 
-        private Dictionary<string, int> RunToCompletion(List<Instruction> instructions)
+        private static Dictionary<string, int> RunToCompletion(List<Instruction> instructions)
         {
-            Dictionary<string, int> signals = new Dictionary<string, int>();
-            Queue<Instruction> pending = new Queue<Instruction>(instructions);
-            while (pending.Count() > 0)
+            Dictionary<string, int> signals = [];
+            Queue<Instruction> pending = new(instructions);
+            while (pending.Count > 0)
             {
                 Instruction cur = pending.Dequeue();
                 if (cur.CanExecute(signals))
@@ -323,20 +318,19 @@ NOT y -> i"
             return signals;
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, char signalReset)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, char signalReset)
         {
-            string wire;
-            GetVariable(nameof(wire), "a", variables, out wire);
+            GetVariable(nameof(_Wire), "a", variables, out string wire);
 
-            List<Instruction> instructions = inputs.Select(Instruction.Parse).ToList();
-            instructions.Sort((a, b) => a.Type != b.Type ? (a.Type > b.Type ? 1 : -1) : (a.Destination.CompareTo(b.Destination)));
+            List<Instruction> instructions = [.. inputs.Select(Instruction.Parse)];
+            instructions.Sort((a, b) => a.Type != b.Type ? (a.Type > b.Type ? 1 : -1) : a.Destination.CompareTo(b.Destination));
             Dictionary<string, int> signals = RunToCompletion(instructions);
 
             if (signalReset != InvalidSignal)
             {
                 string prevSignal = signals[wire].ToString();
                 string signalResetString = $"{signalReset}";
-                instructions = instructions.Where(i => i.Destination != signalResetString).Select(i => new Instruction(i)).ToList();
+                instructions = [.. instructions.Where(i => i.Destination != signalResetString).Select(i => new Instruction(i))];
                 instructions.Insert(0, Instruction.Parse($"{prevSignal} -> {signalReset}"));
                 signals = RunToCompletion(instructions);
             }

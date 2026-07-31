@@ -9,62 +9,59 @@ namespace AoC._2020
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "112",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "112",
+                    RawInput =
 @".#.
 ..#
 ###"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "848",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "848",
+                    RawInput =
 @".#.
 ..#
 ###"
-            });
+                },
+            ];
             return testData;
         }
 
         private char ProcessCube(Dictionary<string, char> grid, List<int> index)
         {
-            int activeCount = Util.Grid.ProcessIndexBorder(index, grid, '#');
-            string indexKey = Util.Grid.GetDynamicIndexKey(index);
+            int activeCount = Util.Grid2.ProcessIndexBorder(index, grid, '#');
+            string indexKey = Util.Grid2.GetDynamicIndexKey(index);
             if (!grid.ContainsKey(indexKey))
             {
                 grid[indexKey] = '.';
             }
-            switch (grid[indexKey])
+            return grid[indexKey] switch
             {
-                case '.':
-                    return activeCount == 3 ? '#' : '.';
-                case '#':
-                    return activeCount >= 2 && activeCount <= 3 ? '#' : '.';
-            }
-            return '!';
+                '.' => activeCount == 3 ? '#' : '.',
+                '#' => activeCount >= 2 && activeCount <= 3 ? '#' : '.',
+                _ => '!',
+            };
         }
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            Dictionary<string, char> grid = new Dictionary<string, char>();
+            Dictionary<string, char> grid = [];
             for (int y = 0; y < inputs.Count; ++y)
             {
                 char[] row = inputs[y].ToCharArray();
@@ -73,10 +70,12 @@ namespace AoC._2020
                     grid[$"0,{y},{x},"] = row[x];
                 }
             }
-            List<Base.Range> indexRanges = new List<Base.Range>();
-            indexRanges.Add(new Base.Range()); // z [0,0]
-            indexRanges.Add(new Base.Range(0, inputs.Count - 1)); // y [0,n]
-            indexRanges.Add(new Base.Range(0, inputs.First().Length - 1)); //x [0,n]
+            List<Base.Range> indexRanges =
+            [
+                new Base.Range(), // z [0,0]
+                new Base.Range(0, inputs.Count - 1), // y [0,n]
+                new Base.Range(0, inputs.First().Length - 1), //x [0,n]
+            ];
             for (int i = 0; i < 6; ++i)
             {
                 foreach (Base.Range indexRange in indexRanges)
@@ -84,7 +83,7 @@ namespace AoC._2020
                     --indexRange.Min;
                     ++indexRange.Max;
                 }
-                Util.Grid.ProcessGrid(ref grid, indexRanges, ProcessCube);
+                Util.Grid2.Process(ref grid, indexRanges, ProcessCube);
             }
             return grid.Values.Where(c => c == '#').Count().ToString();
         }
@@ -92,7 +91,7 @@ namespace AoC._2020
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
             // TODO: speed up, still a bit slow
-            Dictionary<string, char> grid = new Dictionary<string, char>();
+            Dictionary<string, char> grid = [];
             for (int y = 0; y < inputs.Count; ++y)
             {
                 char[] row = inputs[y].ToCharArray();
@@ -101,11 +100,13 @@ namespace AoC._2020
                     grid[$"0,0,{y},{x},"] = row[x];
                 }
             }
-            List<Base.Range> indexRanges = new List<Base.Range>();
-            indexRanges.Add(new Base.Range()); // w [0,0]
-            indexRanges.Add(new Base.Range()); // z [0,0]
-            indexRanges.Add(new Base.Range(0, inputs.Count - 1)); // y [0,n]
-            indexRanges.Add(new Base.Range(0, inputs.First().Length - 1)); //x [0,n]
+            List<Base.Range> indexRanges =
+            [
+                new Base.Range(), // w [0,0]
+                new Base.Range(), // z [0,0]
+                new Base.Range(0, inputs.Count - 1), // y [0,n]
+                new Base.Range(0, inputs.First().Length - 1), //x [0,n]
+            ];
             for (int i = 0; i < 6; ++i)
             {
                 foreach (Base.Range indexRange in indexRanges)
@@ -113,7 +114,7 @@ namespace AoC._2020
                     --indexRange.Min;
                     ++indexRange.Max;
                 }
-                Util.Grid.ProcessGrid(ref grid, indexRanges, ProcessCube);
+                Util.Grid2.Process(ref grid, indexRanges, ProcessCube);
             }
             return grid.Values.Where(c => c == '#').Count().ToString();
         }

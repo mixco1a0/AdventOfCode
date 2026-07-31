@@ -59,7 +59,7 @@ p=9,5 v=-3,-3"
 
         public static Base.Ray2 Parse(string input)
         {
-            int[] split = Util.String.Split(input, "pv=, ").Where(i => int.TryParse(i, out int _)).Select(int.Parse).ToArray();
+            int[] split = [.. Util.String.Split(input, "pv=, ").Where(i => int.TryParse(i, out int _)).Select(int.Parse)];
             Base.Vec2 start = new(split[0], split[1]);
             Base.Vec2 vel = new(split[2], split[3]);
             return Base.Ray2.FromVel(start, vel);
@@ -103,7 +103,7 @@ p=9,5 v=-3,-3"
         {
             GetVariable(nameof(_TilesWide), 101, variables, out int tilesWide);
             GetVariable(nameof(_TilesTall), 103, variables, out int tilesTall);
-            Base.Ray2[] robots = inputs.Select(Parse).ToArray();
+            Base.Ray2[] robots = [.. inputs.Select(Parse)];
 
             int[] quadrants = [0, 0, 0, 0, 0];
             if (!findEasterEgg)
@@ -111,7 +111,8 @@ p=9,5 v=-3,-3"
                 foreach (Base.Ray2 robot in robots)
                 {
                     Base.Vec2 pos = robot.Tick(100);
-                    pos.Mod(tilesWide, tilesTall);
+                    pos.X = Util.Number.Mod(pos.X, tilesWide);
+                    pos.Y = Util.Number.Mod(pos.Y, tilesTall);
                     int quadrant = GetQuadrant(tilesWide, tilesTall, ref pos);
                     ++quadrants[quadrant];
                 }
@@ -133,7 +134,8 @@ p=9,5 v=-3,-3"
                 foreach (Base.Ray2 robot in robots)
                 {
                     Base.Vec2 pos = robot.Tick(i);
-                    pos.Mod(tilesWide, tilesTall);
+                    pos.X = Util.Number.Mod(pos.X, tilesWide);
+                    pos.Y = Util.Number.Mod(pos.Y, tilesTall);
                     grid[pos] = '#';
                     used.Add(pos);
                 }

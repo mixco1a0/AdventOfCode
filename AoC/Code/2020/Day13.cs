@@ -10,60 +10,59 @@ namespace AoC._2020
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "295",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "295",
+                    RawInput =
 @"939
 7,13,x,x,59,x,31,19"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "3417",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "3417",
+                    RawInput =
 @"NA
 17,x,13,19"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "1068781",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "1068781",
+                    RawInput =
 @"NA
 7,13,x,x,59,x,31,19"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "1202161486",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "1202161486",
+                    RawInput =
 @"NA
 1789,37,47,1889"
-            });
+                },
+            ];
             return testData;
         }
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
             int time = int.Parse(inputs[0]);
-            List<int> buses = inputs[1].Split(new char[] { 'x', ',' }, System.StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList();
-            List<int> busWait = buses.Select(bus => time % bus).ToList();
+            List<int> buses = [.. Util.Number.Split(inputs[1], "x,")];
+            List<int> busWait = [.. buses.Select(bus => time % bus)];
             int waitTime = 0;
             while (true)
             {
@@ -81,14 +80,14 @@ namespace AoC._2020
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<KeyValuePair<int, int>> buses = inputs[1].Split(",", StringSplitOptions.RemoveEmptyEntries).Select((bus, index) => new { Digit = bus, Index = index }).Where(pair => pair.Digit != "x").Select(pair => new KeyValuePair<int, int>(int.Parse(pair.Digit), pair.Index)).ToList();
+            List<KeyValuePair<int, int>> buses = [.. Util.String.Split(inputs[1], ',').Select((b, i) => (b, i)).Where(p => p.b != "x").Select(p => new KeyValuePair<int, int>(int.Parse(p.b), p.i))];
 
             long increment = 1;
             long start = 0;
             for (int i = 2; i <= buses.Count; ++i)
             {
                 long cycleStart, cycle;
-                GetPartialSolution(buses.Take(i).ToList(), start, increment, out cycleStart, out cycle);
+                GetPartialSolution([.. buses.Take(i)], start, increment, out cycleStart, out cycle);
                 start = cycleStart;
                 increment = cycle;
             }

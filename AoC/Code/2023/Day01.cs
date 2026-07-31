@@ -10,35 +10,33 @@ namespace AoC._2023
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "142",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "142",
+                    RawInput =
 @"1abc2
 pqr3stu8vwx
 a1b2c3d4e5f
 treb7uchet"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "281",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "281",
+                    RawInput =
 @"two1nine
 eightwothree
 abcone2threexyz
@@ -46,7 +44,8 @@ xtwone3four
 4nineeightseven2
 zoneight234
 7pqrstsixteen"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -55,7 +54,7 @@ zoneight234
             public string AllDigits { get; set; }
             public int Digits { get; set; }
 
-            private static Dictionary<char, Dictionary<string, int>> Numbers = new Dictionary<char, Dictionary<string, int>>()
+            private static Dictionary<char, Dictionary<string, int>> Numbers = new()
             {
                 {'o', new Dictionary<string, int>() {{"one", 1}}},
                 {'t', new Dictionary<string, int>() {{"two", 2}, {"three", 3}}},
@@ -67,7 +66,7 @@ zoneight234
 
             public static Calibration Parse(string input)
             {
-                Calibration c = new Calibration();
+                Calibration c = new();
                 IEnumerable<char> chars = input.Where(c => char.IsAsciiDigit(c));
                 string nums = string.Concat(chars.First(), chars.Last());
                 c.Digits = int.Parse(nums);
@@ -76,8 +75,8 @@ zoneight234
 
             public static Calibration ComplexParse(string input)
             {
-                Calibration c = new Calibration();
-                List<int> curDigits = new List<int>();
+                Calibration c = new();
+                List<int> curDigits = [];
                 for (int i = 0; i < input.Length; ++i)
                 {
                     char curI = input[i];
@@ -116,11 +115,11 @@ zoneight234
             List<Calibration> calibrations;
             if (intOnly)
             {
-                calibrations = inputs.Select(Calibration.Parse).ToList();
+                calibrations = [.. inputs.Select(Calibration.Parse)];
             }
             else
             {
-                calibrations = inputs.Select(Calibration.ComplexParse).ToList();
+                calibrations = [.. inputs.Select(Calibration.ComplexParse)];
             }
             return calibrations.Select(c => c.Digits).Sum().ToString();
         }

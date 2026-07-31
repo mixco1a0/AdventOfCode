@@ -147,7 +147,7 @@ namespace AoC._2024
             int cheatCount = 0;
             foreach (Base.Vec2 pos in Path.Keys)
             {
-                Base.Grid2CharScanner scanner = new(Grid, pos, cheatPicos);
+                Base.Grid2CharSpiralScanner scanner = new(Grid, pos, Util.Grid2.Dir.North, cheatPicos, true);
                 foreach (Base.Vec2 next in scanner)
                 {
                     if (next.Equals(pos))

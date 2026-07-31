@@ -10,42 +10,41 @@ namespace AoC._2022
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "21",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "21",
+                    RawInput =
 @"30373
 25512
 65332
 33549
 35390"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "8",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "8",
+                    RawInput =
 @"30373
 25512
 65332
 33549
 35390"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -58,7 +57,7 @@ namespace AoC._2022
                 for (int x = start; 0 <= x && x <= max; x = iter(x))
                 {
                     int value = grid[y][x] - '0';
-                    Base.Vec2 cur = new Base.Vec2(x, y);
+                    Base.Vec2 cur = new(x, y);
                     if (!visiblePoints.Contains(cur))
                     {
                         if (value > maxVisible)
@@ -80,7 +79,7 @@ namespace AoC._2022
                 for (int y = start; 0 <= y && y <= max; y = iter(y))
                 {
                     int value = grid[y][x] - '0';
-                    Base.Vec2 cur = new Base.Vec2(x, y);
+                    Base.Vec2 cur = new(x, y);
                     if (!visiblePoints.Contains(cur))
                     {
                         if (value > maxVisible)
@@ -95,8 +94,8 @@ namespace AoC._2022
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables)
         {
-            HashSet<Base.Vec2> visiblePoints = new HashSet<Base.Vec2>();
-            List<string> grid = new List<string>(inputs);
+            HashSet<Base.Vec2> visiblePoints = [];
+            List<string> grid = new(inputs);
             FindVisibleY(ref visiblePoints, ref grid, 0, grid.Count - 1, (int i) => { return i + 1; });
             FindVisibleY(ref visiblePoints, ref grid, grid.Count - 1, 0, (int i) => { return i - 1; });
             FindVisibleX(ref visiblePoints, ref grid, 0, grid[0].Length - 1, (int i) => { return i + 1; });
@@ -158,8 +157,8 @@ namespace AoC._2022
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            HashSet<Base.Vec2> visiblePoints = new HashSet<Base.Vec2>();
-            List<string> grid = new List<string>(inputs);
+            HashSet<Base.Vec2> visiblePoints = [];
+            List<string> grid = new(inputs);
             int maxScore = 0;
             for (int y = 0; y < grid.Count; ++y)
             {

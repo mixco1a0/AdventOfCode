@@ -12,34 +12,32 @@ namespace AoC._2023
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "11",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "11",
+                    RawInput =
 @"9111111
 2211251
 3344552"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "102",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "102",
+                    RawInput =
 @"2413432311323
 3215453535623
 3255245654254
@@ -53,23 +51,23 @@ namespace AoC._2023
 1224686865563
 2546548887735
 4322674655533"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "71",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "71",
+                    RawInput =
 @"111111111111
 999999999991
 999999999991
 999999999991
 999999999991"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "94",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "94",
+                    RawInput =
 @"2413432311323
 3215453535623
 3255245654254
@@ -83,13 +81,14 @@ namespace AoC._2023
 1224686865563
 2546548887735
 4322674655533"
-            });
+                },
+            ];
             return testData;
         }
 
         private enum Direction { First, East = First, South, West, North, Last }
 
-        private static Dictionary<Direction, Base.Vec2> Next = new Dictionary<Direction, Base.Vec2>()
+        private static Dictionary<Direction, Base.Vec2> Next = new()
         {
             {Direction.North, new Base.Vec2(0, -1)},
             {Direction.South, new Base.Vec2(0, 1)},
@@ -97,7 +96,7 @@ namespace AoC._2023
             {Direction.West, new Base.Vec2(-1, 0)}
         };
 
-        private static Dictionary<Direction, char> DirectionChar = new Dictionary<Direction, char>()
+        private static Dictionary<Direction, char> DirectionChar = new()
         {
             {Direction.North, '^'},
             {Direction.South, 'v'},
@@ -105,7 +104,7 @@ namespace AoC._2023
             {Direction.West, '<'}
         };
 
-        private static Dictionary<Direction, string> DirectionLetters = new Dictionary<Direction, string>()
+        private static Dictionary<Direction, string> DirectionLetters = new()
         {
             {Direction.North, "Nn"},
             {Direction.South, "Ss"},
@@ -113,7 +112,7 @@ namespace AoC._2023
             {Direction.West, "Ww"}
         };
 
-        private static Dictionary<Direction, Direction> Backtrack = new Dictionary<Direction, Direction>()
+        private static Dictionary<Direction, Direction> Backtrack = new()
         {
             {Direction.North, Direction.South},
             {Direction.South, Direction.North},
@@ -163,7 +162,7 @@ namespace AoC._2023
 
             public override string ToString()
             {
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
                 for (Direction d = Direction.First; d != Direction.Last; ++d)
                 {
                     sb.Append($"{d.ToString()[0]}:");
@@ -220,7 +219,7 @@ namespace AoC._2023
                 }
             }
 
-            Base.Vec2 cur = new Base.Vec2();
+            Base.Vec2 cur = new();
             foreach (char c in history)
             {
                 Direction d = Direction.Last;
@@ -248,8 +247,8 @@ namespace AoC._2023
                 chars2[cur.X, cur.Y] = (char)(nodes[cur.X, cur.Y].Weight + '0');
             }
 
-            Grid.Print2D(Core.Log.ELevel.Debug, chars);
-            Grid.Print2D(Core.Log.ELevel.Debug, chars2);
+            Grid2.Print(Core.Log.ELevel.Debug, chars);
+            Grid2.Print(Core.Log.ELevel.Debug, chars2);
         }
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, int minSteps, int maxSteps)
@@ -257,7 +256,7 @@ namespace AoC._2023
             ParseInput(inputs, maxSteps, out Node[,] nodes);
             int xMax = nodes.GetLength(0);
             int yMax = nodes.GetLength(1);
-            PriorityQueue<Movement, int> toCheck = new PriorityQueue<Movement, int>();
+            PriorityQueue<Movement, int> toCheck = new();
             toCheck.Enqueue(new Movement(Base.Vec2.Zero, Direction.Last, 0, 0, ""), 0);
             int minHeatLoss = int.MaxValue;
             while (toCheck.Count != 0)

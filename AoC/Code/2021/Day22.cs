@@ -10,25 +10,23 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "590784",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "590784",
+                    RawInput =
 @"on x=-20..26,y=-36..17,z=-47..7
 on x=-20..33,y=-21..23,z=-26..28
 on x=-22..28,y=-29..23,z=-38..16
@@ -51,12 +49,12 @@ off x=18..30,y=-20..-8,z=-3..13
 on x=-41..9,y=-7..43,z=-33..15
 on x=-54112..-39298,y=-85059..-49293,z=-27449..7877
 on x=967..23432,y=45373..81175,z=27513..53682"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "2758514936282235",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "2758514936282235",
+                    RawInput =
 @"on x=-5..47,y=-31..22,z=-19..33
 on x=-44..5,y=-27..21,z=-14..35
 on x=-49..-1,y=-11..42,z=-10..38
@@ -117,7 +115,8 @@ off x=-27365..46395,y=31009..98017,z=15428..76570
 off x=-70369..-16548,y=22648..78696,z=-1892..86821
 on x=-53470..21291,y=-120233..-33476,z=-44150..38147
 off x=-93533..-4276,y=-16170..68771,z=-104985..-24507"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -151,7 +150,7 @@ off x=-93533..-4276,y=-16170..68771,z=-104985..-24507"
 
             public Cuboid GetIntersection(bool on, Cuboid other)
             {
-                Cuboid intersection = new Cuboid(on);
+                Cuboid intersection = new(on);
                 intersection.X.First = Math.Max(X.First, other.X.First);
                 intersection.X.Last = Math.Min(X.Last, other.X.Last);
                 intersection.Y.First = Math.Max(Y.First, other.Y.First);
@@ -185,13 +184,13 @@ off x=-93533..-4276,y=-16170..68771,z=-104985..-24507"
 
             public static Instruction Parse(string input)
             {
-                int[] split = input.Split("=.,".ToCharArray()).Where(s => int.TryParse(s, out int result)).Select(int.Parse).ToArray();
+                int[] split = [.. input.Split("=.,".ToCharArray()).Where(s => int.TryParse(s, out int result)).Select(int.Parse)];
                 return new Instruction(input[1] == 'n', split[0], split[1], split[2], split[3], split[4], split[5]);
             }
 
             public IEnumerable<long> GetValues(int min, int max)
             {
-                List<long> values = new List<long>();
+                List<long> values = [];
                 if (Cuboid.X.Last < min || Cuboid.Y.Last < min || Cuboid.Z.Last < min || Cuboid.X.First > max || Cuboid.Y.First > max || Cuboid.Z.First > max)
                 {
                     return values;
@@ -233,7 +232,7 @@ off x=-93533..-4276,y=-16170..68771,z=-104985..-24507"
 
         private int GetInitializationCount(List<Instruction> instructions)
         {
-            HashSet<long> on = new HashSet<long>();
+            HashSet<long> on = [];
             foreach (Instruction i in instructions)
             {
                 IEnumerable<long> hashes = i.GetValues(-50, 50);
@@ -254,7 +253,7 @@ off x=-93533..-4276,y=-16170..68771,z=-104985..-24507"
 
         private long GetAllCount(List<Instruction> instructions)
         {
-            List<Cuboid> cuboids = new List<Cuboid>();
+            List<Cuboid> cuboids = [];
             foreach (Instruction i in instructions)
             {
                 cuboids.AddRange(cuboids.Select(old => i.Cuboid.GetIntersection(!old.On, old)).Where(inter => inter.IsValid()).ToList());
@@ -268,7 +267,7 @@ off x=-93533..-4276,y=-16170..68771,z=-104985..-24507"
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool initializationProcedure)
         {
-            List<Instruction> instructions = inputs.Select(Instruction.Parse).ToList();
+            List<Instruction> instructions = [.. inputs.Select(Instruction.Parse)];
 
             if (initializationProcedure)
             {

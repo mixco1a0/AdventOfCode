@@ -10,25 +10,23 @@ namespace AoC._2020
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "2",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "2",
+                    RawInput =
 @"0: 4 1 5
 1: 2 3 | 3 2
 2: 4 4 | 5 5
@@ -41,12 +39,12 @@ bababa
 abbbab
 aaabbb
 aaaabbb"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "3",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "3",
+                    RawInput =
 @"42: 9 14 | 10 1
 9: 14 27 | 1 26
 10: 23 14 | 28 1
@@ -94,12 +92,12 @@ aaaabbaaaabbaaa
 aaaabbaabbaaaaaaabbbabbbaaabbaabaaa
 babaaabbbaaabaababbaabababaaab
 aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "3",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "3",
+                    RawInput =
 @"42: 9 14 | 10 1
 9: 14 27 | 1 26
 10: 23 14 | 28 1
@@ -135,12 +133,12 @@ aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba"
 bbbbbbbaaaabbbbaaabbabaaa
 abbbbabbbbaaaababbbbbbaaaababb
 bbbababbbbaaaaaaaabbababaaababaabab"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "12",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "12",
+                    RawInput =
 @"42: 9 14 | 10 1
 9: 14 27 | 1 26
 10: 23 14 | 28 1
@@ -188,7 +186,8 @@ aaaabbaaaabbaaa
 aaaabbaabbaaaaaaabbbabbbaaabbaabaaa
 babaaabbbaaabaababbaabababaaab
 aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -203,18 +202,18 @@ aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba"
             public Action<string> PrintFunc { get; set; }
             public Node()
             {
-                SubRules = new List<List<string>>();
-                Sequences = new List<List<Node>>();
+                SubRules = [];
+                Sequences = [];
                 MinLength = int.MaxValue;
             }
 
             public void Populate(ref List<Node> nodes, Func<string, string> GetNodeName, Action<string> printFunc)
             {
                 PrintFunc = printFunc;
-                string[] ruleSplit = RawRules.Split('|', StringSplitOptions.RemoveEmptyEntries);
+                string[] ruleSplit = Util.String.Split(RawRules, '|');
                 foreach (String curSplit in ruleSplit)
                 {
-                    List<string> ids = curSplit.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
+                    List<string> ids = [.. Util.String.Split(curSplit, ' ')];
                     int intTest;
                     if (!int.TryParse(ids.ElementAt(0), out intTest))
                     {
@@ -222,12 +221,12 @@ aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba"
                         continue;
                     }
 
-                    ids = ids.Select(i => GetNodeName(i)).ToList();
+                    ids = [.. ids.Select(i => GetNodeName(i))];
 
-                    SubRules.Add(new List<string>());
+                    SubRules.Add([]);
                     SubRules.Last().AddRange(ids);
 
-                    Sequences.Add(new List<Node>());
+                    Sequences.Add([]);
                     foreach (string id in ids)
                     {
                         Node curNode = nodes.Where(n => n.ID == id).First();
@@ -303,8 +302,8 @@ aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba"
                     return match ? 1 : 0;
                 }
 
-                Dictionary<string, int> forceNodeSequenceStart = new Dictionary<string, int>();
-                HashSet<string> skipRecursion = new HashSet<string>();
+                Dictionary<string, int> forceNodeSequenceStart = [];
+                HashSet<string> skipRecursion = [];
                 int sequenceMatch = 0;
                 int sequenceRunningTotal = 0;
                 int curLetterIndexReset = curLetterIndex;
@@ -418,9 +417,9 @@ aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba"
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            Dictionary<string, Node.SequenceIndex> sequenceInfo = new Dictionary<string, Node.SequenceIndex>();
+            Dictionary<string, Node.SequenceIndex> sequenceInfo = [];
             int validCount = 0;
-            List<Node> nodes = new List<Node>();
+            List<Node> nodes = [];
             foreach (string input in inputs)
             {
                 if (input.Contains(':'))
@@ -453,9 +452,9 @@ aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba"
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            Dictionary<string, Node.SequenceIndex> sequenceInfo = new Dictionary<string, Node.SequenceIndex>();
+            Dictionary<string, Node.SequenceIndex> sequenceInfo = [];
             int validCount = 0;
-            List<Node> nodes = new List<Node>();
+            List<Node> nodes = [];
             foreach (string input in inputs)
             {
                 if (input.Contains(':'))

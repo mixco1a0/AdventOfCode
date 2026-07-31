@@ -150,7 +150,7 @@ namespace AoC._2024
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool optimizeChunks)
         {
-            int[] ints = inputs.First().ToCharArray().Select(a => a - '0').ToArray();
+            int[] ints = [.. inputs.First().ToCharArray().Select(a => a - '0')];
             if (!optimizeChunks)
             {
                 GetRawFileBlock(ints, out List<int> rawFileBlock, out List<IdInfo> _);

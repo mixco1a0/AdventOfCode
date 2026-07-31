@@ -10,25 +10,23 @@ namespace AoC._2016
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "easter",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "easter",
+                    RawInput =
 @"eedadn
 drvtee
 eandsr
@@ -45,12 +43,12 @@ vntsnd
 vrdear
 dvrsen
 enarar"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "advent",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "advent",
+                    RawInput =
 @"eedadn
 drvtee
 eandsr
@@ -67,14 +65,15 @@ vntsnd
 vrdear
 dvrsen
 enarar"
-            });
+                },
+            ];
             return testData;
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool checkForMin)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool checkForMin)
         {
             int width = inputs.First().Length;
-            Dictionary<int, int[]> counts = new Dictionary<int, int[]>();
+            Dictionary<int, int[]> counts = [];
             for (int i = 0; i < width; ++i)
             {
                 counts[i] = new int[26];
@@ -90,7 +89,7 @@ enarar"
                     ++counts[i][input[i] - 'a'];
                 }
             }
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             foreach (KeyValuePair<int, int[]> pair in counts)
             {
                 char val = ' ';

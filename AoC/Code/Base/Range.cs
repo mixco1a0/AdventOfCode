@@ -34,8 +34,7 @@ namespace AoC.Base
 
         public new int CompareTo(object other)
         {
-            Range otherAsRange = other as Range;
-            if (otherAsRange == null)
+            if (other is not Range otherAsRange)
             {
                 return -1;
             }
@@ -75,8 +74,7 @@ namespace AoC.Base
 
         public new int CompareTo(object other)
         {
-            RangeL otherAsRange = other as RangeL;
-            if (otherAsRange == null)
+            if (other is not RangeL otherAsRange)
             {
                 return -1;
             }

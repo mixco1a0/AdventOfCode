@@ -10,25 +10,23 @@ namespace AoC._2020
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "71",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "71",
+                    RawInput =
 @"class: 1-3 or 5-7
 row: 6-11 or 33-44
 seat: 13-40 or 45-50
@@ -41,20 +39,21 @@ nearby tickets:
 40,4,50
 55,2,20
 38,6,12"
-            });
+                },
+            ];
             return testData;
         }
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<Base.Range> ranges = new List<Base.Range>();
+            List<Base.Range> ranges = [];
             bool myTicket = false;
             int invalids = 0;
             foreach (string input in inputs)
             {
                 if (input.Contains("or"))
                 {
-                    string[] split = input.Split("abcdefghijklmnopqrstuvwxyz: ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                    string[] split = Util.String.Split(input, "abcdefghijklmnopqrstuvwxyz: ");
                     string[] lower = split[0].Split('-');
                     string[] higher = split[1].Split('-');
                     ranges.Add(new Base.Range { Min = int.Parse(lower[0]), Max = int.Parse(lower[1]) });
@@ -68,7 +67,7 @@ nearby tickets:
                         continue;
                     }
 
-                    int[] split = input.Split(',').Select(int.Parse).ToArray();
+                    int[] split = [.. input.Split(',').Select(int.Parse)];
                     for (int i = 0; i < split.Length; ++i)
                     {
                         if (ranges.Where(range => range.HasInc(split[i])).Count() <= 0)
@@ -95,16 +94,16 @@ nearby tickets:
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<TicketInfo> ticketInfo = new List<TicketInfo>();
+            List<TicketInfo> ticketInfo = [];
             bool myTicket = false;
-            List<int> myTicketValues = new List<int>();
-            List<List<int>> validTickets = new List<List<int>>();
+            List<int> myTicketValues = [];
+            List<List<int>> validTickets = [];
             foreach (string input in inputs)
             {
                 if (input.Contains("or"))
                 {
                     string name = input.Split(':').First();
-                    string[] split = input.Split("abcdefghijklmnopqrstuvwxyz: ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                    string[] split = Util.String.Split(input, "abcdefghijklmnopqrstuvwxyz: ");
                     string[] lower = split[0].Split('-');
                     string[] higher = split[1].Split('-');
                     ticketInfo.Add(new TicketInfo { Name = name, Lower = new Base.Range { Min = int.Parse(lower[0]), Max = int.Parse(lower[1]) }, Higher = new Base.Range { Min = int.Parse(higher[0]), Max = int.Parse(higher[1]) } });
@@ -114,11 +113,11 @@ nearby tickets:
                     if (!myTicket)
                     {
                         myTicket = true;
-                        myTicketValues = input.Split(',').Select(int.Parse).ToList();
+                        myTicketValues = [.. input.Split(',').Select(int.Parse)];
                         continue;
                     }
 
-                    int[] split = input.Split(',').Select(int.Parse).ToArray();
+                    int[] split = [.. input.Split(',').Select(int.Parse)];
                     bool valid = true;
                     for (int i = 0; i < split.Length && valid; ++i)
                     {
@@ -130,16 +129,16 @@ nearby tickets:
 
                     if (valid)
                     {
-                        validTickets.Add(input.Split(',').Select(int.Parse).ToList());
+                        validTickets.Add([.. input.Split(',').Select(int.Parse)]);
                     }
                 }
             }
 
             // solve each index
-            List<List<string>> possibilities = new List<List<string>>();
+            List<List<string>> possibilities = [];
             for (int i = 0; i < myTicketValues.Count; ++i)
             {
-                possibilities.Add(new List<string>());
+                possibilities.Add([]);
                 foreach (List<int> ticket in validTickets)
                 {
                     int valueToCheck = ticket[i];
@@ -152,7 +151,7 @@ nearby tickets:
                         }
                         else
                         {
-                            possibilities[i] = possibilities[i].Intersect(inRange.Select(info => info.Name)).ToList();
+                            possibilities[i] = [.. possibilities[i].Intersect(inRange.Select(info => info.Name))];
                         }
                     }
 
@@ -163,7 +162,7 @@ nearby tickets:
                 }
             }
 
-            List<string> removals = new List<string>();
+            List<string> removals = [];
             while (true)
             {
                 foreach (List<string> list in possibilities)

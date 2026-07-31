@@ -10,25 +10,23 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "1588",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "1588",
+                    RawInput =
 @"NNCB
 
 CH -> B
@@ -47,12 +45,12 @@ BB -> N
 BC -> B
 CC -> N
 CN -> C"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "2188189693529",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "2188189693529",
+                    RawInput =
 @"NNCB
 
 CH -> B
@@ -71,7 +69,8 @@ BB -> N
 BC -> B
 CC -> N
 CN -> C"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -80,12 +79,12 @@ CN -> C"
         private void GenerateIds(List<string> inputs, out Rule[] rules, out long[] pairs, out long[] solos)
         {
             string polymer = inputs.First();
-            Dictionary<char, int> soloIds = new Dictionary<char, int>();
-            Dictionary<string, Base.Pair<char, int>> pairIds = new Dictionary<string, Base.Pair<char, int>>();
+            Dictionary<char, int> soloIds = [];
+            Dictionary<string, Base.Pair<char, int>> pairIds = [];
             int curSoloId = 0, curPairId = 0;
             foreach (string input in inputs.Skip(2))
             {
-                string[] split = input.Split(" ->".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(input, " ->");
 
                 char soloChar = split[1][0];
                 if (!soloIds.ContainsKey(soloChar))

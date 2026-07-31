@@ -55,7 +55,7 @@ namespace AoC.Core
 
         public Config()
         {
-            SupportedArgs = new Dictionary<ESupportedArgument, List<string>>();
+            SupportedArgs = [];
             for (ESupportedArgument arg = ESupportedArgument.Help; arg != ESupportedArgument.End; ++arg)
             {
                 SupportedArgs[arg] =

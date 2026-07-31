@@ -11,44 +11,43 @@ namespace AoC._2022
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "18",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "18",
+                    RawInput =
 @"#.######
 #>>.<^<#
 #.<..<<#
 #>v.><>#
 #<^v^^>#
 ######.#"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "54",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "54",
+                    RawInput =
 @"#.######
 #>>.<^<#
 #.<..<<#
 #>v.><>#
 #<^v^^>#
 ######.#"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -77,10 +76,10 @@ namespace AoC._2022
             MaxX = inputs.First().Length - 2;
             MaxY = inputs.Count - 2;
 
-            SafeCols = new List<HashSet<Pos2>>();
+            SafeCols = [];
             for (int xCycle = 0; xCycle < MaxX; ++xCycle)
             {
-                SafeCols.Add(new HashSet<Pos2>());
+                SafeCols.Add([]);
                 for (int x = 0; x < MaxX; ++x)
                 {
                     for (int y = 0; y < MaxY; ++y)
@@ -90,10 +89,10 @@ namespace AoC._2022
                 }
             }
 
-            SafeRows = new List<HashSet<Pos2>>();
+            SafeRows = [];
             for (int yCycle = 0; yCycle < MaxX; ++yCycle)
             {
-                SafeRows.Add(new HashSet<Pos2>());
+                SafeRows.Add([]);
                 for (int y = 0; y < MaxX; ++y)
                 {
                     for (int x = 0; x < MaxX; ++x)
@@ -131,7 +130,7 @@ namespace AoC._2022
                         for (int xCycle = 0; xCycle < MaxX; ++xCycle)
                         {
                             int xDiff = (x + (xCycle * (moveRight ? 1 : -1)) + MaxX) % MaxX;
-                            Pos2 unsafePos = new Pos2(xDiff, y);
+                            Pos2 unsafePos = new(xDiff, y);
                             SafeRows[xCycle].Remove(unsafePos);
                         }
                     }
@@ -148,7 +147,7 @@ namespace AoC._2022
                         for (int yCycle = 0; yCycle < MaxY; ++yCycle)
                         {
                             int yDiff = (y + (yCycle * (moveDown ? 1 : -1)) + MaxY) % MaxY;
-                            Pos2 unsafePos = new Pos2(x, yDiff);
+                            Pos2 unsafePos = new(x, yDiff);
                             SafeCols[yCycle].Remove(unsafePos);
                         }
                     }
@@ -163,7 +162,7 @@ namespace AoC._2022
             {
                 for (int y = 0; y < MaxY; ++y)
                 {
-                    Pos2 pos = new Pos2(x, y);
+                    Pos2 pos = new(x, y);
                     int xCycle = cycle % MaxX;
                     int yCycle = cycle % MaxY;
                     if (!SafeRows[xCycle].Contains(pos) || !SafeCols[yCycle].Contains(pos))
@@ -181,12 +180,12 @@ namespace AoC._2022
                 }
             }
 
-            Util.Grid.Print2D(Core.Log.ELevel.Debug, grid);
+            Util.Grid2.Print(Core.Log.ELevel.Debug, grid);
         }
 
         private bool IsSpotSafe(int cycle, int x, int y)
         {
-            Pos2 pos = new Pos2(x, y);
+            Pos2 pos = new(x, y);
             int xCycle = cycle % MaxX;
             int yCycle = cycle % MaxY;
             if (!SafeRows[xCycle].Contains(pos) || !SafeCols[yCycle].Contains(pos))
@@ -212,7 +211,7 @@ namespace AoC._2022
             }
         }
 
-        static readonly Pos2[] MovePos = new Pos2[] { new Pos2(1, 0), new Pos2(0, 1), new Pos2(0, 0), new Pos2(0, -1), new Pos2(-1, 0) };
+        static readonly Pos2[] MovePos = new Pos2[] { new(1, 0), new(0, 1), new(0, 0), new(0, -1), new(-1, 0) };
 
         private class WalkPath
         {
@@ -245,10 +244,10 @@ namespace AoC._2022
             }
 
             int minWalk = int.MaxValue;
-            Dictionary<CyclePos, WalkPath> walkPaths = new Dictionary<CyclePos, WalkPath>();
-            CyclePos cycleStart = new CyclePos(initialCycle, Start);
+            Dictionary<CyclePos, WalkPath> walkPaths = [];
+            CyclePos cycleStart = new(initialCycle, Start);
             walkPaths[cycleStart] = new WalkPath() { Prev = cycleStart, Path = -1 };
-            Queue<CyclePos> queue = new Queue<CyclePos>();
+            Queue<CyclePos> queue = new();
             queue.Enqueue(cycleStart);
             while (queue.Count > 0)
             {
@@ -270,7 +269,7 @@ namespace AoC._2022
 
                 foreach (Pos2 movePos in MovePos)
                 {
-                    CyclePos nextCP = new CyclePos(curCP.Cycle + 1, movePos + curCP.Pos);
+                    CyclePos nextCP = new(curCP.Cycle + 1, movePos + curCP.Pos);
                     if ((nextCP.Pos.X >= 0 && nextCP.Pos.X < MaxX && nextCP.Pos.Y >= 0 && nextCP.Pos.Y < MaxY) || (nextCP.Pos == Start && curCP.Pos == Start))
                     {
                         if (IsSpotSafe(nextCP.Cycle, nextCP.Pos.X, nextCP.Pos.Y) || (nextCP.Pos == Start))

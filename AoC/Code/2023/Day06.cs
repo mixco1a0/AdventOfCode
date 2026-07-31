@@ -10,36 +10,35 @@ namespace AoC._2023
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "288",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "288",
+                    RawInput =
 @"Time:      7  15   30
 Distance:  9  40  200"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "71503",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "71503",
+                    RawInput =
 @"Time:      7  15   30
 Distance:  9  40  200"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -63,20 +62,20 @@ Distance:  9  40  200"
             List<long> distances;
             if (oneRace)
             {
-                times = new List<long>
-                {
-                    
+                times =
+                [
+
                     long.Parse(string.Join("", Util.Number.SplitL(inputs[0], ' ')))
-                };
-                distances = new List<long>
-                {
+                ];
+                distances =
+                [
                     long.Parse(string.Join("", Util.Number.SplitL(inputs[1], ' ')))
-                };
+                ];
             }
             else
             {
-                times = Util.Number.SplitL(inputs[0], ' ').ToList();
-                distances = Util.Number.SplitL(inputs[1], ' ').ToList();
+                times = [.. Util.Number.SplitL(inputs[0], ' ')];
+                distances = [.. Util.Number.SplitL(inputs[1], ' ')];
             }
             long answer = 1;
             for (int i = 0; i < times.Count; ++i)

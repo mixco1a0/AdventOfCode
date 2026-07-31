@@ -12,66 +12,65 @@ namespace AoC._2015
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "6",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "6",
+                    RawInput =
 @"[1,2,3]"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "3",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "3",
+                    RawInput =
 @"[[[3]]]"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "0",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "0",
+                    RawInput =
 @"{}"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "4",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "4",
+                    RawInput =
 "[1,{\"c\":\"red\",\"b\":2},3]"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "0",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "0",
+                    RawInput =
 "{\"d\":\"red\",\"e\":[1,2,3,4],\"f\":5}"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "6",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "6",
+                    RawInput =
 @"[1,2,3]"
-            });
+                },
+            ];
             return testData;
         }
 
-        private bool HasInvalid(JContainer container, string invalidToken)
+        private static bool HasInvalid(JContainer container, string invalidToken)
         {
             for (JToken token = container.First; token != null; token = token.Next)
             {
@@ -89,7 +88,7 @@ namespace AoC._2015
             return false;
         }
 
-        private int Count(JContainer container, string invalidToken)
+        private static int Count(JContainer container, string invalidToken)
         {
             int count = 0;
             if (container != null && (string.IsNullOrWhiteSpace(invalidToken) || !HasInvalid(container, invalidToken)))

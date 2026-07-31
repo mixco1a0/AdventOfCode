@@ -10,26 +10,24 @@ namespace AoC._2022
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Variables = new Dictionary<string, string> { { nameof(_Row), "10" } },
-                Output = "26",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Variables = new Dictionary<string, string> { { nameof(_Row), "10" } },
+                    Output = "26",
+                    RawInput =
 @"Sensor at x=2, y=18: closest beacon is at x=-2, y=15
 Sensor at x=9, y=16: closest beacon is at x=10, y=16
 Sensor at x=13, y=2: closest beacon is at x=15, y=3
@@ -44,13 +42,13 @@ Sensor at x=17, y=20: closest beacon is at x=21, y=22
 Sensor at x=16, y=7: closest beacon is at x=15, y=3
 Sensor at x=14, y=3: closest beacon is at x=15, y=3
 Sensor at x=20, y=1: closest beacon is at x=15, y=3"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Variables = new Dictionary<string, string> { { nameof(_Row), "10" }, { nameof(_MaxX), "20" }, { nameof(_MaxY), "20" } },
-                Output = "56000011",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Variables = new Dictionary<string, string> { { nameof(_Row), "10" }, { nameof(_MaxX), "20" }, { nameof(_MaxY), "20" } },
+                    Output = "56000011",
+                    RawInput =
 @"Sensor at x=2, y=18: closest beacon is at x=-2, y=15
 Sensor at x=9, y=16: closest beacon is at x=10, y=16
 Sensor at x=13, y=2: closest beacon is at x=15, y=3
@@ -65,7 +63,8 @@ Sensor at x=17, y=20: closest beacon is at x=21, y=22
 Sensor at x=16, y=7: closest beacon is at x=15, y=3
 Sensor at x=14, y=3: closest beacon is at x=15, y=3
 Sensor at x=20, y=1: closest beacon is at x=15, y=3"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -91,8 +90,8 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3"
 
             public static Sensor Parse(string input)
             {
-                int[] split = input.Split(" =,:".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Where(s => int.TryParse(s, out int i)).Select(int.Parse).ToArray();
-                Sensor sensor = new Sensor();
+                int[] split = [.. Util.Number.Split(input, " =,:")];
+                Sensor sensor = new();
                 sensor.Pos.X = split[0];
                 sensor.Pos.Y = split[1];
                 sensor.ClosestBeacon.X = split[2];
@@ -103,7 +102,7 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3"
 
         private List<Base.RangeL> GetBlockedRanges(List<Sensor> sensors, long row)
         {
-            List<Base.RangeL> blockedRanges = new List<Base.RangeL>();
+            List<Base.RangeL> blockedRanges = [];
             foreach (Sensor sensor in sensors)
             {
                 long manhattan = sensor.GetManhatten();
@@ -115,12 +114,12 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3"
 
                 blockedRanges.Add(new Base.RangeL(sensor.Pos.X - (manhattan - distToRow), sensor.Pos.X + (manhattan - distToRow)));
             }
-            return blockedRanges.OrderBy(r => r.Min).ToList();
+            return [.. blockedRanges.OrderBy(r => r.Min)];
         }
 
         private List<Base.RangeL> CompressRanges(List<Base.RangeL> blockedRanges, int minX, int maxX)
         {
-            List<Base.RangeL> compressed = new List<Base.RangeL>();
+            List<Base.RangeL> compressed = [];
             foreach (Base.RangeL range in blockedRanges)
             {
                 int matchingIdx = -1;
@@ -154,7 +153,7 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3"
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool findBeacon)
         {
-            List<Sensor> sensors = inputs.Select(Sensor.Parse).ToList();
+            List<Sensor> sensors = [.. inputs.Select(Sensor.Parse)];
             if (!findBeacon)
             {
                 GetVariable(nameof(_Row), 2000000, variables, out int row);

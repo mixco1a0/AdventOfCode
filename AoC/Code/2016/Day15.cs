@@ -10,35 +10,34 @@ namespace AoC._2016
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "5",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "5",
+                    RawInput =
 @"Disc #1 has 5 positions; at time=0, it is at position 4.
 Disc #2 has 2 positions; at time=0, it is at position 1."
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
 
@@ -46,8 +45,7 @@ Disc #2 has 2 positions; at time=0, it is at position 1."
         {
             static public Disk Parse(string input)
             {
-                string[] split = input.Split(" #=,.".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                int[] values = split.Where(s => { int i; return int.TryParse(s, out i); }).Select(int.Parse).ToArray();
+                int[] values = [.. Util.Number.Split(input, " #=,.")];
                 return new Disk(values[0], values[3], values[1]);
             }
             public int GetPosition(int time)
@@ -56,19 +54,19 @@ Disc #2 has 2 positions; at time=0, it is at position 1."
             }
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, Disk extraDisk)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, Disk extraDisk)
         {
-            Disk[] disks = inputs.Select(Disk.Parse).ToArray();
+            Disk[] disks = [.. inputs.Select(Disk.Parse)];
             if (extraDisk != null)
             {
-                disks = disks.Append(extraDisk).ToArray();
+                disks = [.. disks, extraDisk];
             }
 
             int time = 0;
             while (true)
             {
                 bool fellThrough = true;
-                for (int d = 0; fellThrough && d < disks.Count(); ++d)
+                for (int d = 0; fellThrough && d < disks.Length; ++d)
                 {
                     fellThrough = (disks[d].GetPosition(time) == 0);
                 }

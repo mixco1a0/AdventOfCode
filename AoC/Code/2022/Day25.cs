@@ -11,25 +11,23 @@ namespace AoC._2022
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "2=-1=0",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "2=-1=0",
+                    RawInput =
 @"1=-0-2
 12111
 2=0=
@@ -43,14 +41,15 @@ namespace AoC._2022
 12
 1=
 122"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
 
@@ -71,8 +70,8 @@ namespace AoC._2022
                 Snafu = ProcessDecimal();
             }
 
-            static readonly Dictionary<char, long> Conversion = new Dictionary<char, long>() { { '2', 2 }, { '1', 1 }, { '0', 0 }, { '-', -1 }, { '=', -2 } };
-            static readonly Dictionary<long, char> BackwardsC = new Dictionary<long, char>() { { 2, '2' }, { 1, '1' }, { 0, '0' }, { 3, '=' }, { 4, '-' }, { -1, '-' }, { -2, '=' } };
+            static readonly Dictionary<char, long> Conversion = new() { { '2', 2 }, { '1', 1 }, { '0', 0 }, { '-', -1 }, { '=', -2 } };
+            static readonly Dictionary<long, char> BackwardsC = new() { { 2, '2' }, { 1, '1' }, { 0, '0' }, { 3, '=' }, { 4, '-' }, { -1, '-' }, { -2, '=' } };
 
             private long ProcessSnafu()
             {
@@ -104,7 +103,7 @@ namespace AoC._2022
                     ++index;
                     place *= 5;
                 }
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
 
                 long working = Decimal;
                 while (index >= 0)
@@ -172,8 +171,8 @@ namespace AoC._2022
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<Number> numbers = inputs.Select(i => new Number(i)).ToList();
-            Number fuel = new Number(numbers.Sum(n => n.Decimal));
+            List<Number> numbers = [.. inputs.Select(i => new Number(i))];
+            Number fuel = new(numbers.Sum(n => n.Decimal));
             return fuel.Snafu;
         }
 

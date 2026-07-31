@@ -10,39 +10,38 @@ namespace AoC._2016
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "42",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "42",
+                    RawInput =
 @"cpy 41 a
 inc a
 inc a
 dec a
 jnz a 2
 dec a"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
 
@@ -57,22 +56,22 @@ dec a"
             JumpRegister
         }
 
-        static char InvalidRegister = '-';
+        static readonly char InvalidRegister = '-';
 
         private record Instruction(InstructionType Type, char Register, char SourceRegister, int Value, int SourceValue)
         {
             static public Instruction Parse(string input)
             {
                 InstructionType type = InstructionType.Invalid;
-                string[] split = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                IEnumerable<int> intVals = split.Where(s => { int sint; return int.TryParse(s, out sint); }).Select(int.Parse);
+                string[] split = Util.String.Split(input, ' ');
+                IEnumerable<int> intVals = split.Where(s => { return int.TryParse(s, out int sint); }).Select(int.Parse);
                 char register = InvalidRegister;
                 int value = 0;
                 char sourceRegister = InvalidRegister;
                 int sourceValue = 0;
                 if (split[0] == "cpy")
                 {
-                    type = (intVals.Count() > 0 ? InstructionType.CopyValue : InstructionType.CopyRegister);
+                    type = (intVals.Any() ? InstructionType.CopyValue : InstructionType.CopyRegister);
                     register = split.Last()[0];
                     if (type == InstructionType.CopyValue)
                     {
@@ -112,9 +111,9 @@ dec a"
             }
         }
 
-        private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, Dictionary<char, int> registers)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, Dictionary<char, int> registers)
         {
-            List<Instruction> instructions = inputs.Select(Instruction.Parse).ToList();
+            List<Instruction> instructions = [.. inputs.Select(Instruction.Parse)];
             for (int i = 0; i < instructions.Count && i >= 0;)
             {
                 Instruction cur = instructions[i];
@@ -156,7 +155,7 @@ dec a"
         }
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
-            => SharedSolution(inputs, variables, new Dictionary<char, int>());
+            => SharedSolution(inputs, variables, []);
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
             => SharedSolution(inputs, variables, new Dictionary<char, int>() { { 'c', 1 } });

@@ -10,34 +10,33 @@ namespace AoC._2015
         
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "",
+                    RawInput =
 @""
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
 
@@ -45,9 +44,9 @@ namespace AoC._2015
         {
             static public Sue Parse(string input)
             {
-                string[] split = input.Split(" :,".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                int[] values = split.Where(s => { int v; return int.TryParse(s, out v); }).Select(int.Parse).ToArray();
-                Sue sue = new Sue(values[0], new Dictionary<string, string>());
+                string[] split = Util.String.Split(input, " :,");
+                int[] values = [.. split.Where(s => { return int.TryParse(s, out int v); }).Select(int.Parse)];
+                Sue sue = new(values[0], []);
                 for (int i = 0; i < split.Length - 1; i += 2)
                 {
                     sue.Attributes[split[i]] = split[i + 1];
@@ -58,8 +57,8 @@ namespace AoC._2015
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<Sue> sues = inputs.Select(Sue.Parse).ToList();
-            return sues.Where(s =>
+            List<Sue> sues = [.. inputs.Select(Sue.Parse)];
+            return sues.First(s =>
                                    (!s.Attributes.ContainsKey("children") || (s.Attributes.ContainsKey("children") && s.Attributes["children"] == "3")) &&
                                    (!s.Attributes.ContainsKey("cats") || (s.Attributes.ContainsKey("cats") && s.Attributes["cats"] == "7")) &&
                                    (!s.Attributes.ContainsKey("samoyeds") || (s.Attributes.ContainsKey("samoyeds") && s.Attributes["samoyeds"] == "2")) &&
@@ -70,13 +69,13 @@ namespace AoC._2015
                                    (!s.Attributes.ContainsKey("trees") || (s.Attributes.ContainsKey("trees") && s.Attributes["trees"] == "3")) &&
                                    (!s.Attributes.ContainsKey("cars") || (s.Attributes.ContainsKey("cars") && s.Attributes["cars"] == "2")) &&
                                    (!s.Attributes.ContainsKey("perfumes") || (s.Attributes.ContainsKey("perfumes") && s.Attributes["perfumes"] == "1"))
-            ).First().Number.ToString();
+            ).Number.ToString();
         }
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<Sue> sues = inputs.Select(Sue.Parse).ToList();
-            return sues.Where(s =>
+            List<Sue> sues = [.. inputs.Select(Sue.Parse)];
+            return sues.First(s =>
                                    (!s.Attributes.ContainsKey("children") || (s.Attributes.ContainsKey("children") && s.Attributes["children"] == "3")) &&
                                    (!s.Attributes.ContainsKey("cats") || (s.Attributes.ContainsKey("cats") && int.Parse(s.Attributes["cats"]) > 7)) &&
                                    (!s.Attributes.ContainsKey("samoyeds") || (s.Attributes.ContainsKey("samoyeds") && s.Attributes["samoyeds"] == "2")) &&
@@ -87,7 +86,7 @@ namespace AoC._2015
                                    (!s.Attributes.ContainsKey("trees") || (s.Attributes.ContainsKey("trees") && int.Parse(s.Attributes["trees"]) > 3)) &&
                                    (!s.Attributes.ContainsKey("cars") || (s.Attributes.ContainsKey("cars") && s.Attributes["cars"] == "2")) &&
                                    (!s.Attributes.ContainsKey("perfumes") || (s.Attributes.ContainsKey("perfumes") && s.Attributes["perfumes"] == "1"))
-            ).First().Number.ToString();
+            ).Number.ToString();
         }
     }
 }

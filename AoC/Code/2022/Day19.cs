@@ -10,36 +10,35 @@ namespace AoC._2022
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "33",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "33",
+                    RawInput =
 @"Blueprint 1: Each ore robot costs 4 ore. Each clay robot costs 2 ore. Each obsidian robot costs 3 ore and 14 clay. Each geode robot costs 2 ore and 7 obsidian.
 Blueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsidian robot costs 3 ore and 8 clay. Each geode robot costs 3 ore and 12 obsidian."
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "3472",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "3472",
+                    RawInput =
 @"Blueprint 1: Each ore robot costs 4 ore. Each clay robot costs 2 ore. Each obsidian robot costs 3 ore and 14 clay. Each geode robot costs 2 ore and 7 obsidian.
 Blueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsidian robot costs 3 ore and 8 clay. Each geode robot costs 3 ore and 12 obsidian."
-            });
+                },
+            ];
             return testData;
         }
 
@@ -98,11 +97,11 @@ Blueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsid
         {
             public static Blueprint Parse(string input)
             {
-                int[] split = input.Split(": ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Where(s => int.TryParse(s, out int i)).Select(int.Parse).ToArray();
-                BasicBot ore = new BasicBot(split[1]);
-                BasicBot clay = new BasicBot(split[2]);
-                ObsidianBot obsidian = new ObsidianBot(split[3], split[4]);
-                GeodeBot geode = new GeodeBot(split[5], split[6]);
+                int[] split = [.. Util.Number.Split(input, ": ")];
+                BasicBot ore = new(split[1]);
+                BasicBot clay = new(split[2]);
+                ObsidianBot obsidian = new(split[3], split[4]);
+                GeodeBot geode = new(split[5], split[6]);
                 return new Blueprint(split[0], ore, clay, obsidian, geode, Math.Max(ore.OreCost, Math.Max(clay.OreCost, Math.Max(obsidian.OreCost, geode.OreCost))), obsidian.ClayCost, geode.ObsidianCost);
             }
         }
@@ -137,7 +136,7 @@ Blueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsid
 
             public Operation FastForward(int time, EMineral newBot)
             {
-                Operation newOp = new Operation(this);
+                Operation newOp = new(this);
                 newOp.Mine(time);
                 newOp.Build(newBot);
                 newOp.Time -= time;
@@ -281,14 +280,14 @@ Blueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsid
             List<Blueprint> blueprints = null;
             if (runAllBlueprints)
             {
-                blueprints = inputs.Select(Blueprint.Parse).ToList();
+                blueprints = [.. inputs.Select(Blueprint.Parse)];
             }
             else
             {
-                blueprints = inputs.Select(Blueprint.Parse).Take(3).ToList();
+                blueprints = [.. inputs.Select(Blueprint.Parse).Take(3)];
             }
 
-            Dictionary<int, int> maxGeodes = new Dictionary<int, int>();
+            Dictionary<int, int> maxGeodes = [];
             foreach (Blueprint bp in blueprints)
             {
                 Log(Core.Log.ELevel.Debug, $"Running blueprint #{bp.Id}");

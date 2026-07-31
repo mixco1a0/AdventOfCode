@@ -9,25 +9,23 @@ namespace AoC._2020
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "4",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "4",
+                    RawInput =
 @"light red bags contain 1 bright white bag, 2 muted yellow bags.
 dark orange bags contain 3 bright white bags, 4 muted yellow bags.
 bright white bags contain 1 shiny gold bag.
@@ -37,12 +35,12 @@ dark olive bags contain 3 faded blue bags, 4 dotted black bags.
 vibrant plum bags contain 5 faded blue bags, 6 dotted black bags.
 faded blue bags contain no other bags.
 dotted black bags contain no other bags."
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "32",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "32",
+                    RawInput =
 @"light red bags contain 1 bright white bag, 2 muted yellow bags.
 dark orange bags contain 3 bright white bags, 4 muted yellow bags.
 bright white bags contain 1 shiny gold bag.
@@ -52,12 +50,12 @@ dark olive bags contain 3 faded blue bags, 4 dotted black bags.
 vibrant plum bags contain 5 faded blue bags, 6 dotted black bags.
 faded blue bags contain no other bags.
 dotted black bags contain no other bags."
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "126",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "126",
+                    RawInput =
 @"shiny gold bags contain 2 dark red bags.
 dark red bags contain 2 dark orange bags.
 dark orange bags contain 2 dark yellow bags.
@@ -65,29 +63,30 @@ dark yellow bags contain 2 dark green bags.
 dark green bags contain 2 dark blue bags.
 dark blue bags contain 2 dark violet bags.
 dark violet bags contain no other bags."
-            });
+                },
+            ];
             return testData;
         }
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            Dictionary<string, List<string>> bagsToInput = new Dictionary<string, List<string>>();
+            Dictionary<string, List<string>> bagsToInput = [];
             foreach (string input in inputs)
             {
                 string[] cur = input.Split("contain");
                 string id = cur[0].Replace("bags", "").Replace(" ", "");
                 string bags = cur[1].Replace("bags", "").Replace("bag", "").Replace(" ", "").Replace(".", "");
-                List<string> bagList = bags.Split(",").ToList();
+                List<string> bagList = [.. bags.Split(",")];
                 if (bagList[0] == "noother")
                 {
                     continue;
                 }
 
-                bagsToInput[id] = bagList.Select(color => color[1..]).ToList();
+                bagsToInput[id] = [.. bagList.Select(color => color[1..])];
             }
 
-            List<string> usedBags = new List<string>();
-            List<string> curBagList = new List<string> { "shinygold" };
+            List<string> usedBags = [];
+            List<string> curBagList = ["shinygold"];
             while (true)
             {
                 int returnVal = GetPossibleBags(bagsToInput, ref usedBags, ref curBagList);
@@ -101,7 +100,7 @@ dark violet bags contain no other bags."
 
         private int GetPossibleBags(Dictionary<string, List<string>> bagsToInput, ref List<string> usedBags, ref List<string> curBagList)
         {
-            List<string> newBagList = new List<string>();
+            List<string> newBagList = [];
             foreach (string curBag in curBagList)
             {
                 foreach (var pair in bagsToInput)
@@ -120,23 +119,23 @@ dark violet bags contain no other bags."
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            Dictionary<string, List<string>> bagsToInput = new Dictionary<string, List<string>>();
-            Dictionary<string, List<int>> bagsToCount = new Dictionary<string, List<int>>();
+            Dictionary<string, List<string>> bagsToInput = [];
+            Dictionary<string, List<int>> bagsToCount = [];
             foreach (string input in inputs)
             {
                 string[] cur = input.Split("contain");
                 string id = cur[0].Replace("bags", "").Replace(" ", "");
                 string bags = cur[1].Replace("bags", "").Replace("bag", "").Replace(" ", "").Replace(".", "");
-                List<string> bagList = bags.Split(",").ToList();
+                List<string> bagList = [.. bags.Split(",")];
                 if (bagList[0] == "noother")
                 {
-                    bagsToInput[id] = new List<string>();
-                    bagsToCount[id] = new List<int>();
+                    bagsToInput[id] = [];
+                    bagsToCount[id] = [];
                 }
                 else
                 {
-                    bagsToInput[id] = bagList.Select(color => color[1..]).ToList();
-                    bagsToCount[id] = bagList.Select(color => int.Parse(color[0..1])).ToList();
+                    bagsToInput[id] = [.. bagList.Select(color => color[1..])];
+                    bagsToCount[id] = [.. bagList.Select(color => int.Parse(color[0..1]))];
                 }
             }
 

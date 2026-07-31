@@ -10,38 +10,37 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "45",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "45",
+                    RawInput =
 @"target area: x=20..30, y=-10..-5"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "112",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "112",
+                    RawInput =
 @"target area: x=20..30, y=-10..-5"
-            });
+                },
+            ];
             return testData;
         }
 
-        private Dictionary<int, int> YDecay = new Dictionary<int, int>();
+        private Dictionary<int, int> YDecay = [];
         private int GetYDecay(int steps)
         {
             if (steps == 0)
@@ -58,7 +57,7 @@ namespace AoC._2021
 
         private int Solve(int minY, int maxY, out List<int> possibleYs)
         {
-            possibleYs = new List<int>();
+            possibleYs = [];
             int maxHeight = 0;
             bool yDone = false;
             int prevDecay = 0;
@@ -101,8 +100,8 @@ namespace AoC._2021
         {
             for (int x = 1; ; ++x)
             {
-                Base.Vec2 probe = new Base.Vec2(0, 0);
-                Base.Vec2 velocity = new Base.Vec2(x, 0);
+                Base.Vec2 probe = new(0, 0);
+                Base.Vec2 velocity = new(x, 0);
                 while (velocity.X > 0 && probe.X <= maxX)
                 {
                     AdjustVelocity(ref probe, ref velocity);
@@ -118,13 +117,13 @@ namespace AoC._2021
         private int SolveAll(int startX, List<int> possibleYs, int minX, int maxX, int minY, int maxY)
         {
             possibleYs.AddRange(Enumerable.Range(1, minY * -1).Select(e => e * -1));
-            HashSet<Base.Vec2> knownLocations = new HashSet<Base.Vec2>();
+            HashSet<Base.Vec2> knownLocations = [];
             foreach (int y in possibleYs)
             {
                 for (int x = startX; x <= maxX; ++x)
                 {
-                    Base.Vec2 pos = new Base.Vec2(0, 0);
-                    Base.Vec2 vel = new Base.Vec2(x, y);
+                    Base.Vec2 pos = new(0, 0);
+                    Base.Vec2 vel = new(x, y);
                     while (pos.X < maxX && pos.Y > minY)
                     {
                         AdjustVelocity(ref pos, ref vel);
@@ -141,8 +140,8 @@ namespace AoC._2021
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool getMax)
         {
-            string[] split = inputs.First().Split(" :=.,xy".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).TakeLast(4).ToArray();
-            int[] targetArea = split.Select(int.Parse).ToArray();
+            string[] split = [.. Util.String.Split(inputs.First(), " :=.,xy").TakeLast(4)];
+            int[] targetArea = [.. split.Select(int.Parse)];
             int max = Solve(targetArea[2], targetArea[3], out List<int> possibleYs);
             if (getMax)
             {

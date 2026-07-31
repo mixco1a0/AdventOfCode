@@ -1,16 +1,33 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 
 namespace AoC.Base
 {
+    public interface IVec2<VecT, T> where VecT : IVec2<VecT, T>
+    {
+        public T X { get; set; }
+        public T Y { get; set; }
+
+        public static VecT Zero { get; }
+
+        public static abstract VecT operator +(VecT a, VecT b);
+        public static abstract VecT operator -(VecT a, VecT b);
+        public static abstract VecT operator *(VecT a, T mult);
+        public static abstract VecT operator /(VecT a, T dev);
+        public static abstract VecT operator %(VecT a, T mod);
+        public abstract T Manhattan(VecT other);
+    }
+
+
     #region Vec2
-    public class Vec2 : IEquatable<Vec2>, IComparable<Vec2>, IComparable
+    public class Vec2 : IVec2<Vec2, int>, IEquatable<Vec2>, IComparable<Vec2>, IComparable
     {
         public int X { get; set; }
         public int Y { get; set; }
-
-        public static readonly Vec2 Zero = new();
+        protected static readonly Vec2 _zero = new();
+        public static Vec2 Zero { get => _zero; }
 
         public Vec2()
         {
@@ -37,10 +54,11 @@ namespace AoC.Base
                 return null;
             }
 
-            int[] split = Util.String.Split(input, ',').Select(int.Parse).ToArray();
-            return new(split[0], split[1]);
+            IEnumerable<int> split = Util.Number.Split(input, ',');
+            return new(split.ElementAt(0), split.ElementAt(1));
         }
 
+        #region Interfaces
         public static Vec2 operator +(Vec2 a, Vec2 b)
         {
             return new(a.X + b.X, a.Y + b.Y);
@@ -56,13 +74,13 @@ namespace AoC.Base
             return new(a.X * mult, a.Y * mult);
         }
 
-        public static Vec2 operator /(Vec2 a, int mult)
+        public static Vec2 operator /(Vec2 a, int div)
         {
-            if (mult == 0)
+            if (div == 0)
             {
                 return new();
             }
-            return new(a.X / mult, a.Y / mult);
+            return new(a.X / div, a.Y / div);
         }
 
         public static Vec2 operator %(Vec2 a, int mod)
@@ -71,25 +89,8 @@ namespace AoC.Base
             {
                 return new();
             }
-            
-            Vec2 modded = new(a);
-            modded.Mod(mod, mod);
-            return modded;
-        }
 
-        public void Mod(int xMod, int yMod)
-        {
-            X %= xMod;
-            if (X < 0)
-            {
-                X += xMod;
-            }
-            
-            Y %= yMod;
-            if (Y < 0)
-            {
-                Y += yMod;
-            }
+            return new(Util.Number.Mod(a.X, mod), Util.Number.Mod(a.Y, mod));
         }
 
         public int Manhattan(Vec2 other)
@@ -97,7 +98,6 @@ namespace AoC.Base
             return Math.Abs(X - other.X) + Math.Abs(Y - other.Y);
         }
 
-        #region Interfaces
         public bool Equals(Vec2 other)
         {
             return X == other.X && Y == other.Y;
@@ -153,13 +153,14 @@ namespace AoC.Base
     #endregion
 
 
-    #region Pos2L
-    public class Vec2L : IEquatable<Vec2L>, IComparable<Vec2L>, IComparable
+    #region Vec2L
+    public class Vec2L : IVec2<Vec2L, long>, IEquatable<Vec2L>, IComparable<Vec2L>, IComparable
     {
         public long X { get; set; }
         public long Y { get; set; }
-        
-        public static readonly Vec2L Zero = new();
+
+        protected static readonly Vec2L _zero = new();
+        public static Vec2L Zero { get => _zero; }
 
         public Vec2L()
         {
@@ -186,10 +187,11 @@ namespace AoC.Base
                 return null;
             }
 
-            long[] split = Util.String.Split(input, ',').Select(long.Parse).ToArray();
-            return new(split[0], split[1]);
+            IEnumerable<long> split = Util.Number.SplitL(input, ',');
+            return new(split.ElementAt(0), split.ElementAt(1));
         }
 
+        #region Interfaces
         public static Vec2L operator +(Vec2L a, Vec2L b)
         {
             return new(a.X + b.X, a.Y + b.Y);
@@ -205,13 +207,23 @@ namespace AoC.Base
             return new(a.X * mult, a.Y * mult);
         }
 
-        public static Vec2L operator /(Vec2L a, long mult)
+        public static Vec2L operator /(Vec2L a, long div)
         {
-            if (mult == 0)
+            if (div == 0)
             {
                 return new();
             }
-            return new(a.X / mult, a.Y / mult);
+            return new(a.X / div, a.Y / div);
+        }
+
+        public static Vec2L operator %(Vec2L a, long mod)
+        {
+            if (mod == 0)
+            {
+                return new();
+            }
+
+            return new(Util.Number.Mod(a.X, mod), Util.Number.Mod(a.Y, mod));
         }
 
         public long Manhattan(Vec2L other)
@@ -219,7 +231,6 @@ namespace AoC.Base
             return Math.Abs(X - other.X) + Math.Abs(Y - other.Y);
         }
 
-        #region Interfaces
         public bool Equals(Vec2L other)
         {
             return X == other.X && Y == other.Y;
@@ -276,12 +287,12 @@ namespace AoC.Base
 
 
     #region Vec2BI
-    public class Vec2BI : IEquatable<Vec2BI>, IComparable<Vec2BI>, IComparable
+    public class Vec2BI : IVec2<Vec2BI, BigInteger>, IEquatable<Vec2BI>, IComparable<Vec2BI>, IComparable
     {
         public BigInteger X { get; set; }
         public BigInteger Y { get; set; }
-
-        public static readonly Vec2BI Zero = new();
+        protected static readonly Vec2BI _zero = new();
+        public static Vec2BI Zero { get => _zero; }
 
         public Vec2BI()
         {
@@ -308,10 +319,11 @@ namespace AoC.Base
                 return null;
             }
 
-            BigInteger[] split = Util.String.Split(input, ',').Select(BigInteger.Parse).ToArray();
-            return new(split[0], split[1]);
+            IEnumerable<BigInteger> split = Util.Number.SplitBI(input, ',');
+            return new(split.ElementAt(0), split.ElementAt(1));
         }
 
+        #region Interfaces
         public static Vec2BI operator +(Vec2BI a, Vec2BI b)
         {
             return new(a.X + b.X, a.Y + b.Y);
@@ -327,13 +339,23 @@ namespace AoC.Base
             return new(a.X * mult, a.Y * mult);
         }
 
-        public static Vec2BI operator /(Vec2BI a, BigInteger mult)
+        public static Vec2BI operator /(Vec2BI a, BigInteger div)
         {
-            if (mult == 0)
+            if (div == 0)
             {
                 return new();
             }
-            return new(a.X / mult, a.Y / mult);
+            return new(a.X / div, a.Y / div);
+        }
+        
+        public static Vec2BI operator %(Vec2BI a, BigInteger mod)
+        {
+            if (mod == 0)
+            {
+                return new();
+            }
+
+            return new(Util.Number.Mod(a.X, mod), Util.Number.Mod(a.Y, mod));
         }
 
         public BigInteger Manhattan(Vec2BI other)
@@ -341,7 +363,6 @@ namespace AoC.Base
             return BigInteger.Abs(X - other.X) + BigInteger.Abs(Y - other.Y);
         }
 
-        #region Interfaces
         public bool Equals(Vec2BI other)
         {
             return X == other.X && Y == other.Y;
@@ -398,12 +419,13 @@ namespace AoC.Base
 
 
     #region Vec2F
-    public class Vec2F : IEquatable<Vec2F>, IComparable<Vec2F>, IComparable
+    public class Vec2F : IVec2<Vec2F, float>, IEquatable<Vec2F>, IComparable<Vec2F>, IComparable
     {
         public float X { get; set; }
         public float Y { get; set; }
 
-        public static readonly Vec2F Zero = new();
+        protected static readonly Vec2F _zero = new();
+        public static Vec2F Zero { get => _zero; }
 
         public Vec2F()
         {
@@ -430,10 +452,11 @@ namespace AoC.Base
                 return null;
             }
 
-            float[] split = Util.String.Split(input, ',').Select(float.Parse).ToArray();
-            return new(split[0], split[1]);
+            IEnumerable<float> split = Util.Number.SplitF(input, ',');
+            return new(split.ElementAt(0), split.ElementAt(1));
         }
 
+        #region Interfaces
         public static Vec2F operator +(Vec2F a, Vec2F b)
         {
             return new(a.X + b.X, a.Y + b.Y);
@@ -449,13 +472,23 @@ namespace AoC.Base
             return new(a.X * mult, a.Y * mult);
         }
 
-        public static Vec2F operator /(Vec2F a, float mult)
+        public static Vec2F operator /(Vec2F a, float div)
         {
-            if (mult == 0.0f)
+            if (div == 0.0f)
             {
                 return new();
             }
-            return new(a.X / mult, a.Y / mult);
+            return new(a.X / div, a.Y / div);
+        }
+
+        public static Vec2F operator %(Vec2F a, float mod)
+        {
+            if (mod == 0.0f)
+            {
+                return new();
+            }
+
+            return new(Util.Number.Mod(a.X, mod), Util.Number.Mod(a.Y, mod));
         }
 
         public float Manhattan(Vec2F other)
@@ -463,7 +496,6 @@ namespace AoC.Base
             return Math.Abs(X - other.X) + Math.Abs(Y - other.Y);
         }
 
-        #region Interfaces
         public bool Equals(Vec2F other)
         {
             return X == other.X && Y == other.Y;
@@ -492,7 +524,7 @@ namespace AoC.Base
         #region Overrides
         public override string ToString()
         {
-            return $"[{X}, {Y}]";
+            return string.Format("[{0:00.000}, {1:00.000}]", X, Y);
         }
 
         public override bool Equals(object obj)
@@ -525,7 +557,8 @@ namespace AoC.Base
         public double X { get; set; }
         public double Y { get; set; }
 
-        public static readonly Vec2D Zero = new();
+        protected static readonly Vec2D _zero = new();
+        public static Vec2D Zero { get => _zero; }
 
         public Vec2D()
         {
@@ -552,10 +585,11 @@ namespace AoC.Base
                 return null;
             }
 
-            double[] split = Util.String.Split(input, ',').Select(double.Parse).ToArray();
-            return new(split[0], split[1]);
+            IEnumerable<double> split = Util.Number.SplitD(input, ',');
+            return new(split.ElementAt(0), split.ElementAt(1));
         }
 
+        #region Interfaces
         public static Vec2D operator +(Vec2D a, Vec2D b)
         {
             return new(a.X + b.X, a.Y + b.Y);
@@ -571,13 +605,23 @@ namespace AoC.Base
             return new(a.X * mult, a.Y * mult);
         }
 
-        public static Vec2D operator /(Vec2D a, double mult)
+        public static Vec2D operator /(Vec2D a, double div)
         {
-            if (mult == 0.0d)
+            if (div == 0.0d)
             {
                 return new Vec2D();
             }
-            return new(a.X / mult, a.Y / mult);
+            return new(a.X / div, a.Y / div);
+        }
+
+        public static Vec2D operator %(Vec2D a, double mod)
+        {
+            if (mod == 0.0d)
+            {
+                return new();
+            }
+
+            return new(Util.Number.Mod(a.X, mod), Util.Number.Mod(a.Y, mod));
         }
 
         public double Manhattan(Vec2D other)
@@ -585,7 +629,6 @@ namespace AoC.Base
             return double.Abs(X - other.X) + double.Abs(Y - other.Y);
         }
 
-        #region Interfaces
         public bool Equals(Vec2D other)
         {
             return X == other.X && Y == other.Y;
@@ -639,10 +682,10 @@ namespace AoC.Base
         #endregion
     }
     #endregion
-    
+
 
     #region Vec3
-    public class Vec3 : IEquatable<Vec3>
+    public class Vec3 : IEquatable<Vec3>, IComparable<Vec3>, IComparable
     {
         public int X { get; set; }
         public int Y { get; set; }
@@ -678,7 +721,7 @@ namespace AoC.Base
                 return null;
             }
 
-            int[] split = Util.String.Split(input, ',').Select(int.Parse).ToArray();
+            int[] split = [.. Util.String.Split(input, ',').Select(int.Parse)];
             return new(split[0], split[1], split[2]);
         }
 
@@ -706,6 +749,39 @@ namespace AoC.Base
             return new(a.X / mult, a.Y / mult, a.Z / mult);
         }
 
+        public static Vec3 operator %(Vec3 a, int mod)
+        {
+            if (mod == 0)
+            {
+                return new();
+            }
+
+            Vec3 modded = new(a);
+            modded.Mod(mod, mod, mod);
+            return modded;
+        }
+
+        public void Mod(int x, int y, int z)
+        {
+            X %= x;
+            if (X < 0)
+            {
+                X += x;
+            }
+
+            Y %= y;
+            if (Y < 0)
+            {
+                Y += y;
+            }
+
+            Z %= z;
+            if (Z < 0)
+            {
+                Z += z;
+            }
+        }
+
         public int Manhattan(Vec3 other)
         {
             return Math.Abs(X - other.X) + Math.Abs(Y - other.Y) + Math.Abs(Z - other.Z);
@@ -720,6 +796,30 @@ namespace AoC.Base
         public bool Equals(Vec3 other)
         {
             return X == other.X && Y == other.Y && Z == other.Z;
+        }
+
+        public virtual int CompareTo(Vec3 other)
+        {
+            int xCompare = X.CompareTo(other.X);
+            if (xCompare != 0)
+            {
+                return xCompare;
+            }
+            int yCompare = Y.CompareTo(other.Y);
+            if (yCompare != 0)
+            {
+                return yCompare;
+            }
+            return Z.CompareTo(other.Z);
+        }
+
+        public int CompareTo(object other)
+        {
+            if (other is not Vec3 otherAsVec)
+            {
+                return -1;
+            }
+            return otherAsVec.CompareTo(other);
         }
         #endregion
 
@@ -754,7 +854,7 @@ namespace AoC.Base
 
 
     #region Vec3L
-    public class Vec3L : IEquatable<Vec3L>
+    public class Vec3L : IEquatable<Vec3L>, IComparable<Vec3L>, IComparable
     {
         public long X { get; set; }
         public long Y { get; set; }
@@ -790,7 +890,7 @@ namespace AoC.Base
                 return null;
             }
 
-            long[] split = Util.String.Split(input, ',').Select(long.Parse).ToArray();
+            long[] split = [.. Util.String.Split(input, ',').Select(long.Parse)];
             return new(split[0], split[1], split[2]);
         }
 
@@ -833,6 +933,30 @@ namespace AoC.Base
         {
             return X == other.X && Y == other.Y && Z == other.Z;
         }
+
+        public virtual int CompareTo(Vec3L other)
+        {
+            int xCompare = X.CompareTo(other.X);
+            if (xCompare != 0)
+            {
+                return xCompare;
+            }
+            int yCompare = Y.CompareTo(other.Y);
+            if (yCompare != 0)
+            {
+                return yCompare;
+            }
+            return Z.CompareTo(other.Z);
+        }
+
+        public int CompareTo(object other)
+        {
+            if (other is not Vec3L otherAsVec)
+            {
+                return -1;
+            }
+            return otherAsVec.CompareTo(other);
+        }
         #endregion
 
         #region Overrides
@@ -866,7 +990,7 @@ namespace AoC.Base
 
 
     #region Vec3BI
-    public class Vec3BI : IEquatable<Vec3BI>
+    public class Vec3BI : IEquatable<Vec3BI>, IComparable<Vec3BI>, IComparable
     {
         public BigInteger X { get; set; }
         public BigInteger Y { get; set; }
@@ -902,7 +1026,7 @@ namespace AoC.Base
                 return null;
             }
 
-            BigInteger[] split = Util.String.Split(input, ',').Select(BigInteger.Parse).ToArray();
+            BigInteger[] split = [.. Util.String.Split(input, ',').Select(BigInteger.Parse)];
             return new(split[0], split[1], split[2]);
         }
 
@@ -945,6 +1069,30 @@ namespace AoC.Base
         {
             return X == other.X && Y == other.Y && Z == other.Z;
         }
+
+        public virtual int CompareTo(Vec3BI other)
+        {
+            int xCompare = X.CompareTo(other.X);
+            if (xCompare != 0)
+            {
+                return xCompare;
+            }
+            int yCompare = Y.CompareTo(other.Y);
+            if (yCompare != 0)
+            {
+                return yCompare;
+            }
+            return Z.CompareTo(other.Z);
+        }
+
+        public int CompareTo(object other)
+        {
+            if (other is not Vec3BI otherAsVec)
+            {
+                return -1;
+            }
+            return otherAsVec.CompareTo(other);
+        }
         #endregion
 
         #region Overrides
@@ -978,7 +1126,7 @@ namespace AoC.Base
 
 
     #region Vec3F
-    public class Vec3F : IEquatable<Vec3F>
+    public class Vec3F : IEquatable<Vec3F>, IComparable<Vec3F>, IComparable
     {
         public float X { get; set; }
         public float Y { get; set; }
@@ -1014,7 +1162,7 @@ namespace AoC.Base
                 return null;
             }
 
-            float[] split = Util.String.Split(input, ',').Select(float.Parse).ToArray();
+            float[] split = [.. Util.String.Split(input, ',').Select(float.Parse)];
             return new(split[0], split[1], split[2]);
         }
 
@@ -1057,6 +1205,30 @@ namespace AoC.Base
         {
             return X == other.X && Y == other.Y && Z == other.Z;
         }
+
+        public virtual int CompareTo(Vec3F other)
+        {
+            int xCompare = X.CompareTo(other.X);
+            if (xCompare != 0)
+            {
+                return xCompare;
+            }
+            int yCompare = Y.CompareTo(other.Y);
+            if (yCompare != 0)
+            {
+                return yCompare;
+            }
+            return Z.CompareTo(other.Z);
+        }
+
+        public int CompareTo(object other)
+        {
+            if (other is not Vec3F otherAsVec)
+            {
+                return -1;
+            }
+            return otherAsVec.CompareTo(other);
+        }
         #endregion
 
         #region Overrides
@@ -1088,9 +1260,9 @@ namespace AoC.Base
     }
     #endregion
 
-    #region Vec3D
 
-    public class Vec3D : IEquatable<Vec3D>
+    #region Vec3D
+    public class Vec3D : IEquatable<Vec3D>, IComparable<Vec3D>, IComparable
     {
         public double X { get; set; }
         public double Y { get; set; }
@@ -1126,7 +1298,7 @@ namespace AoC.Base
                 return null;
             }
 
-            double[] split = Util.String.Split(input, ',').Select(double.Parse).ToArray();
+            double[] split = [.. Util.String.Split(input, ',').Select(double.Parse)];
             return new(split[0], split[1], split[2]);
         }
 
@@ -1159,15 +1331,39 @@ namespace AoC.Base
             return Math.Abs(X - other.X) + Math.Abs(Y - other.Y) + Math.Abs(Z - other.Z);
         }
 
-        // public Vec2F DropZ()
-        // {
-        //     return new(X, Y);
-        // }
+        public Vec2D DropZ()
+        {
+            return new(X, Y);
+        }
 
         #region Interfaces
         public bool Equals(Vec3D other)
         {
             return X == other.X && Y == other.Y && Z == other.Z;
+        }
+
+        public virtual int CompareTo(Vec3D other)
+        {
+            int xCompare = X.CompareTo(other.X);
+            if (xCompare != 0)
+            {
+                return xCompare;
+            }
+            int yCompare = Y.CompareTo(other.Y);
+            if (yCompare != 0)
+            {
+                return yCompare;
+            }
+            return Z.CompareTo(other.Z);
+        }
+
+        public int CompareTo(object other)
+        {
+            if (other is not Vec3D otherAsVec)
+            {
+                return -1;
+            }
+            return otherAsVec.CompareTo(other);
         }
         #endregion
 

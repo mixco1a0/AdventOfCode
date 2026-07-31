@@ -10,54 +10,53 @@ namespace AoC._2015
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "",
+                    RawInput =
 @""
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
 
         record Effect(int ID, int Turns, int Armor, int Damage, int Mana) { }
-        static List<Effect> AllEffects = new List<Effect>()
-        {
+        static readonly List<Effect> AllEffects =
+        [
             new Effect(0, 6, 7, 0, 0),
             new Effect(1, 6, 0, 3, 0),
             new Effect(2, 5, 0, 0, 101)
-        };
+        ];
 
         record Spell(string Name, int Cost, int Damage, int Heal, Effect Effect) { }
-        static List<Spell> AllSpells = new List<Spell>()
-        {
+        static readonly List<Spell> AllSpells =
+        [
             new Spell("Magic Missile", 53, 4, 0, null),
             new Spell("Drain", 73, 2, 2, null),
             new Spell("Shield", 113, 0, 0, AllEffects[0]),
             new Spell("Poison", 173, 0, 0, AllEffects[1]),
             new Spell("Recharge", 229, 0, 0, AllEffects[2])
-        };
+        ];
 
         class Boss
         {
@@ -98,9 +97,9 @@ namespace AoC._2015
             public Dictionary<int, int> Effects { get; set; }
         }
 
-        bool RunCombatSimulation(bool hardMode, Boss boss, Player player, int turnCount, int spentMana, ref int minMana)
+        static bool RunCombatSimulation(bool hardMode, Boss boss, Player player, int turnCount, int spentMana, ref int minMana)
         {
-            string curTab = new string('-', turnCount * 2);
+            string curTab = new('-', turnCount * 2);
 
             if (hardMode && turnCount % 2 == 0)
             {
@@ -128,7 +127,7 @@ namespace AoC._2015
 
             // Core.Log.WriteLine(Core.Log.ELevel.Spam, $"{curTab}Turn {turnCount} - Boss HP = {boss.HP} - Player HP = {player.HP}, Mana = {player.Mana}");
 
-            List<KeyValuePair<int, int>> curEffects = player.Effects.Select(p => new KeyValuePair<int, int>(p.Key, p.Value)).ToList();
+            List<KeyValuePair<int, int>> curEffects = [.. player.Effects.Select(p => new KeyValuePair<int, int>(p.Key, p.Value))];
             // resolve effects now
             foreach (KeyValuePair<int, int> pair in player.Effects)
             {
@@ -162,7 +161,7 @@ namespace AoC._2015
                 {
                     if (player.Mana >= spell.Cost)
                     {
-                        Player nextPlayer = new Player(player);
+                        Player nextPlayer = new(player);
                         if (spell.Effect != null && player.Effects.ContainsKey(spell.Effect.ID))
                         {
                             continue;
@@ -176,7 +175,7 @@ namespace AoC._2015
                             nextPlayer.Effects.Add(spell.Effect.ID, spell.Effect.Turns);
                         }
 
-                        Boss nextBoss = new Boss(boss);
+                        Boss nextBoss = new(boss);
                         nextBoss.HP -= spell.Damage;
 
                         RunCombatSimulation(hardMode, nextBoss, nextPlayer, turnCount + 1, spentMana + spell.Cost, ref minMana);
@@ -196,25 +195,21 @@ namespace AoC._2015
 
             return RunCombatSimulation(hardMode, boss, player, turnCount + 1, spentMana, ref minMana);
         }
+        
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool hardMode)
+        {
+            int minMana = int.MaxValue;
+            List<int> bossVals = [.. inputs.Select(i => int.Parse(Util.String.Split(i, " :").Last()))];
+            Boss boss = new(bossVals[0], bossVals[1]);
+            Player player = new(50, 500, 0, []);
+            RunCombatSimulation(hardMode, boss, player, 0, 0, ref minMana);
+            return minMana.ToString();
+        }
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
-        {
-            int minMana = int.MaxValue;
-            List<int> bossVals = inputs.Select(i => int.Parse(i.Split(" :".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Last())).ToList();
-            Boss boss = new Boss(bossVals[0], bossVals[1]);
-            Player player = new Player(50, 500, 0, new Dictionary<int, int>());
-            RunCombatSimulation(false, boss, player, 0, 0, ref minMana);
-            return minMana.ToString();
-        }
+            => SharedSolution(inputs, variables, false);
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
-        {
-            int minMana = int.MaxValue;
-            List<int> bossVals = inputs.Select(i => int.Parse(i.Split(" :".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Last())).ToList();
-            Boss boss = new Boss(bossVals[0], bossVals[1]);
-            Player player = new Player(50, 500, 0, new Dictionary<int, int>());
-            RunCombatSimulation(true, boss, player, 0, 0, ref minMana);
-            return minMana.ToString();
-        }
+            => SharedSolution(inputs, variables, true);
     }
 }

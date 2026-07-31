@@ -10,58 +10,57 @@ namespace AoC._2020
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "165",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "165",
+                    RawInput =
 @"mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X
 mem[8] = 11
 mem[7] = 101
 mem[8] = 0"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "208",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "208",
+                    RawInput =
 @"mask = 000000000000000000000000000000X1001X
 mem[42] = 100
 mask = 00000000000000000000000000000000X0XX
 mem[26] = 1"
-            });
+                },
+            ];
             return testData;
         }
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            Dictionary<string, string> memory = new Dictionary<string, string>();
-            List<KeyValuePair<char, int>> masks = new List<KeyValuePair<char, int>>();
+            Dictionary<string, string> memory = [];
+            List<KeyValuePair<char, int>> masks = [];
             foreach (string input in inputs)
             {
                 if (input.Contains("mask"))
                 {
-                    List<string> split = input.Split(" =".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).ToList();
+                    List<string> split = [.. Util.String.Split(input, " =")];
 
-                    masks = split[1].ToCharArray().Select((digit, index) => new { Digit = digit, Index = index }).Where(pair => pair.Digit != 'X').Select(pair => new KeyValuePair<char, int>(pair.Digit, pair.Index)).ToList();
+                    masks = [.. split[1].ToCharArray().Select((digit, index) => new { Digit = digit, Index = index }).Where(pair => pair.Digit != 'X').Select(pair => new KeyValuePair<char, int>(pair.Digit, pair.Index))];
                 }
                 else
                 {
-                    List<string> split = input.Split(" []=".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).ToList();
+                    List<string> split = [.. Util.String.Split(input, " []=")];
                     string val = Convert.ToString(long.Parse(split[2]), 2).ToString().PadLeft(36, '0');
                     char[] chars = val.ToCharArray();
                     foreach (var pair in masks)
@@ -82,19 +81,19 @@ mem[26] = 1"
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            Dictionary<string, long> memory = new Dictionary<string, long>();
-            List<KeyValuePair<char, int>> masks = new List<KeyValuePair<char, int>>();
+            Dictionary<string, long> memory = [];
+            List<KeyValuePair<char, int>> masks = [];
             foreach (string input in inputs)
             {
                 if (input.Contains("mask"))
                 {
-                    List<string> split = input.Split(" =".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).ToList();
+                    List<string> split = [.. Util.String.Split(input, " =")];
 
-                    masks = split[1].ToCharArray().Select((digit, index) => new { Digit = digit, Index = index }).Select(pair => new KeyValuePair<char, int>(pair.Digit, pair.Index)).ToList();
+                    masks = [.. split[1].ToCharArray().Select((digit, index) => new { Digit = digit, Index = index }).Select(pair => new KeyValuePair<char, int>(pair.Digit, pair.Index))];
                 }
                 else
                 {
-                    List<string> split = input.Split(" []=".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).ToList();
+                    List<string> split = [.. Util.String.Split(input, " []=")];
                     char[] memAddress = Convert.ToString(long.Parse(split[1]), 2).ToString().PadLeft(36, '0').ToCharArray();
                     char[] chars = Convert.ToString(long.Parse(split[1]), 2).ToString().PadLeft(36, '0').ToCharArray();
                     foreach (var pair in masks)

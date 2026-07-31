@@ -9,25 +9,23 @@ namespace AoC._2020
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "11",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "11",
+                    RawInput =
 @"abc
 
 a
@@ -43,12 +41,12 @@ a
 a
 
 b"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "6",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "6",
+                    RawInput =
 @"abc
 
 a
@@ -64,7 +62,8 @@ a
 a
 
 b"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -91,7 +90,7 @@ b"
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
             int count = 0;
-            List<string> sharedInput = new List<string>();
+            List<string> sharedInput = [];
             bool newGroup = true;
             foreach (string input in inputs)
             {
@@ -107,12 +106,12 @@ b"
                 var cur = input.ToCharArray().Select(c => c.ToString());
                 if (newGroup)
                 {
-                    sharedInput = cur.ToList();
+                    sharedInput = [.. cur];
                     newGroup = false;
                 }
                 else
                 {
-                    sharedInput = sharedInput.Intersect(cur).ToList();
+                    sharedInput = [.. sharedInput.Intersect(cur)];
                 }
 
             }

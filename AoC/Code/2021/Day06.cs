@@ -9,49 +9,48 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "5934",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "5934",
+                    RawInput =
 @"3,4,3,1,2"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "26984457539",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "26984457539",
+                    RawInput =
 @"3,4,3,1,2"
-            });
+                },
+            ];
             return testData;
         }
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, int days)
         {
-            List<long> fishUncrompressed = inputs.First().Split(',').Select(long.Parse).ToList();
-            long[] fish = Enumerable.Repeat((long)0, 9).ToArray();
+            List<long> fishUncrompressed = [.. inputs.First().Split(',').Select(long.Parse)];
+            long[] fish = [.. Enumerable.Repeat((long)0, 9)];
             foreach (long f in fishUncrompressed)
             {
                 ++fish[f];
             }
             for (long i = 0; i < days; ++i)
             {
-                long[] nextFish = Enumerable.Repeat((long)0, 9).ToArray();
-                Dictionary<long, long> nextState = new Dictionary<long, long>();
+                long[] nextFish = [.. Enumerable.Repeat((long)0, 9)];
+                Dictionary<long, long> nextState = [];
                 for (int f = 0; f < 9; ++f)
                 {
                     if (f - 1 < 0)

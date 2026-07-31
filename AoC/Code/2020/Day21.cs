@@ -10,40 +10,39 @@ namespace AoC._2020
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "5",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "5",
+                    RawInput =
 @"mxmxvkd kfcds sqjhc nhms (contains dairy, fish)
 trh fvjkl sbzzf mxmxvkd (contains dairy)
 sqjhc fvjkl (contains soy)
 sqjhc mxmxvkd sbzzf (contains fish)"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "mxmxvkd,sqjhc,fvjkl",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "mxmxvkd,sqjhc,fvjkl",
+                    RawInput =
 @"mxmxvkd kfcds sqjhc nhms (contains dairy, fish)
 trh fvjkl sbzzf mxmxvkd (contains dairy)
 sqjhc fvjkl (contains soy)
 sqjhc mxmxvkd sbzzf (contains fish)"
-            });
+                },
+            ];
             return testData;
         }
 
@@ -56,8 +55,8 @@ sqjhc mxmxvkd sbzzf (contains fish)"
 
             public void Parse()
             {
-                Ingredients = AllIngredients.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
-                Allergens = AllAllergens.Replace("contains", "").Split(" ,".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).ToList();
+                Ingredients = [.. Util.String.Split(AllIngredients, ' ')];
+                Allergens = [.. Util.String.Split(AllAllergens.Replace("contains", ""), " ,")];
             }
 
             public override string ToString()
@@ -68,12 +67,12 @@ sqjhc mxmxvkd sbzzf (contains fish)"
 
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<string> ingredients = new List<string>();
-            List<string> allergens = new List<string>();
-            List<Food> foods = new List<Food>();
+            List<string> ingredients = [];
+            List<string> allergens = [];
+            List<Food> foods = [];
             foreach (string input in inputs)
             {
-                string[] split = input.Split("()".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(input, "()");
                 foods.Add(new Food { AllIngredients = split[0], AllAllergens = split[1] });
                 foods.Last().Parse();
 
@@ -81,16 +80,16 @@ sqjhc mxmxvkd sbzzf (contains fish)"
                 allergens.AddRange(foods.Last().Allergens);
             }
 
-            ingredients = ingredients.Distinct().ToList();
-            allergens = allergens.Distinct().ToList();
+            ingredients = [.. ingredients.Distinct()];
+            allergens = [.. allergens.Distinct()];
 
-            List<string> knownBads = new List<string>();
+            List<string> knownBads = [];
             foreach (string allergen in allergens)
             {
                 IEnumerable<Food> tempFoods = foods.Where(f => f.Allergens.Contains(allergen));
                 if (tempFoods.Count() > 0)
                 {
-                    List<List<string>> possibilities = tempFoods.Select(f => f.Ingredients).Distinct().ToList();
+                    List<List<string>> possibilities = [.. tempFoods.Select(f => f.Ingredients).Distinct()];
                     List<string> trimmed = null;
                     foreach (List<string> curPos in possibilities)
                     {
@@ -100,13 +99,13 @@ sqjhc mxmxvkd sbzzf (contains fish)"
                         }
                         else
                         {
-                            trimmed = trimmed.Intersect(curPos).ToList();
+                            trimmed = [.. trimmed.Intersect(curPos)];
                         }
                     }
                     knownBads.AddRange(trimmed);
                 }
             }
-            List<string> possibleGoods = ingredients.Where(i => !knownBads.Contains(i)).ToList();
+            List<string> possibleGoods = [.. ingredients.Where(i => !knownBads.Contains(i))];
             long sum = 0;
             foreach (Food food in foods)
             {
@@ -128,12 +127,12 @@ sqjhc mxmxvkd sbzzf (contains fish)"
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            List<string> ingredients = new List<string>();
-            List<string> allergens = new List<string>();
-            List<Food> foods = new List<Food>();
+            List<string> ingredients = [];
+            List<string> allergens = [];
+            List<Food> foods = [];
             foreach (string input in inputs)
             {
-                string[] split = input.Split("()".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string[] split = Util.String.Split(input, "()");
                 foods.Add(new Food { AllIngredients = split[0], AllAllergens = split[1] });
                 foods.Last().Parse();
 
@@ -141,17 +140,17 @@ sqjhc mxmxvkd sbzzf (contains fish)"
                 allergens.AddRange(foods.Last().Allergens);
             }
 
-            ingredients = ingredients.Distinct().ToList();
-            allergens = allergens.Distinct().ToList();
+            ingredients = [.. ingredients.Distinct()];
+            allergens = [.. allergens.Distinct()];
 
-            List<string> knownBads = new List<string>();
-            Dictionary<string, List<string>> allergenToIngredients = new Dictionary<string, List<string>>();
+            List<string> knownBads = [];
+            Dictionary<string, List<string>> allergenToIngredients = [];
             foreach (string allergen in allergens)
             {
                 IEnumerable<Food> tempFoods = foods.Where(f => f.Allergens.Contains(allergen));
                 if (tempFoods.Count() > 0)
                 {
-                    List<List<string>> possibilities = tempFoods.Select(f => f.Ingredients).Distinct().ToList();
+                    List<List<string>> possibilities = [.. tempFoods.Select(f => f.Ingredients).Distinct()];
                     List<string> trimmed = null;
                     foreach (List<string> curPos in possibilities)
                     {
@@ -161,7 +160,7 @@ sqjhc mxmxvkd sbzzf (contains fish)"
                         }
                         else
                         {
-                            trimmed = trimmed.Intersect(curPos).ToList();
+                            trimmed = [.. trimmed.Intersect(curPos)];
                         }
                     }
                     knownBads.AddRange(trimmed);
@@ -169,7 +168,7 @@ sqjhc mxmxvkd sbzzf (contains fish)"
                 }
             }
 
-            List<KnownAllergen> knownAllergens = new List<KnownAllergen>();
+            List<KnownAllergen> knownAllergens = [];
             while (true)
             {
                 if (allergenToIngredients.Count == 0)

@@ -11,25 +11,23 @@ namespace AoC._2021
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v3";
-                case Core.Part.Two:
-                    return "v3";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v3",
+                Core.Part.Two => "v3",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "4512",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "4512",
+                    RawInput =
 @"7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1
 
 22 13 17 11  0
@@ -50,12 +48,12 @@ namespace AoC._2021
 22 11 13  6  5
  2  0 12  3  7
 "
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "1924",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "1924",
+                    RawInput =
 @"7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1
 
 22 13 17 11  0
@@ -76,7 +74,8 @@ namespace AoC._2021
 22 11 13  6  5
  2  0 12  3  7
 "
-            });
+                },
+            ];
             return testData;
         }
 
@@ -98,10 +97,10 @@ namespace AoC._2021
                 Completed = false;
                 CallState = 0;
 
-                Numbers = new Dictionary<int, Base.Vec2>();
+                Numbers = [];
                 for (int i = 0; i < Size; ++i)
                 {
-                    int[] row = rawBoard[i].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray();
+                    int[] row = [.. Util.Number.Split(rawBoard[i], ' ')];
                     for (int j = 0; j < Size; ++j)
                     {
                         Numbers.Add(row[j], new Base.Vec2(j, i));
@@ -125,7 +124,7 @@ namespace AoC._2021
                 }
 
 
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
                 for (int i = 0; i < Size; ++i)
                 {
                     for (int j = 0; j < Size; ++j)
@@ -174,10 +173,10 @@ namespace AoC._2021
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool getBest)
         {
-            int[] callOrder = inputs.First().Split(',', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray();
+            int[] callOrder = [.. Util.Number.Split(inputs.First(), ',')];
 
-            List<BingoBoard> boards = new List<BingoBoard>();
-            List<string> curBoard = new List<string>();
+            List<BingoBoard> boards = [];
+            List<string> curBoard = [];
             foreach (string input in inputs.Skip(1))
             {
                 if (string.IsNullOrWhiteSpace(input))

@@ -11,26 +11,24 @@ namespace AoC._2023
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Variables = new Dictionary<string, string> { { nameof(_Steps), "6" } },
-                Output = "16",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Variables = new Dictionary<string, string> { { nameof(_Steps), "6" } },
+                    Output = "16",
+                    RawInput =
 @"...........
 .....###.#.
 .###.##..#.
@@ -42,7 +40,8 @@ namespace AoC._2023
 .##.#.####.
 .##..##.##.
 ..........."
-            });
+                },
+            ];
             return testData;
         }
         private int _Steps { get; }
@@ -52,7 +51,7 @@ namespace AoC._2023
         private static char Start = 'S';
 
         private enum Direction : int { North = 0, East = 1, South = 2, West = 3 }
-        static readonly Base.Vec2L[] GridMoves = new Base.Vec2L[] { new Base.Vec2L(0, 1), new Base.Vec2L(1, 0), new Base.Vec2L(0, -1), new Base.Vec2L(-1, 0) };
+        static readonly Base.Vec2L[] GridMoves = new Base.Vec2L[] { new(0, 1), new(1, 0), new(0, -1), new(-1, 0) };
 
         private void ParseInput(List<string> inputs, out char[,] blankGrid, out Base.Vec2L start, out int xMax, out int yMax)
         {
@@ -92,7 +91,7 @@ namespace AoC._2023
                 }
             }
             temp[start.X, start.Y] = Start;
-            Util.Grid.Print2D(Core.Log.ELevel.Debug, temp);
+            Util.Grid2.Print(Core.Log.ELevel.Debug, temp);
         }
 
         private record StepCheck(Base.Vec2L Pos, int Steps);
@@ -141,7 +140,7 @@ namespace AoC._2023
             ParseInput(inputs, out char[,] grid, out Base.Vec2L start, out int xMax, out int yMax);
             GetVariable(nameof(_Steps), maxSteps, variables, out int stepCount);
 
-            Dictionary<Base.Vec2L, int> stepsTo = new();
+            Dictionary<Base.Vec2L, int> stepsTo = [];
             // PrintStepsTo(stepsTo, grid, start, 0);
             PopulateSteps(ref stepsTo, start, xMax, yMax, grid);
 

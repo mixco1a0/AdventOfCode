@@ -11,25 +11,23 @@ namespace AoC._2023
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v2";
-                case Core.Part.Two:
-                    return "v2";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v2",
+                Core.Part.Two => "v2",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Output = "4361",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Output = "4361",
+                    RawInput =
 @"467..114..
 ...*......
 ..35..633.
@@ -40,12 +38,12 @@ namespace AoC._2023
 ......755.
 ...$.*....
 .664.598.."
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "467835",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "467835",
+                    RawInput =
 @"467..114..
 ...*......
 ..35..633.
@@ -56,7 +54,8 @@ namespace AoC._2023
 ......755.
 ...$.*....
 .664.598.."
-            });
+                },
+            ];
             return testData;
         }
 
@@ -82,17 +81,17 @@ namespace AoC._2023
 
             public Schematic(List<string> rawSchematic)
             {
-                Parts = new List<Part>();
-                Symbols = new List<Symbol>();
+                Parts = [];
+                Symbols = [];
 
                 int curRow = 0;
                 foreach (string line in rawSchematic)
                 {
-                    List<Parser> split = line.ToList().Select((value, index) => new Parser(value, index)).Where(p => p.Character != '.').ToList();
+                    List<Parser> split = [.. line.ToList().Select((value, index) => new Parser(value, index)).Where(p => p.Character != '.')];
 
                     int prevNumIndex = 0;
-                    Base.Range curRange = new Base.Range();
-                    StringBuilder sb = new StringBuilder();
+                    Base.Range curRange = new();
+                    StringBuilder sb = new();
                     Action updateParts = () =>
                     {
                         Parts.Add(new Part { Number = int.Parse(sb.ToString()), Rows = new Base.Range(curRange), Col = curRow });
@@ -135,13 +134,13 @@ namespace AoC._2023
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool findGears)
         {
-            Schematic schematic = new Schematic(inputs);
+            Schematic schematic = new(inputs);
             int runningTotal = 0;
             if (findGears)
             {
                 foreach (Symbol symbol in schematic.Symbols.Where(s => s.Character == '*'))
                 {
-                    Base.Range maxRange = new Base.Range(symbol.Pos.X - 1, symbol.Pos.X + 1);
+                    Base.Range maxRange = new(symbol.Pos.X - 1, symbol.Pos.X + 1);
                     IEnumerable<Part> touching = schematic.Parts.Where(p => Math.Abs(symbol.Pos.Y - p.Col) <= 1 && (maxRange.HasInc(p.Rows.Min) || maxRange.HasInc(p.Rows.Max)));
                     if (touching.Count() == 2)
                     {
@@ -153,7 +152,7 @@ namespace AoC._2023
             {
                 foreach (Part part in schematic.Parts)
                 {
-                    Base.Range maxRange = new Base.Range(part.Rows.Min - 1, part.Rows.Max + 1);
+                    Base.Range maxRange = new(part.Rows.Min - 1, part.Rows.Max + 1);
                     IEnumerable<Symbol> aboveBelow = schematic.Symbols.Where(s => (Math.Abs(s.Pos.Y - part.Col) <= 1) && maxRange.HasInc(s.Pos.X));
                     if (aboveBelow.Any())
                     {

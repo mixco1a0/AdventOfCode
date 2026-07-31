@@ -5,46 +5,47 @@ namespace AoC._2015
 {
     class Day23 : Core.Day
     {
-        private int _ReturnRegister { get; }
-
         public Day23() { }
 
         public override string GetSolutionVersion(Core.Part part)
         {
-            switch (part)
+            return part switch
             {
-                case Core.Part.One:
-                    return "v1";
-                case Core.Part.Two:
-                    return "v1";
-                default:
-                    return base.GetSolutionVersion(part);
-            }
+                Core.Part.One => "v1",
+                Core.Part.Two => "v1",
+                _ => base.GetSolutionVersion(part),
+            };
         }
 
         protected override List<Core.TestDatum> GetTestData()
         {
-            List<Core.TestDatum> testData = new List<Core.TestDatum>();
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.One,
-                Variables = new Dictionary<string, string> { { nameof(_ReturnRegister), "a" } },
-                Output = "2",
-                RawInput =
+            List<Core.TestDatum> testData =
+            [
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.One,
+                    Variables = new Dictionary<string, string> { { nameof(_ReturnRegister), "a" } },
+                    Output = "2",
+                    RawInput =
 @"inc a
 jio a, +2
 tpl a
 inc a"
-            });
-            testData.Add(new Core.TestDatum
-            {
-                TestPart = Core.Part.Two,
-                Output = "",
-                RawInput =
+                },
+                new Core.TestDatum
+                {
+                    TestPart = Core.Part.Two,
+                    Output = "",
+                    RawInput =
 @""
-            });
+                },
+            ];
             return testData;
         }
+
+#pragma warning disable IDE1006 // Naming Styles
+        private int _ReturnRegister { get; }
+#pragma warning restore IDE1006 // Naming Styles
 
         enum Instruction
         {
@@ -58,12 +59,12 @@ inc a"
 
         record InstructionSet(Instruction Instruction, char Register, int Offset) { }
 
-        List<InstructionSet> ParseInstructions(List<string> inputs)
+        static List<InstructionSet> ParseInstructions(List<string> inputs)
         {
-            List<InstructionSet> instructions = new List<InstructionSet>();
+            List<InstructionSet> instructions = [];
             foreach (string input in inputs)
             {
-                string[] parts = input.Split(" ,".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string[] parts = Util.String.Split(input, " ,");
                 InstructionSet newSet = null;
                 if (parts[0][0] == 'h')
                 {
@@ -98,15 +99,15 @@ inc a"
             return instructions;
         }
 
-        void PerformOn(Instruction instruction, int offset, ref uint register)
+        static void PerformOn(Instruction instruction, int offset, ref uint register)
         {
             switch (instruction)
             {
                 case Instruction.Half:
-                    register = register / 2;
+                    register /= 2;
                     break;
                 case Instruction.Triple:
-                    register = register * 3;
+                    register *= 3;
                     break;
                 case Instruction.Increment:
                     if (offset > 0)
@@ -121,7 +122,7 @@ inc a"
             }
         }
 
-        void Perform(Instruction instruction, char register, int offset, ref uint a, ref uint b)
+        static void Perform(Instruction instruction, char register, int offset, ref uint a, ref uint b)
         {
             if (register == 'a')
             {
@@ -133,7 +134,7 @@ inc a"
             }
         }
 
-        bool IsEven(uint a, uint b, char register)
+        static bool IsEven(uint a, uint b, char register)
         {
             if (register == 'a')
             {
@@ -142,7 +143,7 @@ inc a"
             return b % 2 == 0;
         }
 
-        bool IsOne(uint a, uint b, char register)
+        static bool IsOne(uint a, uint b, char register)
         {
             if (register == 'a')
             {
@@ -151,13 +152,13 @@ inc a"
             return b == 1;
         }
 
-        protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
+        private static string SharedSolution(List<string> inputs, Dictionary<string, string> variables, uint initialRegAVal)
         {
             GetVariable(nameof(_ReturnRegister), "b", variables, out string returnRegister);
 
             List<InstructionSet> instructions = ParseInstructions(inputs);
             int curInstruction = 0;
-            uint regA = 0, regB = 0;
+            uint regA = initialRegAVal, regB = 0;
             while (curInstruction < instructions.Count)
             {
                 bool jump = false;
@@ -201,56 +202,11 @@ inc a"
             }
             return regB.ToString();
         }
+
+        protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
+            => SharedSolution(inputs, variables, 0);
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
-        {
-            GetVariable(nameof(_ReturnRegister), "b", variables, out string returnRegister);
-
-            List<InstructionSet> instructions = ParseInstructions(inputs);
-            int curInstruction = 0;
-            uint regA = 1, regB = 0;
-            while (curInstruction < instructions.Count)
-            {
-                bool jump = false;
-                InstructionSet curSet = instructions[curInstruction];
-                switch (curSet.Instruction)
-                {
-                    case Instruction.Half:
-                    case Instruction.Triple:
-                    case Instruction.Increment:
-                        Perform(curSet.Instruction, curSet.Register, curSet.Offset, ref regA, ref regB);
-                        ++curInstruction;
-                        break;
-                    case Instruction.Jump:
-                        jump = true;
-                        break;
-                    case Instruction.JumpIfEven:
-                        jump = IsEven(regA, regB, curSet.Register);
-                        if (!jump)
-                        {
-                            ++curInstruction;
-                        }
-                        break;
-                    case Instruction.JumpIfOne:
-                        jump = IsOne(regA, regB, curSet.Register);
-                        if (!jump)
-                        {
-                            ++curInstruction;
-                        }
-                        break;
-                }
-
-                if (jump)
-                {
-                    curInstruction += curSet.Offset;
-                }
-            }
-
-            if (returnRegister == "a")
-            {
-                return regA.ToString();
-            }
-            return regB.ToString();
-        }
+            => SharedSolution(inputs, variables, 1);
     }
 }
