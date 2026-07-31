@@ -24,7 +24,7 @@ namespace AoC._2020
                 new Core.TestDatum
                 {
                     TestPart = Core.Part.One,
-                    Variables = new Dictionary<string, string> { { "preamble", "5" } },
+                    Variables = new Dictionary<string, string> { { nameof(_Preamble), "5" } }, 
                     Output = "127",
                     RawInput =
 @"35
@@ -51,7 +51,7 @@ namespace AoC._2020
                 new Core.TestDatum
                 {
                     TestPart = Core.Part.Two,
-                    Variables = new Dictionary<string, string> { { "preamble", "5" } },
+                    Variables = new Dictionary<string, string> { { nameof(_Preamble), "5" } },
                     Output = "62",
                     RawInput =
 @"35
@@ -79,13 +79,13 @@ namespace AoC._2020
             return testData;
         }
 
+#pragma warning disable IDE1006 // Naming Styles
+        private static string _Preamble { get; }
+#pragma warning restore IDE1006 // Naming Styles
+
         protected override string RunPart1Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            int preamble = 25;
-            if (variables != null && variables.ContainsKey(nameof(preamble)))
-            {
-                preamble = int.Parse(variables[nameof(preamble)]);
-            }
+            GetVariable(nameof(_Preamble), 25, variables, out int preamble);
             return GetWeakness(inputs, preamble);
         }
 
@@ -120,11 +120,7 @@ namespace AoC._2020
 
         protected override string RunPart2Solution(List<string> inputs, Dictionary<string, string> variables)
         {
-            int preamble = 25;
-            if (variables != null && variables.ContainsKey(nameof(preamble)))
-            {
-                preamble = int.Parse(variables[nameof(preamble)]);
-            }
+            GetVariable(nameof(_Preamble), 25, variables, out int preamble);
 
             long weakness = long.Parse(GetWeakness(inputs, preamble));
 

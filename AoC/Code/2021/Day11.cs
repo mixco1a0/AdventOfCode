@@ -25,7 +25,7 @@ namespace AoC._2021
                 new Core.TestDatum
                 {
                     TestPart = Core.Part.One,
-                    Variables = new Dictionary<string, string>() { { "steps", "10" } },
+                    Variables = new Dictionary<string, string>() { { nameof(_Steps), "10" } }, 
                     Output = "204",
                     RawInput =
 @"5483143223
@@ -74,6 +74,10 @@ namespace AoC._2021
             ];
             return testData;
         }
+
+#pragma warning disable IDE1006 // Naming Styles
+        private static string _Steps { get; }
+#pragma warning restore IDE1006 // Naming Styles
 
         private List<Base.Vec2> Surrounding =
         [
@@ -154,8 +158,7 @@ namespace AoC._2021
 
         private string SharedSolution(List<string> inputs, Dictionary<string, string> variables, bool findSync)
         {
-            int steps;
-            GetVariable(nameof(steps), 100, variables, out steps);
+            GetVariable(nameof(_Steps), 100, variables, out int steps);
             if (findSync)
             {
                 steps = int.MaxValue;

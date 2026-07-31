@@ -27,7 +27,7 @@ namespace AoC._2021
                         testData.Add(new TestDatum
                         {
                             TestPart = Part.One,
-                            Variables = new Dictionary<string, string>() { { "validationTest", "1" } },
+                            Variables = new Dictionary<string, string>() { { nameof(_ValidationTest), "1" } }, 
                             Output = "[[[[0,9],2],3],4]",
                             RawInput =
             @"[[[[[9,8],1],2],3],4]"
@@ -35,7 +35,7 @@ namespace AoC._2021
                         testData.Add(new TestDatum
                         {
                             TestPart = Part.One,
-                            Variables = new Dictionary<string, string>() { { "validationTest", "1" } },
+                            Variables = new Dictionary<string, string>() { { nameof(_ValidationTest), "1" } },
                             Output = "[7,[6,[5,[7,0]]]]",
                             RawInput =
             @"[7,[6,[5,[4,[3,2]]]]]"
@@ -43,7 +43,7 @@ namespace AoC._2021
                         testData.Add(new TestDatum
                         {
                             TestPart = Part.One,
-                            Variables = new Dictionary<string, string>() { { "validationTest", "1" } },
+                            Variables = new Dictionary<string, string>() { { nameof(_ValidationTest), "1" } },
                             Output = "[[6,[5,[7,0]]],3]",
                             RawInput =
             @"[[6,[5,[4,[3,2]]]],1]"
@@ -51,7 +51,7 @@ namespace AoC._2021
                         testData.Add(new TestDatum
                         {
                             TestPart = Part.One,
-                            Variables = new Dictionary<string, string>() { { "validationTest", "1" } },
+                            Variables = new Dictionary<string, string>() { { nameof(_ValidationTest), "1" } },
                             Output = "[[3,[2,[8,0]]],[9,[5,[7,0]]]]",
                             RawInput =
             @"[[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]]"
@@ -59,7 +59,7 @@ namespace AoC._2021
                         testData.Add(new TestDatum
                         {
                             TestPart = Part.One,
-                            Variables = new Dictionary<string, string>() { { "validationTest", "1" } },
+                            Variables = new Dictionary<string, string>() { { nameof(_ValidationTest), "1" } },
                             Output = "[[[[0,7],4],[[7,8],[6,0]]],[8,1]]",
                             RawInput =
             @"[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]"
@@ -71,7 +71,7 @@ namespace AoC._2021
                         testData.Add(new TestDatum
                         {
                             TestPart = Part.One,
-                            Variables = new Dictionary<string, string>() { { "validationTest", "2" } },
+                            Variables = new Dictionary<string, string>() { { nameof(_ValidationTest), "2" } },
                             Output = "[[[[1,1],[2,2]],[3,3]],[4,4]]",
                             RawInput =
             @"[1,1]
@@ -82,7 +82,7 @@ namespace AoC._2021
                         testData.Add(new TestDatum
                         {
                             TestPart = Part.One,
-                            Variables = new Dictionary<string, string>() { { "validationTest", "2" } },
+                            Variables = new Dictionary<string, string>() { { nameof(_ValidationTest), "2" } },
                             Output = "[[[[3,0],[5,3]],[4,4]],[5,5]]",
                             RawInput =
             @"[1,1]
@@ -94,7 +94,7 @@ namespace AoC._2021
                         testData.Add(new TestDatum
                         {
                             TestPart = Part.One,
-                            Variables = new Dictionary<string, string>() { { "validationTest", "2" } },
+                            Variables = new Dictionary<string, string>() { { nameof(_ValidationTest), "2" } },
                             Output = "[[[[5,0],[7,4]],[5,5]],[6,6]]",
                             RawInput =
             @"[1,1]
@@ -107,7 +107,7 @@ namespace AoC._2021
                         testData.Add(new TestDatum
                         {
                             TestPart = Part.One,
-                            Variables = new Dictionary<string, string>() { { "validationTest", "2" } },
+                            Variables = new Dictionary<string, string>() { { nameof(_ValidationTest), "2" } },
                             Output = "[[[[0,7],4],[[7,8],[6,0]]],[8,1]]",
                             RawInput =
             @"[[[[4,3],4],4],[7,[[8,4],9]]]
@@ -116,7 +116,7 @@ namespace AoC._2021
                         testData.Add(new TestDatum
                         {
                             TestPart = Part.One,
-                            Variables = new Dictionary<string, string>() { { "validationTest", "2" } },
+                            Variables = new Dictionary<string, string>() { { nameof(_ValidationTest), "2" } },
                             Output = "[[[[4,0],[5,4]],[[7,7],[6,0]]],[[8,[7,7]],[[7,9],[5,0]]]]",
                             RawInput =
             @"[[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]]
@@ -125,7 +125,7 @@ namespace AoC._2021
             testData.Add(new TestDatum
             {
                 TestPart = Part.One,
-                Variables = new Dictionary<string, string>() { { "validationTest", "2" } },
+                Variables = new Dictionary<string, string>() { { nameof(_ValidationTest), "2" } },
                 Output = "[[[[7,7],[7,8]],[[9,5],[8,7]]],[[[6,8],[0,8]],[[9,9],[9,0]]]]",
                 RawInput =
 @"[[[[7,0],[7,7]],[[7,7],[7,8]]],[[[7,7],[8,8]],[[7,7],[8,7]]]]
@@ -134,7 +134,7 @@ namespace AoC._2021
             testData.Add(new TestDatum
             {
                 TestPart = Part.One,
-                Variables = new Dictionary<string, string>() { { "validationTest", "2" } },
+                Variables = new Dictionary<string, string>() { { nameof(_ValidationTest), "2" } },
                 Output = "[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]",
                 RawInput =
 @"[[[[7,7],[7,8]],[[9,5],[8,7]]],[[[6,8],[0,8]],[[9,9],[9,0]]]]
@@ -147,7 +147,7 @@ namespace AoC._2021
             testData.Add(new TestDatum
             {
                 TestPart = Part.One,
-                Variables = new Dictionary<string, string>() { { "validationTest", "2" } },
+                Variables = new Dictionary<string, string>() { { nameof(_ValidationTest), "2" } },
                 Output = "[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]",
                 RawInput =
 @"[[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]]
@@ -164,7 +164,7 @@ namespace AoC._2021
             testData.Add(new TestDatum
             {
                 TestPart = Part.One,
-                Variables = new Dictionary<string, string>() { { "validationTest", "2" } },
+                Variables = new Dictionary<string, string>() { { nameof(_ValidationTest), "2" } },
                 Output = "[[[[6,6],[7,6]],[[7,7],[7,0]]],[[[7,7],[7,7]],[[7,8],[9,9]]]]",
                 RawInput =
 @"[[[0,[5,8]],[[1,7],[9,6]]],[[4,[1,2]],[[1,4],2]]]
@@ -258,6 +258,10 @@ namespace AoC._2021
             ];
             return testData;
         }
+					
+#pragma warning disable IDE1006 // Naming Styles
+        private static string _ValidationTest { get; }
+#pragma warning restore IDE1006 // Naming Styles
 
         private class Number
         {
@@ -659,8 +663,7 @@ namespace AoC._2021
             Number[] numbers = [.. inputs.Select(Number.Parse)];
 
             // parsing and reducing validation
-            int validationTest;
-            GetVariable(nameof(validationTest), 0, variables, out validationTest);
+            GetVariable(nameof(_ValidationTest), 0, variables, out int validationTest);
             if (validationTest == 1)
             {
                 numbers[0].Reduce();

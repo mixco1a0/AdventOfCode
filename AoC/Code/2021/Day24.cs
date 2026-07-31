@@ -26,7 +26,7 @@ namespace AoC._2021
                 new Core.TestDatum
                 {
                     TestPart = Core.Part.One,
-                    Variables = new Dictionary<string, string>() { { "fullRegisterInput", "1" }, { "returnRegister", "x" } },
+                    Variables = new Dictionary<string, string>() { { nameof(_FullRegisterInput), "1" }, { nameof(_ReturnRegisterInput), "x" } }, 
                     Output = "-1",
                     RawInput =
 @"inp x
@@ -35,7 +35,7 @@ mul x -1"
                 new Core.TestDatum
                 {
                     TestPart = Core.Part.One,
-                    Variables = new Dictionary<string, string>() { { "fullRegisterInput", "13" } },
+                    Variables = new Dictionary<string, string>() { { nameof(_FullRegisterInput), "13" } },
                     Output = "1",
                     RawInput =
 @"inp z
@@ -46,7 +46,7 @@ eql z x"
                 new Core.TestDatum
                 {
                     TestPart = Core.Part.One,
-                    Variables = new Dictionary<string, string>() { { "fullRegisterInput", "12" } },
+                    Variables = new Dictionary<string, string>() { { nameof(_FullRegisterInput), "12" } },
                     Output = "0",
                     RawInput =
 @"inp z
@@ -57,7 +57,7 @@ eql z x"
                 new Core.TestDatum
                 {
                     TestPart = Core.Part.One,
-                    Variables = new Dictionary<string, string>() { { "fullRegisterInput", "7" } },
+                    Variables = new Dictionary<string, string>() { { nameof(_FullRegisterInput), "7" } },
                     Output = "1",
                     RawInput =
 @"inp w
@@ -75,7 +75,7 @@ mod w 2"
                 new Core.TestDatum
                 {
                     TestPart = Core.Part.One,
-                    Variables = new Dictionary<string, string>() { { "fullRegisterInput", "6" } },
+                    Variables = new Dictionary<string, string>() { { nameof(_FullRegisterInput), "6" } },
                     Output = "0",
                     RawInput =
 @"inp w
@@ -93,6 +93,11 @@ mod w 2"
             ];
             return testData;
         }
+					
+#pragma warning disable IDE1006 // Naming Styles
+        private static string _FullRegisterInput { get; }
+        private static string _ReturnRegisterInput { get; }
+#pragma warning restore IDE1006 // Naming Styles
 
         private class Instruction
         {
@@ -337,8 +342,7 @@ mod w 2"
         {
             Dictionary<char, int> registers = new() { { 'w', 0 }, { 'x', 0 }, { 'y', 0 }, { 'z', 0 } };
 
-            string fullRegisterInput;
-            GetVariable(nameof(fullRegisterInput), "______________", variables, out fullRegisterInput);
+            GetVariable(nameof(_FullRegisterInput), "______________", variables, out string fullRegisterInput);
 
             Queue<int> registerInput = new();
 
@@ -387,8 +391,7 @@ mod w 2"
                 }
             }
 
-            char returnRegister;
-            GetVariable(nameof(returnRegister), 'z', variables, out returnRegister);
+            GetVariable(nameof(_ReturnRegisterInput), 'z', variables, out char returnRegister);
             return registers[returnRegister].ToString();
         }
 
