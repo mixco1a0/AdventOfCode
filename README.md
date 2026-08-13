@@ -48,3 +48,56 @@ My solutions for the annual **[Advent of Code](https://adventofcode.com)** chall
 | **2017** | ⭐ `0 / 50` | Not Started |
 | **2016** | ⭐ `50 / 50` | [2016 Solutions](./AoC/Code/2016/) |
 | **2015** | ⭐ `50 / 50` | [2015 Solutions](./AoC/Code/2015/) |
+
+## 🛠️ Getting Started
+
+### Prerequisites
+* Install the [.NET 10.0+ SDK](https://microsoft.comdownload)
+
+### Installation & Setup
+1. Clone the repository
+2. Build the code base
+   ```bash
+   dotnet build -c Release
+   ```
+3. Use help command to get details on usage
+   ```bash
+   bin\Release\net10.0\AoC.exe -help
+   ```
+
+## 🚀 Running the Code
+
+The program is expected to be run from within the `./AoC/` directory. 
+
+Run a specific solution using the following command.
+
+```bash
+bin\Release\net10.0\AoC.exe -d <day> -n <year>
+```
+
+Run using the a config file. By default, a new file will be generated here: `./Data/default_config.json`.
+
+```bash
+bin\Release\net10.0\AoC.exe -cf "%cd%\Data\config.json"
+```
+
+Run performance testing. The file `./Data/perfdata.json` will be generated with the performance metrics.
+See also [perf_run.bat](./AoC/perf_run.bat). 
+
+```bash
+bin\Release\net10.0\AoC.exe -skiplatest -runperf -compactperf -perfrecordcount <number_of_runs> -perftimeout <timeout_in_ms> -ignoreconfigfile
+```
+
+Show performance testing results. Requires the `./Data/perfdata.json` file. Metrics can be printed in either compact or extended format.
+See also [perf_show.bat](./AoC/perf_show.bat).
+
+```bash
+bin\Release\net10.0\AoC.exe -skiplatest -showperf -compactperf -ignoreconfigfile
+bin\Release\net10.0\AoC.exe -skiplatest -showperf -ignoreconfigfile
+```
+
+### Input File Note
+Per the Advent of Code [official authorization rules](https://adventofcode.comabout#faq_copying), do not publicly commit your personalized puzzle input files (`input.txt`) to GitHub. Make sure your `.gitignore` excludes input data or local caches. The entire `./AoC/Data/` directory would need to be filled in with personal input files.
+
+## 📜 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details.
