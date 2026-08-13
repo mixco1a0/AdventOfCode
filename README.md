@@ -7,6 +7,11 @@ My solutions for the annual **[Advent of Code](https://adventofcode.com)** chall
 ```text
 .
 ├─ AoC/
+│  ├─ .vscode/
+│  │  ├─ launch.json
+│  │  ├─ settings.json
+│  │  ├─ snippets.code-snippets  # Snippets to easily create new solution files
+│  │  └─ tasks.json
 │  ├─ Code/
 │  │  ├─ 20XX/                   # Directory with year specific solutions
 │  │  │  └─ DayXX.cs
@@ -30,6 +35,7 @@ My solutions for the annual **[Advent of Code](https://adventofcode.com)** chall
 │  ├─ perf_show.bat              # Display existing performance metrics for current year using compact output
 │  ├─ run.bat                    # Run program using config.json that lives in the Data directory
 │  └─ todo.txt                   # Backlog of tasks that need to be addressed
+├─ LICENSE.md
 └─ README.md
 ```
 
