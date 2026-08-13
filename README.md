@@ -32,3 +32,19 @@ My solutions for the annual **[Advent of Code](https://adventofcode.com)** chall
 │  └─ todo.txt                   # Backlog of tasks that need to be addressed
 └─ README.md
 ```
+
+## 📊 Overall Progress
+
+| Year | Stars | Link to Solutions |
+| :---: | :---: | :--- |
+| **2025** | ⭐ `0 / 24` | Not Started |
+| **2024** | ⭐ `50 / 50` | [2024 Solutions](./AoC/Code/2024/) |
+| **2023** | ⭐ `50 / 50` | [2023 Solutions](./AoC/Code/2023/) |
+| **2022** | ⭐ `50 / 50` | [2022 Solutions](./AoC/Code/2022/) |
+| **2021** | ⭐ `50 / 50` | [2021 Solutions](./AoC/Code/2021/) |
+| **2020** | ⭐ `50 / 50` | [2020 Solutions](./AoC/Code/2020/) |
+| **2019** | ⭐ `0 / 50` | Not Started |
+| **2018** | ⭐ `0 / 50` | Not Started |
+| **2017** | ⭐ `0 / 50` | Not Started |
+| **2016** | ⭐ `50 / 50` | [2016 Solutions](./AoC/Code/2016/) |
+| **2015** | ⭐ `50 / 50` | [2015 Solutions](./AoC/Code/2015/) |
