@@ -8,6 +8,9 @@ internal class EntryPoint
 {
     static void Main(string[] args)
     {
-        
+        Day01Solution day01Solution = new();
+        IInputProvider inputProvider = new InlineInputProvider(@"(())");
+        string p1 = day01Solution.SolvePart1(inputProvider);
+        string p2 = day01Solution.SolvePart2(inputProvider);
     }
 }
