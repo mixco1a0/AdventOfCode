@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AoC.Solid.Core.Interfaces;
+using AoC.Solid.Utils;
 
 namespace AoC.Solid.Core;
 
@@ -10,11 +11,6 @@ public class InlineInputProvider(string inlineInput) : IInputProvider
 
     public IEnumerable<string> GetInput()
     {
-        if (string.IsNullOrEmpty(_inlineInput))
-        {
-            return [];
-        }
-
-        return _inlineInput.Split('\n').Select(str => str.Trim('\r'));
+        return Puzzle.ConvertInput(_inlineInput);
     }
 }
