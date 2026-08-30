@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using AoC.Solid.Core.Interfaces;
 using AoC.Solid.Utils;
 
@@ -11,6 +10,6 @@ public class InlineInputProvider(string inlineInput) : IInputProvider
 
     public IEnumerable<string> GetInput()
     {
-        return Puzzle.ConvertFromInput(_inlineInput);
+        return Input.ConvertFromInput(_inlineInput);
     }
 }

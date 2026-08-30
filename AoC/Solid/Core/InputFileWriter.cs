@@ -1,5 +1,6 @@
 using System.IO;
 using AoC.Solid.Core.Interfaces;
+using AoC.Solid.Utils;
 
 namespace AoC.Solid.Core;
 
@@ -11,14 +12,14 @@ public class InputFileWriter(string path, int year, int day) : IWriter
 
     public void Write(IInputProvider inputProvider)
     {
-        string path = Utils.Puzzle.GetInputFilePath(_path, _year, _day);
+        string path = Input.GetInputFilePath(_path, _year, _day);
         if (!Directory.Exists(path))
         {
             Directory.CreateDirectory(path);
         }
 
-        string filename = Utils.Puzzle.GetInputFileName(path);
-        string contents = Utils.Puzzle.ConvertToInput(inputProvider.GetInput());
+        string filename = Input.GetInputFileName(path);
+        string contents = Input.ConvertToInput(inputProvider.GetInput());
 
         using StreamWriter streamWriter = File.AppendText(filename);
         streamWriter.Write(contents);

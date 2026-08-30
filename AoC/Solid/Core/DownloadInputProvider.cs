@@ -16,7 +16,7 @@ public class DownloadInputProvider(int year, int day) : IInputProvider
 
     public IEnumerable<string> GetInput()
     {
-        return Puzzle.ConvertFromInput(_input);
+        return Input.ConvertFromInput(_input);
     }
 
     public void DownloadInput()
