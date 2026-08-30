@@ -21,29 +21,28 @@ internal class EntryPoint
         string inputFileContents = string.Empty;
         try
         {
-            inputFileContents = inputFileReader.Read();
-            inputProvider = new InlineInputProvider(inputFileContents);
             Console.WriteLine($"| Reading from file");
+            inputProvider = inputFileReader.Read();
         }
         catch (FileNotFoundException)
         {
             // download the input
+            Console.WriteLine($"| Downloading input");
             DownloadInputProvider downloadInputProvider = new(year, day);
             downloadInputProvider.DownloadInput();
             inputProvider = downloadInputProvider;
-            Console.WriteLine($"| Downloading input");
 
             // write out the file
-            inputFileContents = Utils.Puzzle.ConvertToInput(inputProvider.GetInput());
-            InputFileWriter inputFileWriter = new(dataPath, year, day);
-            inputFileWriter.Write(inputFileContents);
             Console.WriteLine($"| Writing to file");
+            InputFileWriter inputFileWriter = new(dataPath, year, day);
+            inputFileWriter.Write(inputProvider);
         }
 
+        Console.WriteLine($"| Running {year}.{day:D2}");
         Day01Solution day01Solution = new();
         string p1 = day01Solution.SolvePart1(inputProvider);
-        Console.WriteLine($"| {year}.{day}.p1={p1}");
+        Console.WriteLine($"| {year}.{day:D2}.p1={p1}");
         string p2 = day01Solution.SolvePart2(inputProvider);
-        Console.WriteLine($"| {year}.{day}.p2={p2}");
+        Console.WriteLine($"| {year}.{day:D2}.p2={p2}");
     }
 }

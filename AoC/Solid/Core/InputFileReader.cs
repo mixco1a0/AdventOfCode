@@ -10,7 +10,7 @@ public class InputFileReader(string path, int year, int day) : IReader
     private readonly int _year = year;
     private readonly int _day = day;
 
-    public string Read()
+    public IInputProvider Read()
     {
         string path = Utils.Puzzle.GetInputFilePath(_path, _year, _day);
         string filename = Utils.Puzzle.GetInputFileName(path);
@@ -19,6 +19,7 @@ public class InputFileReader(string path, int year, int day) : IReader
         {
             throw new FileNotFoundException("File not found.", filename);
         }
-        return File.ReadAllText(filename);
+        string contents = File.ReadAllText(filename);
+        return new InlineInputProvider(contents);
     }
 }
