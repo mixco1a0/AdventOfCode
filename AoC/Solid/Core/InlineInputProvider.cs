@@ -11,6 +11,6 @@ public class InlineInputProvider(string inlineInput) : IInputProvider
 
     public IEnumerable<string> GetInput()
     {
-        return Puzzle.ConvertInput(_inlineInput);
+        return Puzzle.ConvertFromInput(_inlineInput);
     }
 }

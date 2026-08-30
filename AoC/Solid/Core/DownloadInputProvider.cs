@@ -14,10 +14,9 @@ public class DownloadInputProvider(int year, int day) : IInputProvider
     private int _day = day;
     private string _input = string.Empty;
 
-
     public IEnumerable<string> GetInput()
     {
-        return Puzzle.ConvertInput(_input);
+        return Puzzle.ConvertFromInput(_input);
     }
 
     public void DownloadInput()
