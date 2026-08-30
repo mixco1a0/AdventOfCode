@@ -21,6 +21,25 @@ public class Day01Solution : IDaySolution
 
     public string SolvePart2(IInputProvider inputProvider)
     {
-        throw new System.NotImplementedException();
+        IEnumerable<string> input = inputProvider.GetInput();
+        string oneLine = input.First();
+        int curFloor = 0;
+        for (int i = 0; i < oneLine.Length; ++i)
+        {
+            if (oneLine[i] == Open)
+            {
+                ++curFloor;
+            }
+            else if (oneLine[i] == Close)
+            {
+                --curFloor;
+            }
+
+            if (curFloor < 0)
+            {
+                return (i + 1).ToString();
+            }
+        }
+        return string.Empty;
     }
 }
