@@ -30,12 +30,7 @@ public class DownloadInputProvider(int year, int day) : IInputProvider
 
     private async Task DownloadInputAsync()
     {
-        const string sessionEnvironmentVariable = "AOC_SESSION";
-        string? session = Environment.GetEnvironmentVariable(sessionEnvironmentVariable);
-        if (string.IsNullOrEmpty(session))
-        {
-            throw new Exception($"Environment variable \"{sessionEnvironmentVariable}\" was not found.");
-        }
+        string session = Puzzle.GetEnvironmentVariable(Puzzle.SessionKey);
 
         const string baseAddress = "https://adventofcode.com";
         Uri uri = new(baseAddress);

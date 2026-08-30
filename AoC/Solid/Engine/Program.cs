@@ -1,10 +1,9 @@
 using AoC.Solid.Core.Interfaces;
 using AoC.Solid.Core;
 using AoC.Solid.Solutions.Y2015;
-using System.Threading.Tasks;
 using System;
-using System.Collections.Generic;
 using System.IO;
+using AoC.Solid.Utils;
 
 namespace AoC.Solid.Engine;
 
@@ -12,13 +11,12 @@ internal class EntryPoint
 {
     static void Main(string[] args)
     {
-        string dataPath = @"D:\Workspace\data\aoc";
+        string dataPath = Puzzle.GetEnvironmentVariable(Puzzle.DataDirectory);
         int year = 2015;
         int day = 1;
 
         IInputProvider inputProvider;
         InputFileReader inputFileReader = new(dataPath, year, day);
-        string inputFileContents = string.Empty;
         try
         {
             Console.WriteLine($"| Reading from file");

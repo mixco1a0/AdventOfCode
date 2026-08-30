@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -5,23 +6,16 @@ namespace AoC.Solid.Utils;
 
 public static class Puzzle
 {
-    public static string GetInputFilePath(string basePath, int year, int day)
-    {
-        return Path.Combine(basePath, year.ToString(), day.ToString("D2"));
-    }
+    public static string DataDirectory => "AOC_DATA";
+    public static string SessionKey => "AOC_SESSION";
 
-    public static string GetInputFileName(string path)
+    public static string GetEnvironmentVariable(string variableName)
     {
-        return Path.Combine(path, "in.txt");
-    }
-
-    public static IEnumerable<string> ConvertFromInput(string input)
-    {
-        return String.SplitAndTrim(input, '\n', '\r');
-    }
-
-    public static string ConvertToInput(IEnumerable<string> inputs)
-    {
-        return string.Join('\n', inputs).Trim();
+        string? variableValue = Environment.GetEnvironmentVariable(variableName);
+        if (string.IsNullOrEmpty(variableValue))
+        {
+            throw new Exception($"Environment variable \"{variableName}\" was not found.");
+        }
+        return variableValue;
     }
 }
