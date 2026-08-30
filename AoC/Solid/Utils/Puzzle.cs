@@ -14,4 +14,9 @@ public static class Puzzle
     {
         return String.SplitAndTrim(input, '\n', '\r');
     }
+
+    public static string ConvertToInput(IEnumerable<string> inputs)
+    {
+        return string.Join('\n', inputs).Trim();
+    }
 }
