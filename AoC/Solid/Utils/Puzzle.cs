@@ -10,6 +10,11 @@ public static class Puzzle
         return Path.Combine(basePath, year.ToString(), day.ToString("D2"));
     }
 
+    public static string GetInputFileName(string path)
+    {
+        return Path.Combine(path, "in.txt");
+    }
+
     public static IEnumerable<string> ConvertFromInput(string input)
     {
         return String.SplitAndTrim(input, '\n', '\r');

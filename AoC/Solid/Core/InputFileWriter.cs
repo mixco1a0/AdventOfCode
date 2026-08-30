@@ -17,7 +17,7 @@ public class InputFileWriter(string path, int year, int day) : IWriter
             Directory.CreateDirectory(path);
         }
 
-        string filename = Path.Combine(path, "in.txt");
+        string filename = Utils.Puzzle.GetInputFileName(path);
 
         using StreamWriter streamWriter = File.AppendText(filename);
         streamWriter.Write(contents);
