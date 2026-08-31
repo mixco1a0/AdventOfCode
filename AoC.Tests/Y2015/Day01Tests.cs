@@ -7,6 +7,9 @@ namespace AoC.Tests.Y2015;
 
 public class Day01Tests
 {
+    private readonly int _day = 1;
+    private readonly int _year = 2015;
+
 #region Part One
     [Fact]
     public void PartOneTest1()
@@ -15,8 +18,8 @@ public class Day01Tests
         const string expectedOutput = "0";
 
         IInputProvider inputProvider = new InlineInputProvider(rawInput);
-        Day01Solution day01Solution = new();
-        string output = day01Solution.SolvePart1(inputProvider);
+        Day01Solution daySolution = new();
+        string output = daySolution.SolvePart1(inputProvider);
 
         Assert.Equal(expectedOutput, output);
     }
@@ -28,8 +31,8 @@ public class Day01Tests
         const string expectedOutput = "0";
         
         IInputProvider inputProvider = new InlineInputProvider(rawInput);
-        Day01Solution day01Solution = new();
-        string output = day01Solution.SolvePart1(inputProvider);
+        Day01Solution daySolution = new();
+        string output = daySolution.SolvePart1(inputProvider);
 
         Assert.Equal(expectedOutput, output);
     }
@@ -41,8 +44,8 @@ public class Day01Tests
         const string expectedOutput = "3";
         
         IInputProvider inputProvider = new InlineInputProvider(rawInput);
-        Day01Solution day01Solution = new();
-        string output = day01Solution.SolvePart1(inputProvider);
+        Day01Solution daySolution = new();
+        string output = daySolution.SolvePart1(inputProvider);
 
         Assert.Equal(expectedOutput, output);
     }
@@ -54,8 +57,8 @@ public class Day01Tests
         const string expectedOutput = "3";
         
         IInputProvider inputProvider = new InlineInputProvider(rawInput);
-        Day01Solution day01Solution = new();
-        string output = day01Solution.SolvePart1(inputProvider);
+        Day01Solution daySolution = new();
+        string output = daySolution.SolvePart1(inputProvider);
 
         Assert.Equal(expectedOutput, output);
     }
@@ -67,8 +70,8 @@ public class Day01Tests
         const string expectedOutput = "-3";
         
         IInputProvider inputProvider = new InlineInputProvider(rawInput);
-        Day01Solution day01Solution = new();
-        string output = day01Solution.SolvePart1(inputProvider);
+        Day01Solution daySolution = new();
+        string output = daySolution.SolvePart1(inputProvider);
 
         Assert.Equal(expectedOutput, output);
     }
@@ -78,9 +81,9 @@ public class Day01Tests
     {
         const string expectedOutput = "74";
 
-        IInputProvider inputProvider = InputService.GetInputProvider(2015, 1);
-        Day01Solution day01Solution = new();
-        string output = day01Solution.SolvePart1(inputProvider);
+        IInputProvider inputProvider = InputService.GetInputProvider(_year, _day);
+        Day01Solution daySolution = new();
+        string output = daySolution.SolvePart1(inputProvider);
 
         Assert.Equal(expectedOutput, output);
     }
@@ -94,8 +97,8 @@ public class Day01Tests
         const string expectedOutput = "1";
         
         IInputProvider inputProvider = new InlineInputProvider(rawInput);
-        Day01Solution day01Solution = new();
-        string output = day01Solution.SolvePart2(inputProvider);
+        Day01Solution daySolution = new();
+        string output = daySolution.SolvePart2(inputProvider);
 
         Assert.Equal(expectedOutput, output);
     }
@@ -107,8 +110,8 @@ public class Day01Tests
         const string expectedOutput = "5";
         
         IInputProvider inputProvider = new InlineInputProvider(rawInput);
-        Day01Solution day01Solution = new();
-        string output = day01Solution.SolvePart2(inputProvider);
+        Day01Solution daySolution = new();
+        string output = daySolution.SolvePart2(inputProvider);
 
         Assert.Equal(expectedOutput, output);
     }
@@ -118,9 +121,9 @@ public class Day01Tests
     {
         const string expectedOutput = "1795";
 
-        IInputProvider inputProvider = InputService.GetInputProvider(2015, 1);
-        Day01Solution day01Solution = new();
-        string output = day01Solution.SolvePart2(inputProvider);
+        IInputProvider inputProvider = InputService.GetInputProvider(_year, _day);
+        Day01Solution daySolution = new();
+        string output = daySolution.SolvePart2(inputProvider);
 
         Assert.Equal(expectedOutput, output);
     }
