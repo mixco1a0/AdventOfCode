@@ -4,7 +4,7 @@ using AoC.Solid.Utils;
 
 namespace AoC.Solid.Core;
 
-public class InputFileWriter(string path, int year, int day) : IWriter
+public class InputFileWriter(string path, int year, int day) : IInputWriter
 {
     private readonly string _path = path;
     private readonly int _year = year;

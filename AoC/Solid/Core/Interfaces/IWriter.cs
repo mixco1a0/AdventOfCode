@@ -1,6 +1,6 @@
 namespace AoC.Solid.Core.Interfaces;
 
-public interface IWriter
+public interface IInputWriter
 {
     void Write(IInputProvider inputProvider);
 }

@@ -5,7 +5,7 @@ using AoC.Solid.Utils;
 namespace AoC.Solid.Core;
 
 
-public class InputFileReader(string path, int year, int day) : IReader
+public class InputFileReader(string path, int year, int day) : IInputReader
 {
     private readonly string _path = path;
     private readonly int _year = year;
