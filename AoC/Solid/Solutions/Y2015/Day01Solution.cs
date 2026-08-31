@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using AoC.Solid.Core.Interfaces;
 
@@ -9,28 +8,26 @@ public class Day01Solution : IDaySolution
     public int Day => 1;
     public int Year => 2015;
 
-    private static char Open => '(';
-    private static char Close => ')';
+    private readonly char _open = '(';
+    private readonly char _close = ')';
 
     public string SolvePart1(IInputProvider inputProvider)
     {
-        IEnumerable<string> input = inputProvider.GetInput();
-        string oneLine = input.First();
-        return (oneLine.Count(c => c == Open) - oneLine.Count(c => c == Close)).ToString();
+        string firstLine = inputProvider.GetInput().First();
+        return (firstLine.Count(c => c == _open) - firstLine.Count(c => c == _close)).ToString();
     }
 
     public string SolvePart2(IInputProvider inputProvider)
     {
-        IEnumerable<string> input = inputProvider.GetInput();
-        string oneLine = input.First();
+        string firstLine = inputProvider.GetInput().First();
         int curFloor = 0;
-        for (int i = 0; i < oneLine.Length; ++i)
+        for (int i = 0; i < firstLine.Length; ++i)
         {
-            if (oneLine[i] == Open)
+            if (firstLine[i] == _open)
             {
                 ++curFloor;
             }
-            else if (oneLine[i] == Close)
+            else if (firstLine[i] == _close)
             {
                 --curFloor;
             }
