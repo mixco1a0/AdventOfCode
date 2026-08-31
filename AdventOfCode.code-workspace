@@ -5,6 +5,10 @@
 			"path": "AoC"
 		},
 		{
+			"name": "AoC Data",
+			"path": "AoC.Data"
+		},
+		{
 			"name": "AoC Tests",
 			"path": "AoC.Tests"
 		}

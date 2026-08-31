@@ -481,5 +481,8 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 
-# Temporary until all files are removed from depot
+# Temporary until all files are removed from local workspace
 */Data
+
+# Remove all data files
+AoC.Data
