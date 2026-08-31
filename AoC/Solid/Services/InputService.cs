@@ -7,9 +7,9 @@ namespace AoC.Solid.Services;
 
 public class InputService
 {
-    private readonly string _dataDirectory = Puzzle.GetEnvironmentVariable(Puzzle.DataDirectory);
+    private static readonly string _dataDirectory = Puzzle.GetEnvironmentVariable(Puzzle.DataDirectory);
 
-    public IInputProvider GetInputProvider(int year, int day)
+    public static IInputProvider GetInputProvider(int year, int day)
     {
         IInputProvider inputProvider;
         InputFileReader inputFileReader = new(_dataDirectory, year, day);

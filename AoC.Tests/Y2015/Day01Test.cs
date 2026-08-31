@@ -78,8 +78,7 @@ public class Day01Tests
     {
         const string expectedOutput = "74";
 
-        InputService inputService = new();
-        IInputProvider inputProvider = inputService.GetInputProvider(2015, 1);
+        IInputProvider inputProvider = InputService.GetInputProvider(2015, 1);
         Day01Solution day01Solution = new();
         string output = day01Solution.SolvePart1(inputProvider);
 
@@ -119,8 +118,7 @@ public class Day01Tests
     {
         const string expectedOutput = "1795";
 
-        InputService inputService = new();
-        IInputProvider inputProvider = inputService.GetInputProvider(2015, 1);
+        IInputProvider inputProvider = InputService.GetInputProvider(2015, 1);
         Day01Solution day01Solution = new();
         string output = day01Solution.SolvePart2(inputProvider);
 
