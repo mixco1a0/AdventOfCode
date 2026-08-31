@@ -14,11 +14,14 @@ internal class EntryPoint
         int day = 1;
 
         IInputProvider inputProvider = InputService.GetInputProvider(year, day);
-        Console.WriteLine($"| Running {year}.{day:D2}");
-        Day01Solution day01Solution = new();
-        string p1 = day01Solution.SolvePart1(inputProvider);
-        Console.WriteLine($"| {year}.{day:D2}.p1={p1}");
-        string p2 = day01Solution.SolvePart2(inputProvider);
-        Console.WriteLine($"| {year}.{day:D2}.p2={p2}");
+        IDaySolution? daySolution = DayService.GetDaySolution(year, day);
+        if (daySolution != null)
+        {
+            Console.WriteLine($"| Running {year}.{day:D2}");
+            string p1 = daySolution.SolvePart1(inputProvider);
+            Console.WriteLine($"| {year}.{day:D2}.p1={p1}");
+            string p2 = daySolution.SolvePart2(inputProvider);
+            Console.WriteLine($"| {year}.{day:D2}.p2={p2}");
+        }
     }
 }
