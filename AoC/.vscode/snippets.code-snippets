@@ -1,4 +1,30 @@
 {
+	"DaySolution Template":
+	{
+		"prefix": "aocsolidtemplate",
+		"description": "Create a new implementation of IDaySolution",
+		"body": [
+			"using AoC.Solid.Core.Interfaces;",
+			"",
+			"namespace AoC.Solid.Solutions.${TM_DIRECTORY/^.+[\\\\\\/](.*)$/$1/};",
+			"",
+			"public class $TM_FILENAME_BASE : IDaySolution",
+			"{",
+			"    public int Day => ${TM_FILENAME_BASE/^[a-zA-Z]*(0)?([0-9]+)[a-zA-Z]*$/$2/};",
+			"    public int Year => ${TM_DIRECTORY/^.+[\\\\\\/].(.*)$/$1/};",
+			"",
+			"    public string SolvePart1(IInputProvider inputProvider)",
+			"    {",
+			"        return string.Empty;",
+			"    }",
+			"",
+			"    public string SolvePart2(IInputProvider inputProvider)",
+			"    {",
+			"        return string.Empty;",
+			"    }",
+			"}"
+		]
+	},
 	"AoC.Day Template":
 	{
 		"prefix": "aocdaytemplate",
