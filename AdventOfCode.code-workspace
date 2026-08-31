@@ -1,7 +1,12 @@
 {
 	"folders": [
 		{
+			"name": "Advent of Code",
 			"path": "AoC"
+		},
+		{
+			"name": "AoC Tests",
+			"path": "AoC.Tests"
 		}
 	],
 	"settings": {}

@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="AoC.Tests/AoC.Tests.csproj" />
+  <Project Path="AoC/AoC.csproj" />
+</Solution>
