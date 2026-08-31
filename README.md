@@ -12,29 +12,34 @@ My solutions for the annual **[Advent of Code](https://adventofcode.com)** chall
 │  │  ├─ settings.json
 │  │  ├─ snippets.code-snippets  # Snippets to easily create new solution files
 │  │  └─ tasks.json
-│  ├─ Code/
-│  │  ├─ 20XX/                   # Directory with year specific solutions
-│  │  │  └─ DayXX.cs
-│  │  ├─ Algorithm/              # Shared algorithms
-│  │  ├─ Base/                   # Shared base classes used frequently
-│  │  ├─ Core/                   # Core functionality 
-│  │  └─ Util/                   # Utility functions used by solutions and system as a whole
-│  ├─ Data/                      # (ignored)
-│  │  ├─ 20XX/
-│  │  │  ├─ In                   # Files containing daily input for puzzles
-│  │  │  │  └─ dayXX.txt
-│  │  │  └─ Out                  # Files containing expected answers for daily puzzles
-│  │  │     └─ dayXX.txt
-│  │  ├─ config.json             # Config used in conjunction with run.bat
-│  │  ├─ debugger_config.json    # Config used when running from vs code
-│  │  ├─ default_config.json     # Generated on initial run to provide template
-│  │  └─ perfdata.json           # File containing performance data for all runs
-│  ├─ AoC.csproj
-│  ├─ EntryPoint.cs              # The entry point to running puzzle solutions
-│  ├─ perf_run.bat               # Run default configuration for performance testing on all solutions for current year
-│  ├─ perf_show.bat              # Display existing performance metrics for current year using compact output
-│  ├─ run.bat                    # Run program using config.json that lives in the Data directory
-│  └─ todo.txt                   # Backlog of tasks that need to be addressed
+│  ├─ Code/                      # (Deprecated)
+│  ├─ Data/                      # (Deprecated)
+│  ├─ Solid/                     # All code related to Advent of Code
+│  │  ├─ Core                    # Core functionality 
+│  │  │  └─ Interfaces           # Interface definitions
+│  │  ├─ Engine                  # Functionality around running the project
+│  │  ├─ Services                # Service definitions
+│  │  ├─ Solutions               # All solutions for all years
+│  │  │  └─ 20XX/                # Year specific solutions
+│  │  │     └─ DayXXSolution.cs  # Day specific implementation
+│  │  └─ Utils                   # Utility classes and functions
+│  └─AoC.csproj
+|
+├─ AoC.Data/                     # (ignored) Should be set to environment variable AOC_DATA
+│  └─ 20XX/                      # Directory based on year number
+│     └─ XX                      # Directory based on day number
+│        └─ in.txt               # Day specific input file
+|
+├─ AoC.Tests/                    # xUnit based test suite
+│  ├─ .vscode/
+│  │  ├─ launch.json
+│  │  ├─ settings.json
+│  │  ├─ snippets.code-snippets  # Snippets to easily create new test files
+│  │  └─ tasks.json
+│  ├─ Y20XX/                     # Directory with year specific tests
+│  │  └─ DayXXTests.cs           # All example tests and actual input tests
+│  └─ AoC.Tests.csproj
+|
 ├─ LICENSE.md
 └─ README.md
 ```
@@ -60,7 +65,7 @@ My solutions for the annual **[Advent of Code](https://adventofcode.com)** chall
 ### Prerequisites
 * Install the [.NET 10.0+ SDK](https://microsoft.comdownload)
 
-### Installation & Setup
+### (NEEDS ADJUSTMENT) Installation & Setup
 1. Clone the repository
 2. Build the code base
    ```bash
@@ -71,7 +76,7 @@ My solutions for the annual **[Advent of Code](https://adventofcode.com)** chall
    bin\Release\net10.0\AoC.exe -help
    ```
 
-## 🚀 Running the Code
+## 🚀 (NEEDS ADJUSTMENT) Running the Code
 
 The program is expected to be run from within the `./AoC/` directory. 
 
@@ -103,7 +108,7 @@ bin\Release\net10.0\AoC.exe -skiplatest -showperf -ignoreconfigfile
 ```
 
 ### Input File Note
-Per the Advent of Code [official authorization rules](https://adventofcode.comabout#faq_copying), do not publicly commit your personalized puzzle input files (`input.txt`) to GitHub. Make sure your `.gitignore` excludes input data or local caches. The entire `./AoC/Data/` directory would need to be filled in with personal input files.
+Per the Advent of Code [official authorization rules](https://adventofcode.comabout#faq_copying), do not publicly commit your personalized puzzle input files (`input.txt`) to GitHub. Make sure your `.gitignore` excludes input data or local caches. The entire `./AoC.Data/` directory will be filled in with personal input files.
 
 ## 📜 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details.
