@@ -10,6 +10,7 @@
 			"",
 			"public class $TM_FILENAME_BASE : IDaySolution",
 			"{",
+			"    public int Version => 0;",
 			"    public int Day => ${TM_FILENAME_BASE/^[a-zA-Z]*(0)?([0-9]+)[a-zA-Z]*$/$2/};",
 			"    public int Year => ${TM_DIRECTORY/^.+[\\\\\\/].(.*)$/$1/};",
 			"",
