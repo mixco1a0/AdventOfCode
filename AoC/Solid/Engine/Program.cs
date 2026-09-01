@@ -2,7 +2,6 @@ using System;
 
 using AoC.Solid.Core.Interfaces;
 using AoC.Solid.Services;
-using AoC.Solid.Solutions.Y2015;
 
 namespace AoC.Solid.Engine;
 
