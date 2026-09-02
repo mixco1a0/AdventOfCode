@@ -4,9 +4,14 @@ namespace AoC.Solid.Utils;
 
 public static class File
 {
+    private static string GetDefaultFilePath(string basePath, int year, int day)
+    {
+        return Path.Combine(basePath, $"Year{year:D4}", $"Day{day:D2}");
+    }
+
     public static string GetInputFilePath(string basePath, int year, int day)
     {
-        return Path.Combine(basePath, year.ToString(), day.ToString("D2"));
+        return GetDefaultFilePath(basePath, year, day);
     }
 
     public static string GetInputFileName(string path)
@@ -15,7 +20,7 @@ public static class File
     }
     public static string GetOutputFilePath(string basePath, int year, int day)
     {
-        return Path.Combine(basePath, year.ToString(), day.ToString("D2"));
+        return GetDefaultFilePath(basePath, year, day);
     }
 
     public static string GetOutputFileName(string path, int part)
