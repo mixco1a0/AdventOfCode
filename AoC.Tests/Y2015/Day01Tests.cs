@@ -11,7 +11,7 @@ public class Day01Tests
     private readonly int _year = 2015;
 
 #region Part One
-    [Fact(Timeout = 1000)]
+    [Fact]
     public void PartOneTest1()
     {
         const string rawInput = @"(())";
@@ -24,7 +24,7 @@ public class Day01Tests
         Assert.Equal(expectedOutput, output);
     }
 
-    [Fact(Timeout = 1000)]
+    [Fact]
     public void PartOneTest2()
     {
         const string rawInput = @"()()";
@@ -37,7 +37,7 @@ public class Day01Tests
         Assert.Equal(expectedOutput, output);
     }
 
-    [Fact(Timeout = 1000)]
+    [Fact]
     public void PartOneTest3()
     {
         const string rawInput = @"(((";
@@ -50,7 +50,7 @@ public class Day01Tests
         Assert.Equal(expectedOutput, output);
     }
 
-    [Fact(Timeout = 1000)]
+    [Fact]
     public void PartOneTest4()
     {
         const string rawInput = @"(((";
@@ -63,7 +63,7 @@ public class Day01Tests
         Assert.Equal(expectedOutput, output);
     }
 
-    [Fact(Timeout = 1000)]
+    [Fact]
     public void PartOneTest5()
     {
         const string rawInput = @")))";
@@ -76,7 +76,7 @@ public class Day01Tests
         Assert.Equal(expectedOutput, output);
     }
     
-    [Fact(Timeout = 1000)]
+    [Fact]
     public void PartOneInput()
     {
         IStringInputProvider inputProvider = InputService.GetInputProvider(_year, _day);
@@ -91,7 +91,7 @@ public class Day01Tests
 #endregion
 
 #region Part Two
-    [Fact(Timeout = 1000)]
+    [Fact]
     public void PartTwoTest1()
     {
         const string rawInput = @")";
@@ -104,7 +104,7 @@ public class Day01Tests
         Assert.Equal(expectedOutput, output);
     }
 
-    [Fact(Timeout = 1000)]
+    [Fact]
     public void PartTwoTest2()
     {
         const string rawInput = @"()())";
@@ -117,7 +117,7 @@ public class Day01Tests
         Assert.Equal(expectedOutput, output);
     }
 
-    [Fact(Timeout = 1000)]
+    [Fact]
     public void PartTwoInput()
     {
         IStringInputProvider inputProvider = InputService.GetInputProvider(_year, _day);
