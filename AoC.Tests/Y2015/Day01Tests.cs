@@ -79,11 +79,12 @@ public class Day01Tests
     [Fact]
     public void PartOneInput()
     {
-        const string expectedOutput = "74";
-
         IInputProvider inputProvider = InputService.GetInputProvider(_year, _day);
         Day01Solution daySolution = new();
         string output = daySolution.SolvePart1(inputProvider);
+        
+        string expectedOutput = OutputService.GetOutput(_year, _day, 1);
+        Assert.False(string.IsNullOrEmpty(expectedOutput));
 
         Assert.Equal(expectedOutput, output);
     }
@@ -119,11 +120,12 @@ public class Day01Tests
     [Fact]
     public void PartTwoInput()
     {
-        const string expectedOutput = "1795";
-
         IInputProvider inputProvider = InputService.GetInputProvider(_year, _day);
         Day01Solution daySolution = new();
         string output = daySolution.SolvePart2(inputProvider);
+        
+        string expectedOutput = OutputService.GetOutput(_year, _day, 2);
+        Assert.False(string.IsNullOrEmpty(expectedOutput));
 
         Assert.Equal(expectedOutput, output);
     }
