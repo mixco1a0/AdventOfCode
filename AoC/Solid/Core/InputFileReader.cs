@@ -1,6 +1,5 @@
 using System.IO;
 using AoC.Solid.Core.Interfaces;
-using AoC.Solid.Utils;
 
 namespace AoC.Solid.Core;
 
@@ -13,8 +12,8 @@ public class InputFileReader(string path, int year, int day) : IInputReader
 
     public IInputProvider Read()
     {
-        string path = Input.GetInputFilePath(_path, _year, _day);
-        string filename = Input.GetInputFileName(path);
+        string path = Utils.File.GetInputFilePath(_path, _year, _day);
+        string filename = Utils.File.GetInputFileName(path);
         
         if (!File.Exists(filename))
         {
