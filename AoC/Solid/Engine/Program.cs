@@ -18,8 +18,10 @@ internal class EntryPoint
         {
             Console.WriteLine($"| Running {year}.{day:D2}");
             string p1 = daySolution.SolvePart1(inputProvider);
+            OutputService.SetOutput(year, day, 1, p1);
             Console.WriteLine($"| {year}.{day:D2}.p1={p1}");
             string p2 = daySolution.SolvePart2(inputProvider);
+            OutputService.SetOutput(year, day, 2, p2);
             Console.WriteLine($"| {year}.{day:D2}.p2={p2}");
         }
     }
