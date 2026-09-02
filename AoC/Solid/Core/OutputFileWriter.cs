@@ -19,7 +19,7 @@ public class OutputFileWriter(string path, int year, int day, int part) : IOutpu
         }
 
         string filename = Utils.File.GetOutputFileName(path, _part);
-        using StreamWriter streamWriter = File.AppendText(filename);
+        using StreamWriter streamWriter = File.CreateText(filename);
         streamWriter.Write(output);
     }
 }
