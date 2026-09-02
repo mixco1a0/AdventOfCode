@@ -12,15 +12,15 @@ public class Day01Solution : IDaySolution
     private readonly char _open = '(';
     private readonly char _close = ')';
 
-    public string SolvePart1(IInputProvider inputProvider)
+    public string SolvePart1(IStringInputProvider stringInputProvider)
     {
-        string firstLine = inputProvider.GetInput().First();
+        string firstLine = stringInputProvider.GetInput().First();
         return (firstLine.Count(c => c == _open) - firstLine.Count(c => c == _close)).ToString();
     }
 
-    public string SolvePart2(IInputProvider inputProvider)
+    public string SolvePart2(IStringInputProvider stringInputProvider)
     {
-        string firstLine = inputProvider.GetInput().First();
+        string firstLine = stringInputProvider.GetInput().First();
         int curFloor = 0;
         for (int i = 0; i < firstLine.Length; ++i)
         {

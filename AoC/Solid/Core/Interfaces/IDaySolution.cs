@@ -6,6 +6,6 @@ public interface IDaySolution
     int Day { get; }
     int Year { get; }
 
-    string SolvePart1(IInputProvider inputProvider);
-    string SolvePart2(IInputProvider inputProvider);
+    string SolvePart1(IStringInputProvider stringInputProvider);
+    string SolvePart2(IStringInputProvider stringInputProvider);
 }

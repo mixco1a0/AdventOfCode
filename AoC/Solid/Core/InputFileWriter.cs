@@ -9,7 +9,7 @@ public class InputFileWriter(string path, int year, int day) : IInputWriter
     private readonly int _year = year;
     private readonly int _day = day;
 
-    public void Write(IInputProvider inputProvider)
+    public void Write(IStringInputProvider inputProvider)
     {
         string path = Utils.File.GetInputFilePath(_path, _year, _day);
         if (!Directory.Exists(path))

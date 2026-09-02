@@ -10,7 +10,7 @@ public class InputFileReader(string path, int year, int day) : IInputReader
     private readonly int _year = year;
     private readonly int _day = day;
 
-    public IInputProvider Read()
+    public IStringInputProvider Read()
     {
         string path = Utils.File.GetInputFilePath(_path, _year, _day);
         string filename = Utils.File.GetInputFileName(path);

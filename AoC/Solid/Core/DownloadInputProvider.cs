@@ -8,7 +8,7 @@ using AoC.Solid.Utils;
 
 namespace AoC.Solid.Core;
 
-public class DownloadInputProvider(int year, int day) : IInputProvider
+public class DownloadInputProvider(int year, int day) : IStringInputProvider
 {
     private readonly int _year = year;
     private readonly int _day = day;

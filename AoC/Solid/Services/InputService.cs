@@ -9,9 +9,9 @@ public class InputService
 {
     private static readonly string _dataDirectory = Puzzle.GetEnvironmentVariable(Puzzle.DataDirectory);
 
-    public static IInputProvider GetInputProvider(int year, int day)
+    public static IStringInputProvider GetInputProvider(int year, int day)
     {
-        IInputProvider inputProvider;
+        IStringInputProvider inputProvider;
         InputFileReader inputFileReader = new(_dataDirectory, year, day);
         try
         {

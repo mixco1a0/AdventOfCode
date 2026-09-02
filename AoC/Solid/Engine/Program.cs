@@ -12,15 +12,15 @@ internal class EntryPoint
         int year = 2015;
         int day = 1;
 
-        IInputProvider inputProvider = InputService.GetInputProvider(year, day);
+        IStringInputProvider stringInputProvider = InputService.GetInputProvider(year, day);
         IDaySolution? daySolution = DayService.GetDaySolution(year, day);
         if (daySolution != null)
         {
             Console.WriteLine($"| Running {year}.{day:D2}");
-            string p1 = daySolution.SolvePart1(inputProvider);
+            string p1 = daySolution.SolvePart1(stringInputProvider);
             OutputService.SetOutput(year, day, 1, p1);
             Console.WriteLine($"| {year}.{day:D2}.p1={p1}");
-            string p2 = daySolution.SolvePart2(inputProvider);
+            string p2 = daySolution.SolvePart2(stringInputProvider);
             OutputService.SetOutput(year, day, 2, p2);
             Console.WriteLine($"| {year}.{day:D2}.p2={p2}");
         }

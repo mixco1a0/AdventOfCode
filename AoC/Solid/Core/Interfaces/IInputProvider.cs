@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace AoC.Solid.Core.Interfaces;
 
-public interface IInputProvider
+public interface IInputProvider<T>
 {
-    IEnumerable<string> GetInput();
+    IEnumerable<T> GetInput();
 }

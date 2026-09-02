@@ -17,7 +17,7 @@ public class Day01Tests
         const string rawInput = @"(())";
         const string expectedOutput = "0";
 
-        IInputProvider inputProvider = new InlineInputProvider(rawInput);
+        IStringInputProvider inputProvider = new InlineInputProvider(rawInput);
         Day01Solution daySolution = new();
         string output = daySolution.SolvePart1(inputProvider);
 
@@ -30,7 +30,7 @@ public class Day01Tests
         const string rawInput = @"()()";
         const string expectedOutput = "0";
         
-        IInputProvider inputProvider = new InlineInputProvider(rawInput);
+        IStringInputProvider inputProvider = new InlineInputProvider(rawInput);
         Day01Solution daySolution = new();
         string output = daySolution.SolvePart1(inputProvider);
 
@@ -43,7 +43,7 @@ public class Day01Tests
         const string rawInput = @"(((";
         const string expectedOutput = "3";
         
-        IInputProvider inputProvider = new InlineInputProvider(rawInput);
+        IStringInputProvider inputProvider = new InlineInputProvider(rawInput);
         Day01Solution daySolution = new();
         string output = daySolution.SolvePart1(inputProvider);
 
@@ -56,7 +56,7 @@ public class Day01Tests
         const string rawInput = @"(((";
         const string expectedOutput = "3";
         
-        IInputProvider inputProvider = new InlineInputProvider(rawInput);
+        IStringInputProvider inputProvider = new InlineInputProvider(rawInput);
         Day01Solution daySolution = new();
         string output = daySolution.SolvePart1(inputProvider);
 
@@ -69,7 +69,7 @@ public class Day01Tests
         const string rawInput = @")))";
         const string expectedOutput = "-3";
         
-        IInputProvider inputProvider = new InlineInputProvider(rawInput);
+        IStringInputProvider inputProvider = new InlineInputProvider(rawInput);
         Day01Solution daySolution = new();
         string output = daySolution.SolvePart1(inputProvider);
 
@@ -79,7 +79,7 @@ public class Day01Tests
     [Fact(Timeout = 1000)]
     public void PartOneInput()
     {
-        IInputProvider inputProvider = InputService.GetInputProvider(_year, _day);
+        IStringInputProvider inputProvider = InputService.GetInputProvider(_year, _day);
         Day01Solution daySolution = new();
         string output = daySolution.SolvePart1(inputProvider);
         
@@ -97,7 +97,7 @@ public class Day01Tests
         const string rawInput = @")";
         const string expectedOutput = "1";
         
-        IInputProvider inputProvider = new InlineInputProvider(rawInput);
+        IStringInputProvider inputProvider = new InlineInputProvider(rawInput);
         Day01Solution daySolution = new();
         string output = daySolution.SolvePart2(inputProvider);
 
@@ -110,7 +110,7 @@ public class Day01Tests
         const string rawInput = @"()())";
         const string expectedOutput = "5";
         
-        IInputProvider inputProvider = new InlineInputProvider(rawInput);
+        IStringInputProvider inputProvider = new InlineInputProvider(rawInput);
         Day01Solution daySolution = new();
         string output = daySolution.SolvePart2(inputProvider);
 
@@ -120,7 +120,7 @@ public class Day01Tests
     [Fact(Timeout = 1000)]
     public void PartTwoInput()
     {
-        IInputProvider inputProvider = InputService.GetInputProvider(_year, _day);
+        IStringInputProvider inputProvider = InputService.GetInputProvider(_year, _day);
         Day01Solution daySolution = new();
         string output = daySolution.SolvePart2(inputProvider);
         

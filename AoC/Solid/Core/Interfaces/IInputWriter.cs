@@ -1,3 +1,3 @@
 namespace AoC.Solid.Core.Interfaces;
 
-public interface IInputWriter : IWriter<IInputProvider>;
+public interface IInputWriter : IWriter<IStringInputProvider>;
