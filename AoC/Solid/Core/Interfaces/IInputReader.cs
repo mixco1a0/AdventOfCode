@@ -1,6 +1,3 @@
 namespace AoC.Solid.Core.Interfaces;
 
-public interface IInputReader
-{
-    IInputProvider Read();
-}
+public interface IInputReader : IReader<IInputProvider>;
