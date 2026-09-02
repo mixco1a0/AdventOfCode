@@ -14,7 +14,7 @@ public class InputFileReader(string path, int year, int day) : IInputReader
     {
         string path = Utils.File.GetInputFilePath(_path, _year, _day);
         string filename = Utils.File.GetInputFileName(path);
-        
+
         if (!File.Exists(filename))
         {
             throw new FileNotFoundException("File not found.", filename);

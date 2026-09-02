@@ -6,7 +6,7 @@ namespace AoC.Solid.Utils;
 
 
 public static class String
-{    
+{
     public static IEnumerable<string> SplitAndTrim(string input, char seperator, char trim)
     {
         if (string.IsNullOrEmpty(input))

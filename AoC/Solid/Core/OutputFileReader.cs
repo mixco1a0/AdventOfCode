@@ -15,7 +15,7 @@ public class OutputFileReader(string path, int year, int day, int part) : IOutpu
     {
         string path = Utils.File.GetOutputFilePath(_path, _year, _day);
         string filename = Utils.File.GetOutputFileName(path, _part);
-        
+
         if (!File.Exists(filename))
         {
             throw new FileNotFoundException("File not found.", filename);

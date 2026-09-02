@@ -10,8 +10,8 @@ namespace AoC.Solid.Core;
 
 public class DownloadInputProvider(int year, int day) : IInputProvider
 {
-    private int _year = year;
-    private int _day = day;
+    private readonly int _year = year;
+    private readonly int _day = day;
     private string _input = string.Empty;
 
     public IEnumerable<string> GetInput()
