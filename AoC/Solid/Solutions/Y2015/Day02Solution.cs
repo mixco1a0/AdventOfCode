@@ -6,7 +6,7 @@ namespace AoC.Solid.Solutions.Y2015;
 
 public class Day02Solution : IDaySolution
 {
-    public int Version => 0;
+    public int Version => 1;
     public int Day => 2;
     public int Year => 2015;
 
