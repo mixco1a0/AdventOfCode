@@ -9,7 +9,7 @@
 			"using AoC.Solid.Services;",
 			"using AoC.Solid.Solutions.${TM_DIRECTORY/^.+[\\\\\\/](.*)$/$1/};",
 			"",
-			"namespace AoC.Tests.${TM_DIRECTORY/^.+[\\\\\\/](.*)$/$1/};",
+			"namespace AoC.Tests.Solutions.${TM_DIRECTORY/^.+[\\\\\\/](.*)$/$1/};",
 			"",
 			"public class $TM_FILENAME_BASE",
 			"{",
