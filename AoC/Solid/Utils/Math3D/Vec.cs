@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AoC.Solid.Core.Interfaces;
+using AoC.Solid.Utils.Math;
 
-namespace AoC.Solid.Utils.Math;
+namespace AoC.Solid.Utils.Math3D;
 
 public record Vec3(int X, int Y, int Z);
 

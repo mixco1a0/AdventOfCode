@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using AoC.Solid.Core.Interfaces;
 using AoC.Solid.Utils.Math;
+using AoC.Solid.Utils.Math3D;
 
 namespace AoC.Solid.Solutions.Y2015;
 
