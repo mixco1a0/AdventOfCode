@@ -13,7 +13,7 @@ public class Day02Solution : IDaySolution
 
     private Vec3 Parse(string input)
     {
-        List<int> ints = [.. Number.Split(input, 'x')];
+        List<int> ints = [.. Int.Split(input, 'x')];
         ints.Sort();
         return new(ints[0], ints[1], ints[2]);
     }

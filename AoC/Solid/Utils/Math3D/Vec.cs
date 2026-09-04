@@ -25,7 +25,7 @@ internal class Vec3InputProvider(IStringInputProvider stringInputProvider, Func<
 
     private static Vec3 DefaultParser(string input)
     {
-        IEnumerable<int> ints = Number.Split(input, ',');
+        IEnumerable<int> ints = Int.Split(input, ',');
         return new(ints.First(), ints.Skip(1).First(), ints.Skip(2).First());
     }
 }

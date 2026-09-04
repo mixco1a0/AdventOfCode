@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace AoC.Solid.Utils.Math;
 
-public static class Number
+public static class Int
 {
 #region int functions
     /// <summary>
