@@ -11,16 +11,18 @@ public class Day02Solution : IDaySolution
     public int Day => 2;
     public int Year => 2015;
 
-    private Vec3 Parse(string input)
+    private readonly string _delimters = "x";
+
+    private Vec3 Parse(string input, string delimters)
     {
-        List<int> ints = [.. Int.Split(input, 'x')];
+        List<int> ints = [.. Int.Split(input, delimters)];
         ints.Sort();
         return new(ints[0], ints[1], ints[2]);
     }
 
     public string SolvePart1(IStringInputProvider stringInputProvider)
     {
-        Vec3InputProvider vec3InputProvider = new(stringInputProvider, Parse);
+        Vec3InputProvider vec3InputProvider = new(stringInputProvider, _delimters, Parse);
         IEnumerable<Vec3> vec3s = vec3InputProvider.GetInput();
 
         int total = 0;
@@ -33,7 +35,7 @@ public class Day02Solution : IDaySolution
 
     public string SolvePart2(IStringInputProvider stringInputProvider)
     {
-        Vec3InputProvider vec3InputProvider = new(stringInputProvider, Parse);
+        Vec3InputProvider vec3InputProvider = new(stringInputProvider, _delimters, Parse);
         IEnumerable<Vec3> vec3s = vec3InputProvider.GetInput();
 
         int total = 0;

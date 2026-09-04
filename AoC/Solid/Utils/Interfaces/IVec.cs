@@ -14,4 +14,5 @@ public interface IVec<VecT, T> :
     static abstract VecT One {get;}
     
     public abstract T Manhattan(VecT other);
+    public static abstract VecT Parse(string input, string delimeters);
 }

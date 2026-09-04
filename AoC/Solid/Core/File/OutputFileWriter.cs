@@ -1,7 +1,7 @@
 using System.IO;
 using AoC.Solid.Core.Interfaces;
 
-namespace AoC.Solid.Core;
+namespace AoC.Solid.Core.File;
 
 public class OutputFileWriter(string path, int year, int day, int part) : IOutputWriter
 {
@@ -19,7 +19,7 @@ public class OutputFileWriter(string path, int year, int day, int part) : IOutpu
         }
 
         string filename = Utils.File.GetOutputFileName(path, _part);
-        using StreamWriter streamWriter = File.CreateText(filename);
+        using StreamWriter streamWriter = System.IO.File.CreateText(filename);
         streamWriter.Write(output);
     }
 }

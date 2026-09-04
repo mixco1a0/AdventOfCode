@@ -1,5 +1,6 @@
 using System.IO;
-using AoC.Solid.Core;
+using AoC.Solid.Core.File;
+using AoC.Solid.Core.Input;
 using AoC.Solid.Core.Interfaces;
 using AoC.Solid.Utils;
 

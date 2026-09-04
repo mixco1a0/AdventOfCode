@@ -1,7 +1,7 @@
 using System.IO;
 using AoC.Solid.Core.Interfaces;
 
-namespace AoC.Solid.Core;
+namespace AoC.Solid.Core.File;
 
 public class InputFileWriter(string path, int year, int day) : IInputWriter
 {
@@ -20,7 +20,7 @@ public class InputFileWriter(string path, int year, int day) : IInputWriter
         string filename = Utils.File.GetInputFileName(path);
         string contents = Utils.Input.ConvertToInput(inputProvider.GetInput());
 
-        using StreamWriter streamWriter = File.AppendText(filename);
+        using StreamWriter streamWriter = System.IO.File.AppendText(filename);
         streamWriter.Write(contents);
     }
 }

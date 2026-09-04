@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using AoC.Solid.Core.Interfaces;
 using AoC.Solid.Utils;
 
-namespace AoC.Solid.Core;
+namespace AoC.Solid.Core.Input;
 
 public class DownloadInputProvider(int year, int day) : IStringInputProvider
 {
@@ -16,7 +16,7 @@ public class DownloadInputProvider(int year, int day) : IStringInputProvider
 
     public IEnumerable<string> GetInput()
     {
-        return Input.ConvertFromInput(_input);
+        return Utils.Input.ConvertFromInput(_input);
     }
 
     public void DownloadInput()

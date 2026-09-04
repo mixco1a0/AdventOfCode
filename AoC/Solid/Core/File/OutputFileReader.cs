@@ -1,8 +1,7 @@
 using System.IO;
 using AoC.Solid.Core.Interfaces;
 
-namespace AoC.Solid.Core;
-
+namespace AoC.Solid.Core.File;
 
 public class OutputFileReader(string path, int year, int day, int part) : IOutputReader
 {
@@ -16,10 +15,10 @@ public class OutputFileReader(string path, int year, int day, int part) : IOutpu
         string path = Utils.File.GetOutputFilePath(_path, _year, _day);
         string filename = Utils.File.GetOutputFileName(path, _part);
 
-        if (!File.Exists(filename))
+        if (!System.IO.File.Exists(filename))
         {
             throw new FileNotFoundException("File not found.", filename);
         }
-        return File.ReadAllText(filename).Trim();
+        return System.IO.File.ReadAllText(filename).Trim();
     }
 }

@@ -1,8 +1,8 @@
 using System.IO;
+using AoC.Solid.Core.Input;
 using AoC.Solid.Core.Interfaces;
 
-namespace AoC.Solid.Core;
-
+namespace AoC.Solid.Core.File;
 
 public class InputFileReader(string path, int year, int day) : IInputReader
 {
@@ -15,11 +15,11 @@ public class InputFileReader(string path, int year, int day) : IInputReader
         string path = Utils.File.GetInputFilePath(_path, _year, _day);
         string filename = Utils.File.GetInputFileName(path);
 
-        if (!File.Exists(filename))
+        if (!System.IO.File.Exists(filename))
         {
             throw new FileNotFoundException("File not found.", filename);
         }
-        string contents = File.ReadAllText(filename);
+        string contents = System.IO.File.ReadAllText(filename);
         return new InlineInputProvider(contents);
     }
 }

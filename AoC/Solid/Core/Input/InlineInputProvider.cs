@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using AoC.Solid.Core.Interfaces;
-using AoC.Solid.Utils;
 
-namespace AoC.Solid.Core;
+namespace AoC.Solid.Core.Input;
 
 public class InlineInputProvider(string inlineInput) : IStringInputProvider
 {
@@ -10,6 +9,6 @@ public class InlineInputProvider(string inlineInput) : IStringInputProvider
 
     public IEnumerable<string> GetInput()
     {
-        return Input.ConvertFromInput(_inlineInput);
+        return Utils.Input.ConvertFromInput(_inlineInput);
     }
 }

@@ -1,4 +1,4 @@
-using AoC.Solid.Core;
+using AoC.Solid.Core.Input;
 using AoC.Solid.Core.Interfaces;
 using AoC.Solid.Services;
 using AoC.Solid.Solutions.Y2015;
