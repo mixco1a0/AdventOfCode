@@ -1,10 +1,6 @@
-using System.Transactions;
-using AoC.Solid.Core;
-using AoC.Solid.Core.Interfaces;
-using AoC.Solid.Services;
 using AoC.Solid.Utils.Math;
 
-namespace AoC.Tests.Math;
+namespace AoC.Tests.Utils.Math;
 
 public class IntTests
 {
